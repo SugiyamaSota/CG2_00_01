@@ -4,12 +4,37 @@
 #include<d3d12.h>
 #include<dxgi1_6.h>
 #include<cassert>
+#include<dbghelp.h>
+#include<strsafe.h>
 
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
+#pragma comment(lib,"Dbghelp.lib")
 
 void Log(const std::string& message) {
 	OutputDebugStringA(message.c_str());
+}
+
+static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
+	//時刻を取得して、時刻を名前に入れたファイルを作成。Dumpsディレクトリ以下に出力
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+	wchar_t filePath[MAX_PATH] = { 0 };
+	CreateDirectory(L"./Dumps", nullptr);
+	StringCchPrintfW(filePath, MAX_PATH, L"./Dumps/%04d-%02d%02d-%02d%02d.dmp", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute);
+	HANDLE dumpFileHandle = CreateFile(filePath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
+	//processID(このexeのid)とクラッシュの発生したthreadidを取得
+	DWORD processId = GetCurrentProcessId();
+	DWORD threadId = GetCurrentThreadId();
+	//設定情報を入力
+	MINIDUMP_EXCEPTION_INFORMATION minidumpInformation{ 0 };
+	minidumpInformation.ThreadId = threadId;
+	minidumpInformation.ExceptionPointers = exception;
+	minidumpInformation.ClientPointers = TRUE;
+	//Dumpを出力。MiniDumpNormalは最低限の情報を出力するフラグ
+	MiniDumpWriteDump(GetCurrentProcess(), processId, dumpFileHandle, MiniDumpNormal, &minidumpInformation, nullptr, nullptr);
+	//ほかに関連付けられているSEH例外ハンドラがあれば実行。通常はprocessを終了する
+	return EXCEPTION_EXECUTE_HANDLER;
 }
 
 std::wstring ConvertString(const std::string& str) {
@@ -63,6 +88,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 
 //Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+	SetUnhandledExceptionFilter(ExportDump);
 
 	WNDCLASS wc{};
 	//ウィンドウプロシージャ
@@ -203,6 +229,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	device->CreateRenderTargetView(swapChainResources[1], &rtvDesc, rtvHandles[1]);
 
 	MSG msg{};
+
+	/*Crashさせる
+	uint32_t* p = nullptr;
+	*p = 100;*/
+
 	//ウィンドウの×ボタンが押されるまでループ
 	while (msg.message != WM_QUIT) {
 		//Windowにメッセージが来てたら最優先で処理させる
