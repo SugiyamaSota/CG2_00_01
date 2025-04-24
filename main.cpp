@@ -12,6 +12,10 @@
 #include<dxgidebug.h>
 #include<dxcapi.h>
 #include"Convert.h"
+#include"externals/imgui/imgui.h"
+#include"externals/imgui/imgui_impl_dx12.h"
+#include"externals/imgui/imgui_impl_win32.h"
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 #pragma comment(lib,"dxguid.lib")
 #pragma comment(lib,"d3d12.lib")
@@ -176,6 +180,19 @@ ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes) {
 	return Resource;
 }
 
+ID3D12DescriptorHeap* CreateDescriptorHeap(
+	ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible) {
+	ID3D12DescriptorHeap* descriptorHeap = nullptr;
+	D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
+	descriptorHeapDesc.Type = heapType;
+	descriptorHeapDesc.NumDescriptors = numDescriptors;
+	descriptorHeapDesc.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	HRESULT hr = device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
+	//ディスクリプタヒープが作れなかったので起動できない
+	assert(SUCCEEDED(hr));
+	return descriptorHeap;
+}
+
 //クライアント領域のサイズ
 const int32_t kClientWidth = 1280;
 const int32_t kClientHeight = 720;
@@ -183,6 +200,9 @@ const int32_t kClientHeight = 720;
 RECT wrc = { 0,0,kClientWidth ,kClientHeight };
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) {
+		return true;
+	}
 	//メッセージに応じてゲーム固有の処理を行う
 	switch (msg) {
 		//ウィンドウが破棄された
@@ -356,14 +376,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	assert(SUCCEEDED(hr));
 
 	//ディスクリプタヒープの生成
-	ID3D12DescriptorHeap* rtvDescriptorHeap = nullptr;
-	D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptorHeapDesc{};
-	rtvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvDescriptorHeapDesc.NumDescriptors = 2;
-	hr = device->CreateDescriptorHeap(&rtvDescriptorHeapDesc, IID_PPV_ARGS(&rtvDescriptorHeap));
-	//ディスクリプタヒープが作れなかったので起動できない
-	assert(SUCCEEDED(hr));
+	ID3D12DescriptorHeap* rtvDescriptorHeap = CreateDescriptorHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
 
+	ID3D12DescriptorHeap* srvDescriptorHeap = CreateDescriptorHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
 	//RTVの設定
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;//出力結果をSRGBに変換
@@ -558,6 +573,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	};
 	Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kClientWidth) / float(kClientHeight), 0.1f, 100.0f);
 
+	//ImGui初期化
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui::StyleColorsDark();
+	ImGui_ImplWin32_Init(hwnd);
+	ImGui_ImplDX12_Init(device,
+		swapChainDesc.BufferCount,
+		rtvDesc.Format,
+		srvDescriptorHeap,
+		srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
+		srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
 	//ウィンドウの×ボタンが押されるまでループ
 	while (msg.message != WM_QUIT) {
@@ -566,6 +592,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		} else {
+			//フレームの最初
+			ImGui_ImplWin32_NewFrame();
+			ImGui_ImplDX12_NewFrame();
+			ImGui::NewFrame();
+
+			ImGui::ShowDemoWindow();
+
 			//これから書き込むバックバッファのインデックスを取得
 			UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
 
@@ -590,6 +623,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			float clearColor[] = { 0.1f,0.25f,0.5f,1.0f };//蒼っぽい色。RGBAの順番
 			commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], clearColor, 0, nullptr);
 
+			ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap };
+			commandList->SetDescriptorHeaps(1, descriptorHeaps);
+
 			commandList->RSSetViewports(1, &viewport);//Viewportを設定
 			commandList->RSSetScissorRects(1, &scissorRect);//Scirssorを設定
 			//RootSignatureを設定。PSOに設定しているけど別途設定が必要
@@ -604,6 +640,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			commandList->SetGraphicsRootConstantBufferView(1, wvpResource->GetGPUVirtualAddress());
 			//描画!3頂点で1つのインスタンス
 			commandList->DrawInstanced(3, 1, 0, 0);
+			ImGui::Render();
+			ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
 
 			//画面に描く処理はすべて終わり、画面に映すので、状態を遷移
 			//今回はRenderTargetからPresentにする
@@ -648,13 +686,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
 			Matrix4x4 *transformationMatrixData = &worldViewProjectionMatrix;
 			*wvpData = worldMatrix;
+			
 
 			//ウィンドウを表示する
 			ShowWindow(hwnd, SW_SHOW);
 		}
 	}
 
+	ImGui_ImplDX12_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 	//解放処理
+	srvDescriptorHeap->Release();
 	wvpResource->Release();
 	materialResource->Release();
 	vertexResource->Release();
