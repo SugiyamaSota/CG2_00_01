@@ -711,8 +711,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//srvの生成
 	device->CreateShaderResourceView(textureResource, &srvDesc, textureSrvHandleCPU);
 
-	
-
 	//ウィンドウの×ボタンが押されるまでループ
 	while (msg.message != WM_QUIT) {
 		//Windowにメッセージが来てたら最優先で処理させる
@@ -724,15 +722,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui_ImplWin32_NewFrame();
 			ImGui_ImplDX12_NewFrame();
 			ImGui::NewFrame();
-
+      
 			ImGui::Begin("Triangle Color");
 			ImGui::SliderFloat("R", &materialData->x, 0.0f, 1.0f);
 			ImGui::SliderFloat("G", &materialData->y, 0.0f, 1.0f);
 			ImGui::SliderFloat("B", &materialData->z, 0.0f, 1.0f);
 			ImGui::SliderFloat("angleY", &transform.rotate.y, 0.0f, 100.0f);
 			ImGui::End();
-
-			ImGui::ShowDemoWindow();
 
 			//これから書き込むバックバッファのインデックスを取得
 			UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
