@@ -866,7 +866,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{0.0f,0.0f,0.0f},
 	};
 
-	//WVPMatrixを使って書き込む
+	//WVPMatrixを使って書き込む(Sprite)
 	Matrix4x4 worldMatrixSprite = MakeAffineMatrix(transformSprite.scale, transformSprite.rotate, transformSprite.translate);
 	Matrix4x4 viewMatrixSprite = MakeIdentity4x4();
 	Matrix4x4 projectionMatrixSPrite = MakeOrthographicMatrix(0.0f, 0.0f, float(kClientWidth), float(kClientWidth), 0.0f, 100.0f);
@@ -926,6 +926,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui::SliderFloat("G", &materialData->y, 0.0f, 1.0f);
 			ImGui::SliderFloat("B", &materialData->z, 0.0f, 1.0f);
 			ImGui::SliderFloat("angleY", &transform.rotate.y, 0.0f, 100.0f);
+			ImGui::SliderFloat("SpriteX", &transformSprite.translate.x, 0.0f, 1280.0f);
+			ImGui::SliderFloat("SpriteY", &transformSprite.translate.y, 0.0f, 720.0f);
 			ImGui::End();
 
 
@@ -997,6 +999,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
 			*wvpData = worldViewProjectionMatrix;
 
+			//WVPMatrixを使って書き込む(Sprite)
+			Matrix4x4 worldMatrixSprite = MakeAffineMatrix(transformSprite.scale, transformSprite.rotate, transformSprite.translate);
+			Matrix4x4 viewMatrixSprite = MakeIdentity4x4();
+			Matrix4x4 projectionMatrixSPrite = MakeOrthographicMatrix(0.0f, 0.0f, float(kClientWidth), float(kClientWidth), 0.0f, 100.0f);
+			Matrix4x4 worldViewProjectionMatrixSprite = Multiply(worldMatrixSprite, Multiply(viewMatrixSprite, projectionMatrixSPrite));
+			*transformationMatrixDataSprite = worldViewProjectionMatrixSprite;
 
 			//ウィンドウを表示する
 			ShowWindow(hwnd, SW_SHOW);
