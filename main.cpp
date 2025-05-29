@@ -53,6 +53,8 @@ struct VertexData {
 struct Material {
 	Vector4 color;
 	int32_t enableLighting;
+	float pedding[3];
+	Matrix4x4 uvTransform;
 };
 
 struct TransformationMatrix {
@@ -733,6 +735,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	materialData->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData->enableLighting = true;
+	materialData->uvTransform = MakeIdentity4x4();
 
 	// WVP用のリソース
 	ID3D12Resource* wvpResource = CreateBufferResource(device, sizeof(TransformationMatrix));
@@ -767,6 +770,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	materialResourceTriangle->Map(0, nullptr, reinterpret_cast<void**>(&materialDataTriangle));
 	materialDataTriangle->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialDataTriangle->enableLighting = true;
+	materialDataTriangle->uvTransform = MakeIdentity4x4();
 
 	// WVP用のリソース
 	ID3D12Resource* wvpResourceTriangle = CreateBufferResource(device, sizeof(TransformationMatrix));
@@ -824,6 +828,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	materialResourceSprite->Map(0, nullptr, reinterpret_cast<void**>(&materialDataSprite));
 	materialDataSprite->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialDataSprite->enableLighting = false;
+	materialDataSprite->uvTransform = MakeIdentity4x4();
 
 	// WVP用のリソース
 	ID3D12Resource* transformationMatrixResourceSprite = CreateBufferResource(device, sizeof(TransformationMatrix));
@@ -832,6 +837,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	transformationMatrixDataSprite->WVP = MakeIdentity4x4();
 	transformationMatrixDataSprite->World = MakeIdentity4x4();
 	Transform transformSprite{
+		{1.0f,1.0f,1.0f},
+		{0.0f,0.0f,0.0f},
+		{0.0f,0.0f,0.0f},
+	};
+
+	Transform uvTransformSprite{
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f},
@@ -976,26 +987,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui_ImplDX12_NewFrame();
 			ImGui::NewFrame();
 
-			ImGui::Begin("Ball");
-			ImGui::ColorEdit4("color", &materialData->color.x, 0);
-			ImGui::DragFloat3("scale", &transform.scale.x, 0.01f);
-			ImGui::DragFloat3("rotate", &transform.rotate.x, 0.01f);
-			ImGui::DragFloat3("translate", &transform.translate.x, 0.01f);
-			ImGui::SliderInt("texture", &nowBallTexture, 0, 1);
-			ImGui::End();
-
-			ImGui::Begin("Triangle");
-			ImGui::ColorEdit4("color", &materialDataTriangle->color.x, 0);
-			ImGui::DragFloat3("scale", &transformTriangle.scale.x, 0.01f);
-			ImGui::DragFloat3("rotate", &transformTriangle.rotate.x, 0.01f);
-			ImGui::DragFloat3("translate", &transformTriangle.translate.x, 0.01f);
-			ImGui::SliderInt("texture", &nowTriangleTexture, 0, 1);
-			ImGui::End();
-
-			ImGui::Begin("Camera");
-			ImGui::DragFloat3("scale", &cameraTransform.scale.x, 0.01f);
-			ImGui::DragFloat3("rotate", &cameraTransform.rotate.x, 0.01f);
-			ImGui::DragFloat3("translate", &cameraTransform.translate.x, 0.01f);
+			ImGui::Begin("Debug");
+			if (ImGui::CollapsingHeader("Ball")) {
+				ImGui::ColorEdit4("color", &materialData->color.x, 0);
+				ImGui::DragFloat3("scale", &transform.scale.x, 0.01f);
+				ImGui::DragFloat3("rotate", &transform.rotate.x, 0.01f);
+				ImGui::DragFloat3("translate", &transform.translate.x, 0.01f);
+				ImGui::SliderInt("texture", &nowBallTexture, 0, 1);
+			}
+			if (ImGui::CollapsingHeader("Triangle")) {
+				ImGui::ColorEdit4("color", &materialDataTriangle->color.x, 0);
+				ImGui::DragFloat3("scale", &transformTriangle.scale.x, 0.01f);
+				ImGui::DragFloat3("rotate", &transformTriangle.rotate.x, 0.01f);
+				ImGui::DragFloat3("translate", &transformTriangle.translate.x, 0.01f);
+				ImGui::SliderInt("texture", &nowTriangleTexture, 0, 1);
+			}
+			if (ImGui::CollapsingHeader("Sprite")) {
+				ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
+				ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
+				ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
+			}
+			if (ImGui::CollapsingHeader("Camera")) {
+				ImGui::DragFloat3("scale", &cameraTransform.scale.x, 0.01f);
+				ImGui::DragFloat3("rotate", &cameraTransform.rotate.x, 0.01f);
+				ImGui::DragFloat3("translate", &cameraTransform.translate.x, 0.01f);
+			}
 			ImGui::End();
 
 			//ゲームの処理
@@ -1020,6 +1036,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Matrix4x4 worldViewProjectionMatrixSprite = Multiply(transformationMatrixDataSprite->World, Multiply(viewMatrixSprite, projectionMatrixSPrite));
 			transformationMatrixDataSprite->WVP = worldViewProjectionMatrixSprite;
 
+			Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransformSprite.scale);
+			uvTransformMatrix = Multiply(uvTransformMatrix, MakeRotateZMatrix(uvTransformSprite.rotate.z));
+			uvTransformMatrix = Multiply(uvTransformMatrix, MakeTranslateMatrix(uvTransformSprite.translate));
+			materialDataSprite->uvTransform = uvTransformMatrix;
 
 			//これから書き込むバックバッファのインデックスを取得
 			UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
