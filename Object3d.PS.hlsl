@@ -1,18 +1,8 @@
 #include"Object3d.hlsli"
 
-struct Material
-{
-    float32_t4 color;
-    int32_t enableLighting;
-};
-
-
-
-
-ConstantBuffer<Material>gMaterial : register(b0);
+ConstantBuffer<Material> gMaterial : register(b0);
 
 ConstantBuffer<DirectionalLight> gDirectionalLight : register(b1);
-
 
 Texture2D<float32_t4> gTexture : register(t0);
 
@@ -26,8 +16,10 @@ struct PixelShaderOutput
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
-
-    float32_t4 textureColor = gTexture.Sample(gSampler, input.texcoord);
+    
+    float3 transformedUV = mul(float32_t4(input.texcoord.x, input.texcoord.y, 0.0f, 1.0f), gMaterial.uvTransform).xyz;
+    
+    float32_t4 textureColor = gTexture.Sample(gSampler, transformedUV.xy);
 
     if (gMaterial.enableLighting != 0)
     {
@@ -40,6 +32,5 @@ PixelShaderOutput main(VertexShaderOutput input)
         output.color = gMaterial.color * textureColor;
     }
     
-
     return output;
 }
