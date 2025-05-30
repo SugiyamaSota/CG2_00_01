@@ -12,7 +12,7 @@
 #include<chrono>
 #include<dxgidebug.h>
 #include<dxcapi.h>
-#include"Convert.h"
+#include"MyMath/Convert.h"
 #include"Function.h"
 #include"externals/DirectXTex/DirectXTex.h"
 #include"externals/DirectXTex/d3dx12.h"
