@@ -1,18 +1,11 @@
 #pragma once
 
-struct Vector2 {
-	float x, y;
-};
+///// 前方宣言 /////
+struct Vector2;
+struct Vector3;
+struct Vector4;
 
-struct Vector3 {
-	float x, y, z;
-};
-
-struct Vector4 {
-	float x, y, z, w;
-};
-
-//===計算関数===//
+///// 計算関数 /////
 //加算
 Vector3 Add(const Vector3& vector1, const Vector3& vector2);
 
