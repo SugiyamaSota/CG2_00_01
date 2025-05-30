@@ -16,18 +16,18 @@
     <Filter Include="imgui">
       <UniqueIdentifier>{d160ec92-23c1-4dd0-ac50-c2779c268842}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyMath">
+      <UniqueIdentifier>{758a4b7f-54bf-4e22-9b22-3fe1c90ac298}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyMath\ソース">
+      <UniqueIdentifier>{0c0bbc6b-9fbd-4b17-a0a3-b1d86f52b772}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyMath\ヘッダー">
+      <UniqueIdentifier>{cf199f77-ef45-4d1a-9eb5-a4ee66c5c778}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Convert.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Matrix.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="vector.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="externals\imgui\imgui.cpp">
@@ -54,21 +54,21 @@
     <ClCompile Include="Function.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="MyMath\Convert.cpp">
+      <Filter>MyMath\ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="MyMath\Matrix.cpp">
+      <Filter>MyMath\ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="MyMath\vector.cpp">
+      <Filter>MyMath\ソース</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Object3d.VS.hlsl" />
     <FxCompile Include="Object3d.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Convert.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrix.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="vector.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="externals\imgui\imconfig.h">
       <Filter>imgui</Filter>
     </ClInclude>
@@ -95,6 +95,18 @@
     </ClInclude>
     <ClInclude Include="Function.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="MyMath\Convert.h">
+      <Filter>MyMath\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="MyMath\Matrix.h">
+      <Filter>MyMath\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="MyMath\Struct.h">
+      <Filter>MyMath\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="MyMath\vector.h">
+      <Filter>MyMath\ヘッダー</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
