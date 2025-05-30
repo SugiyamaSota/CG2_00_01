@@ -1,14 +1,10 @@
 #pragma once
-#include"Vector.h"
-#include"Matrix.h"
-#include<assert.h>
-#include<cmath>
 
-struct Transform {
-	Vector3 scale;
-	Vector3 rotate;
-	Vector3 translate;
-};
+
+///// 前方宣言 /////
+struct Vector3;
+struct Matrix4x4;
+struct Transform;
 
 /// <summary>
 /// 平行移動行列
