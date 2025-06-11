@@ -25,6 +25,9 @@
     <Filter Include="MyMath\ヘッダー">
       <UniqueIdentifier>{cf199f77-ef45-4d1a-9eb5-a4ee66c5c778}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{635d8fbb-97fb-43d3-b944-7efc1dd93b63}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -59,6 +62,9 @@
     </ClCompile>
     <ClCompile Include="MyMath\vector.cpp">
       <Filter>MyMath\ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="externals\Audio\xaudio_player_mf.cpp">
+      <Filter>Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +107,15 @@
     </ClInclude>
     <ClInclude Include="MyMath\vector.h">
       <Filter>MyMath\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="externals\Audio\common.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="externals\Audio\xaudio_player_core.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="externals\Audio\xaudio_player_mf.h">
+      <Filter>Audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
