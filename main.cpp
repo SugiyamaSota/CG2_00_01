@@ -30,6 +30,11 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg
 #pragma comment(lib,"Dbghelp.lib")
 #pragma comment(lib,"dxcompiler.lib")
 
+// 入力関連
+#define DIRECTINPUT_VERSION 0x0800
+#include<dinput.h>
+#pragma comment(lib,"dinput8.lib")
+
 // 現在時刻を取得
 std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
 // ログファイルの名前にコンマ何秒はいらないので、削って秒にする
@@ -526,6 +531,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	assert(device != nullptr);
 	Log(logStream, "Complete create D3D12Device!!!\n");//初期化完了ログ
 
+	/////入力処理初期化 /////
+	// DirectInput全体
+	IDirectInput8* directInput = nullptr;
+	hr = DirectInput8Create(
+		wc.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
+		(void**)&directInput, nullptr);
+	assert(SUCCEEDED(hr));
+
+	//キーボードデバイス生成
+	IDirectInputDevice8* keyboard = nullptr;
+	hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
+	assert(SUCCEEDED(hr));
+
+	// 入力データ形式のセット
+	hr = keyboard->SetDataFormat(&c_dfDIKeyboard);
+	assert(SUCCEEDED(hr));
+
+	// 排他処理レベルのセット
+	hr = keyboard->SetCooperativeLevel(
+		hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+	assert(SUCCEEDED(hr));
 
 #ifdef _DEBUG
 	Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue = nullptr; 
@@ -1021,6 +1047,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui_ImplDX12_NewFrame();
 			ImGui::NewFrame();
 
+			// キーボード情報の取得開始
+			keyboard->Acquire();
+			BYTE key[256] = {};
+			keyboard->GetDeviceState(sizeof(key), key);
+
 			ImGui::Begin("Debug");
 			if (ImGui::CollapsingHeader("Model")) {
 				ImGui::ColorEdit4("color", &materialData->color.x, 0);
@@ -1043,7 +1074,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//ゲームの処理
 			// モデル
-			//transform.rotate.y += 0.03f;
 			wvpData->World = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 			Matrix4x4 cameraMatrix = MakeAffineMatrix(cameraTransform.scale, cameraTransform.rotate, cameraTransform.translate);
 			Matrix4x4 viewMatrix = Inverse(cameraMatrix);
