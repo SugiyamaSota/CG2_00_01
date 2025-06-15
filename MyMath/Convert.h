@@ -26,7 +26,7 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 /// <param name="vector">変換させる点</param>
 /// <param name="matrix">変換する大きさ</param>
 /// <returns>変換後の座標</returns>
-Vector3 MakeTransform(const Vector3& vector, const Matrix4x4& matrix);
+Vector3 Conversion(const Vector3& vector, const Matrix4x4& matrix);
 
 //x軸回転行列
 Matrix4x4 MakeRotateXMatrix(float radian);
@@ -37,6 +37,9 @@ Matrix4x4 MakeRotateYMatrix(float radian);
 //Y軸回転行列
 Matrix4x4 MakeRotateZMatrix(float radian);
 
+//XYZ軸
+Matrix4x4 MakeRotateMatrix(Vector3 rotate);
+
 /// <summary>
 /// 合成された行列の作成
 /// </summary>
@@ -45,6 +48,8 @@ Matrix4x4 MakeRotateZMatrix(float radian);
 /// <param name="translate">移動量</param>
 /// <returns></returns>
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Matrix4x4& rotate, const Vector3& translate);
 
 //透視射影行列
 Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);

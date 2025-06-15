@@ -21,7 +21,7 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 	return result;
 }
 
-Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
+Vector3 Conversion(const Vector3& vector, const Matrix4x4& matrix) {
 	Vector3 result = {};
 	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + 1.0f * matrix.m[3][0];
 	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + 1.0f * matrix.m[3][1];
@@ -61,6 +61,15 @@ Matrix4x4 MakeRotateZMatrix(float radian) {
 	return result;
 }
 
+Matrix4x4 MakeRotateMatrix(Vector3 rotate) {
+	Matrix4x4 result = MakeIdentity4x4();
+	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
+	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
+	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
+	result = Multiply(rotateXMatrix, Multiply(rotateYMatrix, rotateZMatrix));
+	return result;
+}
+
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
 	Matrix4x4 result = MakeIdentity4x4();
 	Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
@@ -68,6 +77,15 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
 	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
 	Matrix4x4 rotateXYZMatrix = Multiply(rotateXMatrix, Multiply(rotateYMatrix, rotateZMatrix));
+	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
+	result = Multiply(scaleMatrix, Multiply(rotateXYZMatrix, translateMatrix));
+	return result;
+}
+
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Matrix4x4& rotate, const Vector3& translate) {
+	Matrix4x4 result = MakeIdentity4x4();
+	Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
+	Matrix4x4 rotateXYZMatrix = rotate;
 	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
 	result = Multiply(scaleMatrix, Multiply(rotateXYZMatrix, translateMatrix));
 	return result;
