@@ -22,14 +22,25 @@ private:
 
 	const float rotationSpeed_ = 0.01f; //回転速度
 
+	bool isTargeting_;
+	Vector3 targetPosition_;
+
 	///// 関数 /////
 	void Move(); // 移動処理
 	void Rotate();// 回転処理
+	Matrix4x4 MakeLookAtMatrix(const Vector3& eye, const Vector3& target, const Vector3& up);
 public:
 	void Initialize(InputKey* inputKey); // 初期化
+
+	void Check(){ isTargeting_ = false; }
 
 	void Update(); // 更新
 
 	Matrix4x4 GetViewMatrix()const { return viewMatrix_; }
+
+	void SetTarget(Vector3 targetPosition);
+
+	void ResetPosition() { translation_ = { 0,0,-50 }; }
+	void ResetRotation();
 };
 

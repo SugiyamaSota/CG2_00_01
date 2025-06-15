@@ -1102,6 +1102,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) { // hInstance �
 	DebugCamera* debugCamera = new DebugCamera();
 	debugCamera->Initialize(&inputKey);
 
+	// ものに注目させるか
+	bool isTarget = true;
 
 	//ウィンドウの×ボタンが押されるまでループ
 	while (msg.message != WM_QUIT) {
@@ -1127,15 +1129,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) { // hInstance �
 			}
 
 			// デバッグカメラ
-			debugCamera->Update();
+			debugCamera->Check();
+			
 
-			ImGui::Begin("Debug");
+				ImGui::Begin("Debug");
 			if (ImGui::CollapsingHeader("Model")) {
 				ImGui::ColorEdit4("color", &materialData->color.x, 0);
 				ImGui::DragFloat3("scale", &transform.scale.x, 0.01f);
 				ImGui::DragFloat3("rotate", &transform.rotate.x, 0.01f);
 				ImGui::DragFloat3("translate", &transform.translate.x, 0.01f);
 				ImGui::SliderInt("texture", &nowBallTexture, 0, 1);
+				ImGui::Checkbox("target", &isTarget);
 			}
 			if (ImGui::CollapsingHeader("Sprite")) {
 				ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
@@ -1143,9 +1147,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) { // hInstance �
 				ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
 			}
 			if (ImGui::CollapsingHeader("Camera")) {
-				ImGui::DragFloat3("scale", &cameraTransform.scale.x, 0.01f);
-				ImGui::DragFloat3("rotate", &cameraTransform.rotate.x, 0.01f);
-				ImGui::DragFloat3("translate", &cameraTransform.translate.x, 0.01f);
+				if (ImGui::Button("ResetCameraPosition")) {
+					debugCamera->ResetPosition();
+				}
+				if (ImGui::Button("ResetCameraRotation")) {
+					debugCamera->ResetRotation();
+				}
 			}
 			ImGui::End();
 
@@ -1166,6 +1173,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) { // hInstance �
 			uvTransformMatrix = Multiply(uvTransformMatrix, MakeRotateZMatrix(uvTransformSprite.rotate.z));
 			uvTransformMatrix = Multiply(uvTransformMatrix, MakeTranslateMatrix(uvTransformSprite.translate));
 			materialDataSprite->uvTransform = uvTransformMatrix;
+
+			// デバッグカメラ
+			if (isTarget) {
+				debugCamera->SetTarget(transform.translate);
+			}
+			debugCamera->Update();
 
 			//これから書き込むバックバッファのインデックスを取得
 			UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
