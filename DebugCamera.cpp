@@ -6,7 +6,7 @@
 #include "MyMath/Matrix.h"
 
 
-void DebugCamera::Initialize(InputKey *inputKey) {
+void DebugCamera::Initialize(InputKey* inputKey) {
 	matRot_ = MakeIdentity4x4();
 	translation_ = { 0,0,-50 };
 
@@ -14,17 +14,25 @@ void DebugCamera::Initialize(InputKey *inputKey) {
 	projactionMatirx_ = MakeIdentity4x4();
 
 	inputKey_ = inputKey;
+
+	isTargeting_ = false;
+	targetPosition_ = { 0,0,0 };
 }
 
 void DebugCamera::Update() {
-
 	// 入力による移動や回転
-	Rotate();
+	
 	Move();
+	
 
 	//ビュー行列の更新
-	Matrix4x4 affineMatrix = MakeAffineMatrix(scale_, matRot_, translation_);
-	viewMatrix_ = Inverse(affineMatrix);
+	if (!isTargeting_) {
+		Rotate();
+		Matrix4x4 affineMatrix = MakeAffineMatrix(scale_, matRot_, translation_);
+		viewMatrix_ = Inverse(affineMatrix);
+	} else if (isTargeting_) {
+		viewMatrix_ = MakeLookAtMatrix(translation_, targetPosition_, { 0, 1, 0 });
+	}
 }
 
 void DebugCamera::Move() {
@@ -150,3 +158,38 @@ void DebugCamera::Rotate() {
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
 }
+
+Matrix4x4 DebugCamera::MakeLookAtMatrix(const Vector3& eye, const Vector3& target, const Vector3& up) {
+	Vector3 zaxis = Normalize(Subtract(target, eye));
+	Vector3 xaxis = Normalize(Cross(up, zaxis));
+	Vector3 yaxis = Cross(zaxis, xaxis);
+
+	Matrix4x4 result;
+	result.m[0][0] = xaxis.x;
+	result.m[0][1] = yaxis.x;
+	result.m[0][2] = zaxis.x;
+	result.m[0][3] = 0.0f;
+
+	result.m[1][0] = xaxis.y;
+	result.m[1][1] = yaxis.y;
+	result.m[1][2] = zaxis.y;
+	result.m[1][3] = 0.0f;
+
+	result.m[2][0] = xaxis.z;
+	result.m[2][1] = yaxis.z;
+	result.m[2][2] = zaxis.z;
+	result.m[2][3] = 0.0f;
+
+	result.m[3][0] = -Dot(xaxis, eye);
+	result.m[3][1] = -Dot(yaxis, eye);
+	result.m[3][2] = -Dot(zaxis, eye);
+	result.m[3][3] = 1.0f;
+
+	return result;
+}
+
+void DebugCamera::SetTarget(Vector3 targetPosition) {
+	targetPosition_ = targetPosition; isTargeting_ = true;
+}
+
+void DebugCamera::ResetRotation() { matRot_ = MakeIdentity4x4(); }
