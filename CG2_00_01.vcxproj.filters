@@ -46,6 +46,9 @@
     <Filter Include="engine\directXCommon">
       <UniqueIdentifier>{692dc3d7-6216-4d0a-ba9d-69971ff21ee8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\Func">
+      <UniqueIdentifier>{d0d67792-311d-4379-b069-f9b23b798df7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -72,15 +75,6 @@
     <ClCompile Include="externals\imgui\imgui_widgets.cpp">
       <Filter>外部ファイル\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="MyMath\Convert.cpp">
-      <Filter>math\ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="MyMath\Matrix.cpp">
-      <Filter>math\ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="MyMath\vector.cpp">
-      <Filter>math\ソース</Filter>
-    </ClCompile>
     <ClCompile Include="externals\Audio\xaudio_player_mf.cpp">
       <Filter>外部ファイル\audio</Filter>
     </ClCompile>
@@ -92,6 +86,21 @@
     </ClCompile>
     <ClCompile Include="audio\AudioPlayer.cpp">
       <Filter>audio</Filter>
+    </ClCompile>
+    <ClCompile Include="math\Convert.cpp">
+      <Filter>math\ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="math\Matrix.cpp">
+      <Filter>math\ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="math\vector.cpp">
+      <Filter>math\ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXCommon.cpp">
+      <Filter>engine\directXCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility.cpp">
+      <Filter>engine\Func</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -123,18 +132,6 @@
     <ClInclude Include="externals\imgui\imstb_truetype.h">
       <Filter>外部ファイル\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="MyMath\Convert.h">
-      <Filter>math\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="MyMath\Matrix.h">
-      <Filter>math\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="MyMath\Struct.h">
-      <Filter>math\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="MyMath\vector.h">
-      <Filter>math\ヘッダー</Filter>
-    </ClInclude>
     <ClInclude Include="externals\Audio\common.h">
       <Filter>外部ファイル\audio</Filter>
     </ClInclude>
@@ -152,6 +149,24 @@
     </ClInclude>
     <ClInclude Include="audio\AudioPlayer.h">
       <Filter>audio</Filter>
+    </ClInclude>
+    <ClInclude Include="math\Convert.h">
+      <Filter>math\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="math\Matrix.h">
+      <Filter>math\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="math\vector.h">
+      <Filter>math\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="math\Struct.h">
+      <Filter>math\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXCommon.h">
+      <Filter>engine\directXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>engine\Func</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

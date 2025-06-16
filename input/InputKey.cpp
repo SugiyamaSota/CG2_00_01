@@ -1,5 +1,6 @@
 #include "InputKey.h"
-#include <cassert> // assert を使用するため
+#include <cassert>
+
 #pragma comment(lib,"dinput8.lib")
 
 void InputKey::Initialize(HINSTANCE hInstance, HWND hwnd) {

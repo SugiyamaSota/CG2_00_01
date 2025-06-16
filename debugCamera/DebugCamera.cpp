@@ -1,10 +1,13 @@
 #include "DebugCamera.h"
 
+// 数学関連
+#include"../math/Struct.h"
+#include "../math/Vector.h"
+#include "../math/Matrix.h"
+#include "../math/Convert.h"
 
-#include "../MyMath/Vector.h"
-#include "../MyMath/Convert.h"
-#include "../MyMath/Matrix.h"
-
+// 入力
+#include"../input/InputKey.h"
 
 void DebugCamera::Initialize(InputKey* inputKey) {
 	matRot_ = MakeIdentity4x4();

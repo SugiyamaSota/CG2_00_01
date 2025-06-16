@@ -3,7 +3,7 @@
 #include <Windows.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
-#include <wrl/client.h> // Microsoft::WRL::ComPtr を使用するため
+#include <wrl/client.h>
 
 // InputKeyクラス
 class InputKey {
