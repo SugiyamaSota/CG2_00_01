@@ -37,6 +37,15 @@
     <Filter Include="外部ファイル\imgui">
       <UniqueIdentifier>{d160ec92-23c1-4dd0-ac50-c2779c268842}</UniqueIdentifier>
     </Filter>
+    <Filter Include="audio">
+      <UniqueIdentifier>{6670dcda-003c-430e-a2b9-d1f9f823f6db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine">
+      <UniqueIdentifier>{5f17eab5-bc29-453d-8a6c-b5b969191ccb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\directXCommon">
+      <UniqueIdentifier>{692dc3d7-6216-4d0a-ba9d-69971ff21ee8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -75,11 +84,14 @@
     <ClCompile Include="externals\Audio\xaudio_player_mf.cpp">
       <Filter>外部ファイル\audio</Filter>
     </ClCompile>
-    <ClCompile Include="DebugCamera.cpp">
+    <ClCompile Include="debugCamera\DebugCamera.cpp">
       <Filter>debugCamera</Filter>
     </ClCompile>
-    <ClCompile Include="InputKey.cpp">
+    <ClCompile Include="input\InputKey.cpp">
       <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="audio\AudioPlayer.cpp">
+      <Filter>audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -132,11 +144,14 @@
     <ClInclude Include="externals\Audio\xaudio_player_mf.h">
       <Filter>外部ファイル\audio</Filter>
     </ClInclude>
-    <ClInclude Include="DebugCamera.h">
+    <ClInclude Include="debugCamera\DebugCamera.h">
       <Filter>debugCamera</Filter>
     </ClInclude>
-    <ClInclude Include="InputKey.h">
+    <ClInclude Include="input\InputKey.h">
       <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="audio\AudioPlayer.h">
+      <Filter>audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

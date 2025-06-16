@@ -1,6 +1,6 @@
 #pragma once
-#include "MyMath/Struct.h"
-#include"InputKey.h"
+#include "../MyMath/Struct.h"
+#include"../input/inputKey.h"
 #include<Windows.h>
 
 class DebugCamera {
@@ -15,7 +15,7 @@ private:
 
 	Matrix4x4 viewMatrix_; // ビュー行列
 
-	Matrix4x4 projactionMatirx_; // 射影行列
+	Matrix4x4 projectionMatrix_;
 
 	// キー入力に使う変数
 	InputKey* inputKey_;

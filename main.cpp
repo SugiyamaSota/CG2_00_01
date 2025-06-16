@@ -35,16 +35,8 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg
 #include "externals/DirectXTex/DirectXTex.h"
 #include "externals/DirectXTex/d3dx12.h"
 
-// 音声関連の外部ライブラリヘッダー
-#include "externals/Audio/common.h"
-#include "externals/Audio/xaudio_player_mf.h"
-
-// 音声関連のライブラリリンク
-#pragma comment(lib, "mf.lib")
-#pragma comment(lib, "mfplat.lib")
-#pragma comment(lib, "mfuuid.lib")
-#pragma comment(lib, "mfreadwrite.lib")
-#pragma comment(lib, "xaudio2.lib")
+// 音声関連のヘッダー
+#include"audio/AudioPlayer.h"
 
 // プロジェクト固有のヘッダー
 #include "MyMath/Struct.h"
@@ -52,10 +44,10 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg
 #include "MyMath/Matrix.h"
 
 // 入力関連のヘッダー
-#include "InputKey.h"
+#include "input/InputKey.h"
 
 // デバッグカメラのヘッダー
-#include"DebugCamera.h"
+#include"debugCamera/DebugCamera.h"
 
 // 構造体
 struct VertexData {
@@ -517,10 +509,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) { // hInstance �
 
 	// ダンプファイルの設定
 	SetUnhandledExceptionFilter(ExportDump);
-
-	// 音声
-	co_initializer coinit(COINIT_MULTITHREADED);
-	mf_initializer mfinit;
 
 	WNDCLASS wc{};
 	//ウィンドウプロシージャ
@@ -1093,10 +1081,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) { // hInstance �
 		srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
 	// オーディオの初期化と再生
-	static xaudio_player_mf audioPlayer;
-	hr = audioPlayer.initialize(L"resources/loop1.mp3");
-	assert(SUCCEEDED(hr));
-	audioPlayer.start();
+	AudioPlayer* audioPlayer = new AudioPlayer();
+	audioPlayer->Initialize(L"resources/loop1.mp3");
 
 	// デバッグカメラの初期化
 	DebugCamera* debugCamera = new DebugCamera();
@@ -1120,13 +1106,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) { // hInstance �
 			// キーボード情報の更新
 			inputKey.Update(); // inputKeyのUpdateを呼び出す
 
-			// 音楽のループ(のちにクラス化で簡単に)
-			if (!audioPlayer.is_playing()) {
-				audioPlayer.finalize(); // 現在のリソースを解放
-				hr = audioPlayer.initialize(L"resources/loop1.mp3");
-				assert(SUCCEEDED(hr));
-				audioPlayer.start();
-			}
+			
 
 			// デバッグカメラ
 			debugCamera->Check();

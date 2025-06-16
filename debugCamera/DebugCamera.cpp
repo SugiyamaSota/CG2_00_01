@@ -1,9 +1,9 @@
 #include "DebugCamera.h"
 
 
-#include "MyMath/Vector.h"
-#include "MyMath/Convert.h"
-#include "MyMath/Matrix.h"
+#include "../MyMath/Vector.h"
+#include "../MyMath/Convert.h"
+#include "../MyMath/Matrix.h"
 
 
 void DebugCamera::Initialize(InputKey* inputKey) {
@@ -11,7 +11,7 @@ void DebugCamera::Initialize(InputKey* inputKey) {
 	translation_ = { 0,0,-50 };
 
 	viewMatrix_ = MakeIdentity4x4();
-	projactionMatirx_ = MakeIdentity4x4();
+	projectionMatrix_ = MakeIdentity4x4();
 
 	inputKey_ = inputKey;
 

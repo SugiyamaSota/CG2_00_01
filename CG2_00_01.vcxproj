@@ -97,7 +97,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DebugCamera.cpp" />
+    <ClCompile Include="audio\AudioPlayer.cpp" />
+    <ClCompile Include="debugCamera\DebugCamera.cpp" />
     <ClCompile Include="externals\Audio\xaudio_player_mf.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
     <ClCompile Include="externals\imgui\imgui_demo.cpp" />
@@ -106,7 +107,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="InputKey.cpp" />
+    <ClCompile Include="input\InputKey.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyMath\Convert.cpp" />
     <ClCompile Include="MyMath\Matrix.cpp" />
@@ -127,7 +128,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DebugCamera.h" />
+    <ClInclude Include="audio\AudioPlayer.h" />
+    <ClInclude Include="debugCamera\DebugCamera.h" />
     <ClInclude Include="externals\Audio\common.h" />
     <ClInclude Include="externals\Audio\xaudio_player_core.h" />
     <ClInclude Include="externals\Audio\xaudio_player_mf.h" />
@@ -139,7 +141,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="externals\imgui\imstb_textedit.h" />
     <ClInclude Include="externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="InputKey.h" />
+    <ClInclude Include="input\InputKey.h" />
     <ClInclude Include="MyMath\Convert.h" />
     <ClInclude Include="MyMath\Matrix.h" />
     <ClInclude Include="MyMath\Struct.h" />
