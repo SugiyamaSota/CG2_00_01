@@ -1,17 +1,20 @@
 #include "DebugCamera.h"
 
+// 数学関連
+#include"../math/Struct.h"
+#include "../math/Vector.h"
+#include "../math/Matrix.h"
+#include "../math/Convert.h"
 
-#include "MyMath/Vector.h"
-#include "MyMath/Convert.h"
-#include "MyMath/Matrix.h"
-
+// 入力
+#include"../engine/input/InputKey.h"
 
 void DebugCamera::Initialize(InputKey* inputKey) {
 	matRot_ = MakeIdentity4x4();
 	translation_ = { 0,0,-50 };
 
 	viewMatrix_ = MakeIdentity4x4();
-	projactionMatirx_ = MakeIdentity4x4();
+	projectionMatrix_ = MakeIdentity4x4();
 
 	inputKey_ = inputKey;
 
@@ -21,9 +24,9 @@ void DebugCamera::Initialize(InputKey* inputKey) {
 
 void DebugCamera::Update() {
 	// 入力による移動や回転
-	
+
 	Move();
-	
+
 
 	//ビュー行列の更新
 	if (!isTargeting_) {

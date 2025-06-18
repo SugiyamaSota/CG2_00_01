@@ -1,7 +1,13 @@
 #pragma once
-#include "MyMath/Struct.h"
-#include"InputKey.h"
-#include<Windows.h>
+
+// 数学関連
+#include"../math/Struct.h"
+#include "../math/Vector.h"
+#include "../math/Matrix.h"
+#include "../math/Convert.h"
+
+// 入力
+#include"../engine/input/InputKey.h"
 
 class DebugCamera {
 private:
@@ -15,7 +21,7 @@ private:
 
 	Matrix4x4 viewMatrix_; // ビュー行列
 
-	Matrix4x4 projactionMatirx_; // 射影行列
+	Matrix4x4 projectionMatrix_;
 
 	// キー入力に使う変数
 	InputKey* inputKey_;
@@ -32,7 +38,7 @@ private:
 public:
 	void Initialize(InputKey* inputKey); // 初期化
 
-	void Check(){ isTargeting_ = false; }
+	void Check() { isTargeting_ = false; }
 
 	void Update(); // 更新
 
