@@ -2,9 +2,9 @@
 #include<string>
 #include <xaudio2.h>
 #include <wrl/client.h>
-#include "../externals/Audio/common.h"
-#include"../externals/Audio/xaudio_player_core.h"
-#include"../externals/Audio/xaudio_player_mf.h"
+#include "../../externals/Audio/common.h"
+#include"../../externals/Audio/xaudio_player_core.h"
+#include"../../externals/Audio/xaudio_player_mf.h"
 
 class AudioPlayer {
 public:

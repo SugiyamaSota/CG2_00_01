@@ -7,7 +7,7 @@
 #include "../math/Convert.h"
 
 // 入力
-#include"../input/InputKey.h"
+#include"../engine/input/InputKey.h"
 
 class DebugCamera {
 private:
@@ -38,7 +38,7 @@ private:
 public:
 	void Initialize(InputKey* inputKey); // 初期化
 
-	void Check(){ isTargeting_ = false; }
+	void Check() { isTargeting_ = false; }
 
 	void Update(); // 更新
 

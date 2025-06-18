@@ -97,9 +97,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="audio\AudioPlayer.cpp" />
     <ClCompile Include="debugCamera\DebugCamera.cpp" />
-    <ClCompile Include="DirectXCommon.cpp" />
+    <ClCompile Include="engine\audio\AudioPlayer.cpp" />
+    <ClCompile Include="engine\common\DirectXCommon.cpp" />
+    <ClCompile Include="engine\function\Utility.cpp" />
+    <ClCompile Include="engine\imgui\ImGuiManager.cpp" />
+    <ClCompile Include="engine\input\InputKey.cpp" />
+    <ClCompile Include="engine\model\Model.cpp" />
+    <ClCompile Include="engine\pso\PSO.cpp" />
+    <ClCompile Include="engine\texture\TextureManager.cpp" />
     <ClCompile Include="externals\Audio\xaudio_player_mf.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
     <ClCompile Include="externals\imgui\imgui_demo.cpp" />
@@ -108,12 +114,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="input\InputKey.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math\Convert.cpp" />
     <ClCompile Include="math\Matrix.cpp" />
     <ClCompile Include="math\vector.cpp" />
-    <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Object3d.PS.hlsl">
@@ -130,9 +134,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="audio\AudioPlayer.h" />
     <ClInclude Include="debugCamera\DebugCamera.h" />
-    <ClInclude Include="DirectXCommon.h" />
+    <ClInclude Include="engine\audio\AudioPlayer.h" />
+    <ClInclude Include="engine\common\DirectXCommon.h" />
+    <ClInclude Include="engine\function\Utility.h" />
+    <ClInclude Include="engine\imgui\ImGuiManager.h" />
+    <ClInclude Include="engine\input\InputKey.h" />
+    <ClInclude Include="engine\model\Model.h" />
+    <ClInclude Include="engine\pso\PSO.h" />
+    <ClInclude Include="engine\texture\TextureManager.h" />
     <ClInclude Include="externals\Audio\common.h" />
     <ClInclude Include="externals\Audio\xaudio_player_core.h" />
     <ClInclude Include="externals\Audio\xaudio_player_mf.h" />
@@ -144,12 +154,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="externals\imgui\imstb_textedit.h" />
     <ClInclude Include="externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="input\InputKey.h" />
     <ClInclude Include="math\Convert.h" />
     <ClInclude Include="math\Matrix.h" />
     <ClInclude Include="math\Struct.h" />
     <ClInclude Include="math\vector.h" />
-    <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

@@ -7,7 +7,7 @@
 #include "../math/Convert.h"
 
 // 入力
-#include"../input/InputKey.h"
+#include"../engine/input/InputKey.h"
 
 void DebugCamera::Initialize(InputKey* inputKey) {
 	matRot_ = MakeIdentity4x4();
@@ -24,9 +24,9 @@ void DebugCamera::Initialize(InputKey* inputKey) {
 
 void DebugCamera::Update() {
 	// 入力による移動や回転
-	
+
 	Move();
-	
+
 
 	//ビュー行列の更新
 	if (!isTargeting_) {

@@ -25,9 +25,6 @@
     <Filter Include="math\ヘッダー">
       <UniqueIdentifier>{cf199f77-ef45-4d1a-9eb5-a4ee66c5c778}</UniqueIdentifier>
     </Filter>
-    <Filter Include="input">
-      <UniqueIdentifier>{a6eb674f-3ddc-4ba7-a08d-a0dcf35d9008}</UniqueIdentifier>
-    </Filter>
     <Filter Include="外部ファイル">
       <UniqueIdentifier>{4ba06eec-9368-434e-a941-7c9522d35c76}</UniqueIdentifier>
     </Filter>
@@ -37,9 +34,6 @@
     <Filter Include="外部ファイル\imgui">
       <UniqueIdentifier>{d160ec92-23c1-4dd0-ac50-c2779c268842}</UniqueIdentifier>
     </Filter>
-    <Filter Include="audio">
-      <UniqueIdentifier>{6670dcda-003c-430e-a2b9-d1f9f823f6db}</UniqueIdentifier>
-    </Filter>
     <Filter Include="engine">
       <UniqueIdentifier>{5f17eab5-bc29-453d-8a6c-b5b969191ccb}</UniqueIdentifier>
     </Filter>
@@ -48,6 +42,24 @@
     </Filter>
     <Filter Include="engine\Func">
       <UniqueIdentifier>{d0d67792-311d-4379-b069-f9b23b798df7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\imgui">
+      <UniqueIdentifier>{61660af8-a1e4-4621-ba18-e8c7c2a327d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\pso">
+      <UniqueIdentifier>{7a8c7d1c-a09d-4cc8-b06e-72132bff0e79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\input">
+      <UniqueIdentifier>{a6eb674f-3ddc-4ba7-a08d-a0dcf35d9008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\texture">
+      <UniqueIdentifier>{96a45f9a-345d-443a-a1fe-fc0d8f568c30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\audio">
+      <UniqueIdentifier>{6670dcda-003c-430e-a2b9-d1f9f823f6db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\model">
+      <UniqueIdentifier>{1c05ca22-0f61-41fb-8493-32755ab606a8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -81,11 +93,26 @@
     <ClCompile Include="debugCamera\DebugCamera.cpp">
       <Filter>debugCamera</Filter>
     </ClCompile>
-    <ClCompile Include="input\InputKey.cpp">
-      <Filter>input</Filter>
+    <ClCompile Include="engine\common\DirectXCommon.cpp">
+      <Filter>engine\directXCommon</Filter>
     </ClCompile>
-    <ClCompile Include="audio\AudioPlayer.cpp">
-      <Filter>audio</Filter>
+    <ClCompile Include="engine\function\Utility.cpp">
+      <Filter>engine\Func</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\imgui\ImGuiManager.cpp">
+      <Filter>engine\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\input\InputKey.cpp">
+      <Filter>engine\input</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\texture\TextureManager.cpp">
+      <Filter>engine\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\pso\PSO.cpp">
+      <Filter>engine\pso</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\audio\AudioPlayer.cpp">
+      <Filter>engine\audio</Filter>
     </ClCompile>
     <ClCompile Include="math\Convert.cpp">
       <Filter>math\ソース</Filter>
@@ -96,11 +123,8 @@
     <ClCompile Include="math\vector.cpp">
       <Filter>math\ソース</Filter>
     </ClCompile>
-    <ClCompile Include="DirectXCommon.cpp">
-      <Filter>engine\directXCommon</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility.cpp">
-      <Filter>engine\Func</Filter>
+    <ClCompile Include="engine\model\Model.cpp">
+      <Filter>engine\model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -144,29 +168,41 @@
     <ClInclude Include="debugCamera\DebugCamera.h">
       <Filter>debugCamera</Filter>
     </ClInclude>
-    <ClInclude Include="input\InputKey.h">
-      <Filter>input</Filter>
+    <ClInclude Include="engine\common\DirectXCommon.h">
+      <Filter>engine\directXCommon</Filter>
     </ClInclude>
-    <ClInclude Include="audio\AudioPlayer.h">
-      <Filter>audio</Filter>
+    <ClInclude Include="engine\function\Utility.h">
+      <Filter>engine\Func</Filter>
     </ClInclude>
-    <ClInclude Include="math\Convert.h">
+    <ClInclude Include="engine\imgui\ImGuiManager.h">
+      <Filter>engine\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\input\InputKey.h">
+      <Filter>engine\input</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\texture\TextureManager.h">
+      <Filter>engine\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\pso\PSO.h">
+      <Filter>engine\pso</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\audio\AudioPlayer.h">
+      <Filter>engine\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="math\vector.h">
       <Filter>math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="math\Matrix.h">
       <Filter>math\ヘッダー</Filter>
     </ClInclude>
-    <ClInclude Include="math\vector.h">
-      <Filter>math\ヘッダー</Filter>
-    </ClInclude>
     <ClInclude Include="math\Struct.h">
       <Filter>math\ヘッダー</Filter>
     </ClInclude>
-    <ClInclude Include="DirectXCommon.h">
-      <Filter>engine\directXCommon</Filter>
+    <ClInclude Include="math\Convert.h">
+      <Filter>math\ヘッダー</Filter>
     </ClInclude>
-    <ClInclude Include="Utility.h">
-      <Filter>engine\Func</Filter>
+    <ClInclude Include="engine\model\Model.h">
+      <Filter>engine\model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

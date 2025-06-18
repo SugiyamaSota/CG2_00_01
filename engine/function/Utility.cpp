@@ -60,3 +60,27 @@ D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descrip
 	handleGPU.ptr += (descriptorSize * index);
 	return handleGPU;
 }
+
+Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(ID3D12Device* device, size_t sizeInBytes) {
+	//ヒープの生成
+	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
+	//リソースの設定
+	D3D12_RESOURCE_DESC ReourceDesc{};
+	//バッファリソース
+	ReourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	ReourceDesc.Width = sizeInBytes;
+	//バッファの場合はこれらは1にする決まり
+	ReourceDesc.Height = 1;
+	ReourceDesc.DepthOrArraySize = 1;
+	ReourceDesc.MipLevels = 1;
+	ReourceDesc.SampleDesc.Count = 1;
+	//バッファの場合はこれにする決まり
+	ReourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	//実際に頂点リソースを作る
+	Microsoft::WRL::ComPtr<ID3D12Resource> Resource = nullptr;
+	HRESULT hr = device->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &ReourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(Resource.GetAddressOf()));
+	assert(SUCCEEDED(hr));
+
+	return Resource;
+}
