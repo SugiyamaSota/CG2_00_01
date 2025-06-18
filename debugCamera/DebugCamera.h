@@ -1,7 +1,7 @@
 #pragma once
 
 // 数学関連
-#include"../math/Struct.h"
+#include"../StructCommon.h"
 #include "../math/Vector.h"
 #include "../math/Matrix.h"
 #include "../math/Convert.h"

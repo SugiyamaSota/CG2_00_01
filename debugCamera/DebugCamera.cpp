@@ -1,10 +1,5 @@
 #include "DebugCamera.h"
 
-// 数学関連
-#include"../math/Struct.h"
-#include "../math/Vector.h"
-#include "../math/Matrix.h"
-#include "../math/Convert.h"
 
 // 入力
 #include"../engine/input/InputKey.h"

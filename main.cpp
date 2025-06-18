@@ -42,7 +42,7 @@
 #include"engine/audio/AudioPlayer.h"
 
 // プロジェクト固有のヘッダー
-#include "math/Struct.h"
+#include"StructCommon.h"
 #include "math/Convert.h"
 #include "math/Matrix.h"
 
@@ -58,39 +58,10 @@
 // TextureManagerのヘッダーを追加
 #include"engine/texture/TextureManager.h"
 
+#include"engine/model/Model.h"
+
 // 構造体
-struct VertexData {
-	Vector4 position;
-	Vector2 texcoord;
-	Vector3 normal;
-};
 
-struct Material {
-	Vector4 color;
-	int32_t enableLighting;
-	float pedding[3];
-	Matrix4x4 uvTransform;
-};
-
-struct TransformationMatrix {
-	Matrix4x4 WVP;
-	Matrix4x4 World;
-};
-
-struct MaterialData {
-	std::string textureFilepath;
-};
-
-struct ModelData {
-	std::vector<VertexData> vertices;
-	MaterialData material;
-};
-
-struct Transform {
-	Vector3 scale;
-	Vector3 rotate;
-	Vector3 translate;
-};
 
 
 // 現在時刻を取得
@@ -284,74 +255,46 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 	MSG msg{};
 
-	///// モデルを描画する準備 /////
-	// モデル読み込み
-	ModelData modelData = LoadObjFile("resources/cube", "cube.obj");
-	// 頂点用のリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = CreateBufferResource(common->GetDevice(), sizeof(VertexData) * modelData.vertices.size());
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
-	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
-	vertexBufferView.SizeInBytes = UINT(sizeof(VertexData) * modelData.vertices.size());
-	vertexBufferView.StrideInBytes = sizeof(VertexData);
-	VertexData* vertexData = nullptr;
-	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
-
-	// マテリアル用のリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource = CreateBufferResource(common->GetDevice(), sizeof(Material));
-	Material* materialData = nullptr;
-	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-	materialData->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	materialData->enableLighting = true;
-	materialData->uvTransform = MakeIdentity4x4();
-
-	// WVP用のリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> wvpResource = CreateBufferResource(common->GetDevice(), sizeof(TransformationMatrix));
-	TransformationMatrix* wvpData = nullptr;
-	wvpResource->Map(0, nullptr, reinterpret_cast<void**>(&wvpData));
-	wvpData->WVP = MakeIdentity4x4();
-	wvpData->World = MakeIdentity4x4();
 
 	//球のトランスフォーム変数
-	Transform transform = {
+	WorldTransform transform = {
 		{0.7f,0.7f,0.7f},
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f},
 	};
-	Transform transformSprite{
-		{1.0f,1.0f,1.0f},
+
+	//球のトランスフォーム変数
+	WorldTransform axisTransform = {
+		{0.7f,0.7f,0.7f},
 		{0.0f,0.0f,0.0f},
-		{0.0f,0.0f,0.0f},
+		{0.5f,0.5f,0.0f},
 	};
 
-	Transform uvTransformSprite{
-		{1.0f,1.0f,1.0f},
-		{0.0f,0.0f,0.0f},
-		{0.0f,0.0f,0.0f},
-	};
+
+	Model* axis = new Model(common);
+	axis->LoadModel("resources", "axis.obj");
+	axis->Initialize(axisTransform);
+
+	Model* model = new Model(common);
+	model->LoadModel("resources/cube", "cube.obj");
+	model->Initialize(transform);
+
+
 	//カメラのトランスフォーム変数
-	Transform cameraTransform = {
+	WorldTransform cameraTransform = {
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,-5.0f},
 	};
 
-	Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kClientWidth) / float(kClientHeight), 0.1f, 100.0f);
-
 	///// テクスチャー読み込み /////
 	TextureManager* textureManager = new TextureManager();
-	textureManager->Initialize(common,1);
+	textureManager->Initialize(common, 1);
 
 	TextureManager::TextureHandle uvCheckerTexture = textureManager->LoadTexture("resources/uvChecker.png");
 	textureManager->ReleaseIntermediateResources();
 	D3D12_GPU_DESCRIPTOR_HANDLE uvCheckerGpuHandle = textureManager->GetGPUHandle(uvCheckerTexture);
 
-	TextureManager::TextureHandle modelTexture = textureManager->LoadTexture(modelData.material.textureFilepath);
-	textureManager->ReleaseIntermediateResources();
-	D3D12_GPU_DESCRIPTOR_HANDLE modelTextureGpuHandle = textureManager->GetGPUHandle(modelTexture);
-
-	int nowBallTexture = 0;
-	int nowTriangleTexture = 0;
 
 	// オーディオの初期化と再生
 	AudioPlayer* audioPlayer = new AudioPlayer();
@@ -361,9 +304,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	DebugCamera* debugCamera = new DebugCamera();
 	debugCamera->Initialize(&common->inputKey);
 
-	// ものに注目させるか
-	bool isTarget = true;
-
 	//ウィンドウの×ボタンが押されるまでループ
 	while (msg.message != WM_QUIT) {
 		//Windowにメッセージが来てたら最優先で処理させる
@@ -371,26 +311,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		} else {
-			
+			///
+			/// 更新処理ここから
+			/// 
 			// デバッグカメラ
 			debugCamera->Check();
-
 			common->NewFeame();
 
 			ImGui::Begin("Debug");
-			if (ImGui::CollapsingHeader("Model")) {
-				ImGui::ColorEdit4("color", &materialData->color.x, 0);
-				ImGui::DragFloat3("scale", &transform.scale.x, 0.01f);
-				ImGui::DragFloat3("rotate", &transform.rotate.x, 0.01f);
-				ImGui::DragFloat3("translate", &transform.translate.x, 0.01f);
-				ImGui::SliderInt("texture", &nowBallTexture, 0, 1);
-				ImGui::Checkbox("target", &isTarget);
-			}
-			if (ImGui::CollapsingHeader("Sprite")) {
-				ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
-				ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
-				ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
-			}
 			if (ImGui::CollapsingHeader("Camera")) {
 				if (ImGui::Button("ResetCameraPosition")) {
 					debugCamera->ResetPosition();
@@ -401,29 +329,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			}
 			ImGui::End();
 
-			//ゲームの処理
+			model->Update(transform, debugCamera);
+			axis->Update(axisTransform, debugCamera);
+
+			///
+			/// 更新処理ここまで
+			/// 
+
+			///
+			/// 描画処理ここから
+			///
 			// モデル
-			wvpData->World = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
-			Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData->World, Multiply(debugCamera->GetViewMatrix(), projectionMatrix));
-			wvpData->WVP = worldViewProjectionMatrix;
-
-			//モデルの描画
-			common->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);//VBVを設定
-			//形状を設定。PSOに設定しているものとは別。同じものを設定るすると考える
-			common->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			//マテリアルCBufferの場所を設定
-			common->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
-			//wvp用のCBufferの場所を設定
-			common->GetCommandList()->SetGraphicsRootConstantBufferView(1, wvpResource->GetGPUVirtualAddress());
-			//SRVようのdescriptionTavleの先頭を設定
-			common->GetCommandList()->SetGraphicsRootDescriptorTable(2, modelTextureGpuHandle);
-			//描画!3頂点で1つのインスタンス
-			common->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
-
-			// デバッグカメラ
-			if (isTarget) {
-				debugCamera->SetTarget(transform.translate);
-			}
+			model->Draw(uvCheckerGpuHandle);
+			axis->Draw(uvCheckerGpuHandle);
+			///
+			/// 描画処理ここまで
+			///
 			debugCamera->Update();
 
 			common->EndFrame();
@@ -437,6 +358,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	CoUninitialize();
 	CloseWindow(common->GetHWND());
 	delete common;
+	delete model;
+	delete axis;
 
 	return 0;
 }

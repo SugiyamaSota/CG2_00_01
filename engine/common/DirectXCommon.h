@@ -14,6 +14,7 @@
 #include"../imgui/ImGuiManager.h"
 #include"../pso/PSO.h"
 #include"../input/InputKey.h"
+#include"../../StructCommon.h"
 
 class DirectXCommon {
 public:

@@ -16,15 +16,6 @@
     <Filter Include="debugCamera">
       <UniqueIdentifier>{7a2ec368-af41-4bee-8928-27928d81dff6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="math">
-      <UniqueIdentifier>{758a4b7f-54bf-4e22-9b22-3fe1c90ac298}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="math\ソース">
-      <UniqueIdentifier>{0c0bbc6b-9fbd-4b17-a0a3-b1d86f52b772}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="math\ヘッダー">
-      <UniqueIdentifier>{cf199f77-ef45-4d1a-9eb5-a4ee66c5c778}</UniqueIdentifier>
-    </Filter>
     <Filter Include="外部ファイル">
       <UniqueIdentifier>{4ba06eec-9368-434e-a941-7c9522d35c76}</UniqueIdentifier>
     </Filter>
@@ -60,6 +51,15 @@
     </Filter>
     <Filter Include="engine\model">
       <UniqueIdentifier>{1c05ca22-0f61-41fb-8493-32755ab606a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\math">
+      <UniqueIdentifier>{758a4b7f-54bf-4e22-9b22-3fe1c90ac298}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\math\ソース">
+      <UniqueIdentifier>{0c0bbc6b-9fbd-4b17-a0a3-b1d86f52b772}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\math\ヘッダー">
+      <UniqueIdentifier>{cf199f77-ef45-4d1a-9eb5-a4ee66c5c778}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -115,16 +115,19 @@
       <Filter>engine\audio</Filter>
     </ClCompile>
     <ClCompile Include="math\Convert.cpp">
-      <Filter>math\ソース</Filter>
+      <Filter>engine\math\ソース</Filter>
     </ClCompile>
     <ClCompile Include="math\Matrix.cpp">
-      <Filter>math\ソース</Filter>
+      <Filter>engine\math\ソース</Filter>
     </ClCompile>
     <ClCompile Include="math\vector.cpp">
-      <Filter>math\ソース</Filter>
+      <Filter>engine\math\ソース</Filter>
     </ClCompile>
     <ClCompile Include="engine\model\Model.cpp">
       <Filter>engine\model</Filter>
+    </ClCompile>
+    <ClCompile Include="BonjinEngine.cpp">
+      <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -190,19 +193,22 @@
       <Filter>engine\audio</Filter>
     </ClInclude>
     <ClInclude Include="math\vector.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>engine\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="math\Matrix.h">
-      <Filter>math\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="math\Struct.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>engine\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="math\Convert.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>engine\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="engine\model\Model.h">
       <Filter>engine\model</Filter>
+    </ClInclude>
+    <ClInclude Include="BonjinEngine.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="StructCommon.h">
+      <Filter>engine\math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
