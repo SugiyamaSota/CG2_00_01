@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="debugCamera">
-      <UniqueIdentifier>{7a2ec368-af41-4bee-8928-27928d81dff6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="外部ファイル">
       <UniqueIdentifier>{4ba06eec-9368-434e-a941-7c9522d35c76}</UniqueIdentifier>
     </Filter>
@@ -61,6 +58,9 @@
     <Filter Include="engine\math\ヘッダー">
       <UniqueIdentifier>{cf199f77-ef45-4d1a-9eb5-a4ee66c5c778}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\debugCamera">
+      <UniqueIdentifier>{7a2ec368-af41-4bee-8928-27928d81dff6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -90,8 +90,8 @@
     <ClCompile Include="externals\Audio\xaudio_player_mf.cpp">
       <Filter>外部ファイル\audio</Filter>
     </ClCompile>
-    <ClCompile Include="debugCamera\DebugCamera.cpp">
-      <Filter>debugCamera</Filter>
+    <ClCompile Include="engine\debugCamera\DebugCamera.cpp">
+      <Filter>engine\debugCamera</Filter>
     </ClCompile>
     <ClCompile Include="engine\common\DirectXCommon.cpp">
       <Filter>engine\directXCommon</Filter>
@@ -114,19 +114,19 @@
     <ClCompile Include="engine\audio\AudioPlayer.cpp">
       <Filter>engine\audio</Filter>
     </ClCompile>
-    <ClCompile Include="math\Convert.cpp">
+    <ClCompile Include="engine\math\Convert.cpp">
       <Filter>engine\math\ソース</Filter>
     </ClCompile>
-    <ClCompile Include="math\Matrix.cpp">
+    <ClCompile Include="engine\math\Matrix.cpp">
       <Filter>engine\math\ソース</Filter>
     </ClCompile>
-    <ClCompile Include="math\vector.cpp">
+    <ClCompile Include="engine\math\vector.cpp">
       <Filter>engine\math\ソース</Filter>
     </ClCompile>
     <ClCompile Include="engine\model\Model.cpp">
       <Filter>engine\model</Filter>
     </ClCompile>
-    <ClCompile Include="BonjinEngine.cpp">
+    <ClCompile Include="engine\bonjin\BonjinEngine.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -168,8 +168,8 @@
     <ClInclude Include="externals\Audio\xaudio_player_mf.h">
       <Filter>外部ファイル\audio</Filter>
     </ClInclude>
-    <ClInclude Include="debugCamera\DebugCamera.h">
-      <Filter>debugCamera</Filter>
+    <ClInclude Include="engine\debugCamera\DebugCamera.h">
+      <Filter>engine\debugCamera</Filter>
     </ClInclude>
     <ClInclude Include="engine\common\DirectXCommon.h">
       <Filter>engine\directXCommon</Filter>
@@ -192,23 +192,23 @@
     <ClInclude Include="engine\audio\AudioPlayer.h">
       <Filter>engine\audio</Filter>
     </ClInclude>
-    <ClInclude Include="math\vector.h">
+    <ClInclude Include="engine\math\vector.h">
       <Filter>engine\math\ヘッダー</Filter>
     </ClInclude>
-    <ClInclude Include="math\Matrix.h">
+    <ClInclude Include="engine\math\Matrix.h">
       <Filter>engine\math\ヘッダー</Filter>
     </ClInclude>
-    <ClInclude Include="math\Convert.h">
+    <ClInclude Include="engine\math\Convert.h">
       <Filter>engine\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="engine\model\Model.h">
       <Filter>engine\model</Filter>
     </ClInclude>
-    <ClInclude Include="BonjinEngine.h">
+    <ClInclude Include="engine\bonjin\BonjinEngine.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="StructCommon.h">
-      <Filter>engine\math</Filter>
+    <ClInclude Include="engine\math\Struct.h">
+      <Filter>engine\math\ヘッダー</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

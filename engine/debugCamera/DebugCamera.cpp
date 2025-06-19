@@ -1,9 +1,5 @@
 #include "DebugCamera.h"
 
-
-// 入力
-#include"../engine/input/InputKey.h"
-
 void DebugCamera::Initialize(InputKey* inputKey) {
 	matRot_ = MakeIdentity4x4();
 	translation_ = { 0,0,-50 };

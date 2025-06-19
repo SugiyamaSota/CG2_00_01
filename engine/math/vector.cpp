@@ -1,6 +1,6 @@
 #include"Vector.h"
 #include<math.h>
-#include"../StructCommon.h"
+#include"Struct.h"
 
 Vector3 Add(const Vector3& vector1, const Vector3& vector2) {
 	Vector3 result = {};

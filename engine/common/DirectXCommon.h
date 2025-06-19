@@ -14,7 +14,7 @@
 #include"../imgui/ImGuiManager.h"
 #include"../pso/PSO.h"
 #include"../input/InputKey.h"
-#include"../../StructCommon.h"
+#include"../math/Struct.h"
 
 class DirectXCommon {
 public:
@@ -77,9 +77,6 @@ public:
 
 	//imgui
 	ImGuiManager* imguiManager_;
-
-	// 入力
-	InputKey inputKey;
 
 private:
 	///// プライベート変数 /////

@@ -1,13 +1,13 @@
 #pragma once
 
 // 数学関連
-#include"../StructCommon.h"
+#include"../math/Struct.h"
 #include "../math/Vector.h"
 #include "../math/Matrix.h"
 #include "../math/Convert.h"
 
 // 入力
-#include"../engine/input/InputKey.h"
+#include"../input/InputKey.h"
 
 class DebugCamera {
 private:
