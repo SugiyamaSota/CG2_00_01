@@ -162,19 +162,18 @@ DirectXCommon::DirectXCommon(HINSTANCE hInstance, int32_t clientWidth, int32_t c
 	imguiManager_ = new ImGuiManager(hwnd_, device_.Get(), commandList_.Get(), srvDescriptorHeap_.Get());
 	imguiManager_->Initialize();
 
-	inputKey.Initialize(hInstance, hwnd_);
 }
 
 DirectXCommon::~DirectXCommon() {
+	CloseHandle(fenceEvent_);
+	CoUninitialize();
+	CloseWindow(hwnd_);
 	delete imguiManager_;
 }
 
 void DirectXCommon::NewFeame() {
 	//imgui
 	imguiManager_->NewFrame();
-
-	// 入力
-	inputKey.Update();
 
 	//これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
@@ -423,7 +422,7 @@ void DirectXCommon::CreateSwapChain() {
 	//二つ目を得る
 	device_.Get()->CreateRenderTargetView(swapChainResources_[1].Get(), &rtvDesc_, rtvHandles_[1]);
 
-	srvDescriptorHeap_ = CreateDescriptorHeap(device_.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, GetSRVSize() * 5, true);
+	srvDescriptorHeap_ = CreateDescriptorHeap(device_.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, GetSRVSize() * 100, true);
 }
 
 void DirectXCommon::CreateFence() {

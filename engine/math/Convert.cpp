@@ -1,7 +1,7 @@
 #include"Convert.h"
 #include<assert.h>
 #include<cmath>
-#include"../StructCommon.h"
+#include"Struct.h"
 #include"Matrix.h"
 
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {

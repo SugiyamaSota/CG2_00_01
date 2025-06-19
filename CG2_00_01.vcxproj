@@ -97,8 +97,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BonjinEngine.cpp" />
-    <ClCompile Include="debugCamera\DebugCamera.cpp" />
+    <ClCompile Include="engine\bonjin\BonjinEngine.cpp" />
+    <ClCompile Include="engine\debugCamera\DebugCamera.cpp" />
     <ClCompile Include="engine\audio\AudioPlayer.cpp" />
     <ClCompile Include="engine\common\DirectXCommon.cpp" />
     <ClCompile Include="engine\function\Utility.cpp" />
@@ -116,9 +116,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="math\Convert.cpp" />
-    <ClCompile Include="math\Matrix.cpp" />
-    <ClCompile Include="math\vector.cpp" />
+    <ClCompile Include="engine\math\Convert.cpp" />
+    <ClCompile Include="engine\math\Matrix.cpp" />
+    <ClCompile Include="engine\math\vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Object3d.PS.hlsl">
@@ -135,8 +135,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BonjinEngine.h" />
-    <ClInclude Include="debugCamera\DebugCamera.h" />
+    <ClInclude Include="engine\bonjin\BonjinEngine.h" />
+    <ClInclude Include="engine\debugCamera\DebugCamera.h" />
     <ClInclude Include="engine\audio\AudioPlayer.h" />
     <ClInclude Include="engine\common\DirectXCommon.h" />
     <ClInclude Include="engine\function\Utility.h" />
@@ -156,10 +156,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="externals\imgui\imstb_textedit.h" />
     <ClInclude Include="externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="math\Convert.h" />
-    <ClInclude Include="math\Matrix.h" />
-    <ClInclude Include="math\vector.h" />
-    <ClInclude Include="StructCommon.h" />
+    <ClInclude Include="engine\math\Convert.h" />
+    <ClInclude Include="engine\math\Matrix.h" />
+    <ClInclude Include="engine\math\Struct.h" />
+    <ClInclude Include="engine\math\vector.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

@@ -1,6 +1,6 @@
 #include"Matrix.h"
 #include<math.h>
-#include"../StructCommon.h"
+#include"Struct.h"
 
 Matrix4x4 Add(const  Matrix4x4& matrix1, const  Matrix4x4& matrix2) {
 	Matrix4x4 result = {};

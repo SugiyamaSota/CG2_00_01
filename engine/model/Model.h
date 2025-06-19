@@ -2,7 +2,7 @@
 #include<string>
 #include<d3d12.h>
 #include <wrl/client.h>
-#include"../../StructCommon.h"
+#include"../math/Struct.h"
 
 class DirectXCommon;
 class DebugCamera;
@@ -11,7 +11,7 @@ class Model {
 public:
 	Model(DirectXCommon* common);
 
-	void LoadModel(const std::string& directoryPath, const std::string& filename);
+	void LoadModel(const std::string& fileName);
 
 	void Initialize(WorldTransform worldTransform);
 

@@ -5,19 +5,19 @@
 #include<cassert>
 #include"../function/Utility.h"
 
-#include"../../math/Convert.h"
-#include"../../math/Matrix.h"
+#include"../math/Convert.h"
+#include"../math/Matrix.h"
 
-#include"../../debugCamera/DebugCamera.h"
+#include"../debugCamera/DebugCamera.h"
 
 Model::Model(DirectXCommon* common) {
 	common_ = common;
 	projectionMatrix_ = MakePerspectiveFovMatrix(0.45f, float(1280) / float(720), 0.1f, 100.0f);
 }
 
-void Model::LoadModel(const std::string& directoryPath, const std::string& filename) {
+void Model::LoadModel(const std::string& fileName) {
 	// モデル読み込み
-	modelData_ = LoadObjFile(directoryPath, filename);
+	modelData_ = LoadObjFile("resources/" + fileName, fileName + ".obj");
 	// 頂点用のリソース
 	vertexResource_ = CreateBufferResource(common_->GetDevice(), sizeof(VertexData) * modelData_.vertices.size());
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
