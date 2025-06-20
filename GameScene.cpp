@@ -16,6 +16,7 @@ void GameScene::Initialize(InputKey* key) {
 	player_ = new Player();
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2, 17);
 	player_->Initialize(model_, &camera_, playerPosition);
+	player_->SetMapChipField(mapChipField_);
 
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
@@ -57,7 +58,7 @@ void GameScene::Update(InputKey* key) {
 		if (isDebugCamera) {
 			isDebugCamera = false;
 			camera_.ResetPosition();
-			camera_.ResetRotation()
+			camera_.ResetRotation();
 		} else {
 			isDebugCamera = true;
 			camera_.ResetPosition();

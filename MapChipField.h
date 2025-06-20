@@ -1,6 +1,5 @@
 #pragma once
 #include "engine/bonjin/BonjinEngine.h"
-#include<vector>
 
 enum class MapChipType {
 	kBlank, // 空白
@@ -10,6 +9,8 @@ enum class MapChipType {
 struct MapChipData {
 	std::vector<std::vector<MapChipType>> data;
 };
+
+
 
 class MapChipField {
 private:
@@ -21,15 +22,41 @@ private:
 
 	MapChipData mapChipData_;
 
+
+
 public:
+	//
+	struct IndexSet {
+		uint32_t xIndex;
+		uint32_t yIndex;
+	};
+
+	// 矩形
+	struct Rect {
+		float left;
+		float right;
+		float bottom;
+		float top;
+	};
+
+	/// <summary>
+	/// データリセット
+	/// </summary>
 	void ResetMapChipData();
 
+	/// <summary>
+	/// ファイルから読み込む
+	/// </summary>
+	/// <param name="filePath"></param>
 	void LoadmapChipCsv(const std::string& filePath);
 
+	//セッター
+
+	//ゲッター
 	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
-
 	Vector3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
-
 	uint32_t GetNumBlockVirtical() { return kNumBlockVirtical; };
 	uint32_t GetNumBlockHorizontal() { return kNumBlockHorizontal; };
+	IndexSet GetMapChipIndexSetByPosition(const Vector3& position);
+	Rect GetRectByIndex(uint32_t xIndex, uint32_t yIndex);
 };
