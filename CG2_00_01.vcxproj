@@ -115,14 +115,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\Convert.cpp" />
     <ClCompile Include="engine\math\Matrix.cpp" />
     <ClCompile Include="engine\math\vector.cpp" />
-    <ClCompile Include="MapChipField.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Skydome.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Object3d.PS.hlsl">
@@ -164,10 +160,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\math\Matrix.h" />
     <ClInclude Include="engine\math\Struct.h" />
     <ClInclude Include="engine\math\vector.h" />
-    <ClInclude Include="GameScene.h" />
-    <ClInclude Include="MapChipField.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Skydome.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

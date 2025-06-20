@@ -1,6 +1,5 @@
 #include"engine/bonjin/BonjinEngine.h"
 
-#include"GameScene.h"
 
 //クライアント領域のサイズ
 const int32_t kClientWidth = 1280;
@@ -11,9 +10,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 	BonjinEngine* bonjin = new BonjinEngine();
 	bonjin->Initialize(hInstance, kClientWidth, kClientHeight);
-
-	GameScene* gameScene = new GameScene();
-	gameScene->Initialize(bonjin->GetKey());
 
 	//ウィンドウの×ボタンが押されるまでループ
 	MSG msg{};
@@ -28,7 +24,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			/// 更新処理ここから
 			///
 			
-			gameScene->Update(bonjin->GetKey());
 
 			///
 			/// 更新処理ここまで
@@ -36,8 +31,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 			///
 			/// 描画処理ここから
-			
-			gameScene->Draw();
 
 			///
 			/// 描画処理ここまで
@@ -47,8 +40,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	}
 
 	/////  解放処理 /////
-	delete gameScene;
-
 	delete bonjin;
 	return 0;
 }
