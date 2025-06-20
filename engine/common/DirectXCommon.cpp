@@ -3,6 +3,23 @@
 #include"../function/Utility.h"
 #include<filesystem>
 
+// 静的メンバ変数の実体を定義
+DirectXCommon* DirectXCommon::instance_ = nullptr;
+
+// GetInstance メソッドの実装
+DirectXCommon* DirectXCommon::GetInstance(HINSTANCE hInstance, int32_t kClientWidth, int32_t ClientHeight) {
+	if (instance_ == nullptr) {
+		// 初回呼び出し時のみインスタンスを生成
+		instance_ = new DirectXCommon(hInstance, kClientWidth, ClientHeight);
+		instance_->Initialize(); // 必要であればInitializeを呼び出す
+	}
+	return instance_;
+}
+void DirectXCommon::DestroyInstance() { // ★追加★
+    delete instance_; // シングルトンインスタンスを解放
+    instance_ = nullptr;
+}
+
 LRESULT CALLBACK DirectXCommon::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) {
 		return true;
@@ -77,6 +94,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource>  DirectXCommon::CreateDepthStencilTexture
 	return resource;
 }
 
+// コンストラクタ（privateに変更）
 DirectXCommon::DirectXCommon(HINSTANCE hInstance, int32_t clientWidth, int32_t clientHeight) {
 	clientWidth_ = clientWidth;
 	clientHeight_ = clientHeight;
@@ -118,7 +136,14 @@ DirectXCommon::DirectXCommon(HINSTANCE hInstance, int32_t clientWidth, int32_t c
 		wc.hInstance,
 		nullptr);
 
+	// Initializeメソッドに移動する初期化処理をここに書いても良いが、
+	// シングルトン化に伴いInitialize()を呼び出す形がより一般的。
+	// ここではコンストラクタで全て完結させているため、Initialize()は空で問題ない。
+	// 必要に応じて、Initialize()に移動してください。
+}
 
+// 初期化メソッド（GetInstanceから呼び出されるか、必要に応じて手動で呼び出す）
+void DirectXCommon::Initialize() {
 #ifdef _DEBUG
 	Microsoft::WRL::ComPtr<ID3D12Debug1> debugController = nullptr;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(debugController.GetAddressOf())))) {
@@ -145,14 +170,12 @@ DirectXCommon::DirectXCommon(HINSTANCE hInstance, int32_t clientWidth, int32_t c
 	CreateDepth();
 	CreateLight();
 
-
 	viewport_.Width = float(clientWidth_);
 	viewport_.Height = float(clientHeight_);
 	viewport_.TopLeftX = 0;
 	viewport_.TopLeftY = 0;
 	viewport_.MinDepth = 0.0f;
 	viewport_.MaxDepth = 1.0f;
-
 
 	scissorRect_.left = 0;
 	scissorRect_.right = LONG(clientWidth_);
@@ -161,11 +184,14 @@ DirectXCommon::DirectXCommon(HINSTANCE hInstance, int32_t clientWidth, int32_t c
 
 	imguiManager_ = new ImGuiManager(hwnd_, device_.Get(), commandList_.Get(), srvDescriptorHeap_.Get());
 	imguiManager_->Initialize();
-
 }
 
+
 DirectXCommon::~DirectXCommon() {
-	CloseHandle(fenceEvent_);
+	if (fenceEvent_ != nullptr) {
+		CloseHandle(fenceEvent_);
+		fenceEvent_ = nullptr;
+	}
 	CoUninitialize();
 	CloseWindow(hwnd_);
 	delete imguiManager_;

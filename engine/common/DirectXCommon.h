@@ -18,11 +18,19 @@
 
 class DirectXCommon {
 public:
-	// コンストラクタデストラクタ
-	DirectXCommon(HINSTANCE hInstance, int32_t kClientWidth, int32_t ClientHeight);
+	// Singleton インスタンスへのアクセサー
+	// 初回呼び出し時にインスタンスを生成し、以降は既存のインスタンスを返します。
+	static DirectXCommon* GetInstance(HINSTANCE hInstance = nullptr, int32_t kClientWidth = 0, int32_t ClientHeight = 0);
+
+	static void DestroyInstance();
+	// コピーコンストラクタと代入演算子を削除し、コピーを禁止します
+	DirectXCommon(const DirectXCommon&) = delete;
+	DirectXCommon& operator=(const DirectXCommon&) = delete;
+
+	// デストラクタ
 	~DirectXCommon();
 
-	// 初期化
+	// 初期化処理（コンストラクタで全て行う場合は不要になる可能性があります）
 	void Initialize();
 
 	void NewFeame();
@@ -79,6 +87,13 @@ public:
 	ImGuiManager* imguiManager_;
 
 private:
+	// プライベートコンストラクタ
+	// シングルトンパターンでは外部からのインスタンス化を禁止するため、コンストラクタをprivateにします。
+	DirectXCommon(HINSTANCE hInstance, int32_t kClientWidth, int32_t ClientHeight);
+
+	// シングルトンインスタンスを保持する静的メンバー変数
+	static DirectXCommon* instance_;
+
 	///// プライベート変数 /////
 	// 画面サイズ
 	int32_t clientWidth_ = 1280;
@@ -125,7 +140,6 @@ private:
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc_ = {};
 
 	// 光
-
 	struct Vector4 {
 		float x, y, z, w;
 	};
@@ -160,10 +174,7 @@ private:
 	void CreateDepth();
 	void CreateLight();
 
-
-
 	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception);
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(ID3D12Device* device, int32_t width, int32_t height);
 };
-

@@ -1,6 +1,17 @@
 #pragma once
+#include"../audio/AudioPlayer.h"
+#include"../camera/DebugCamera.h"
 #include"../common/DirectXCommon.h"
+#include"../function/Utility.h"
+#include"../imgui/ImGuiManager.h"
 #include"../input/InputKey.h"
+#include"../math/Struct.h"
+#include"../math/Vector.h"
+#include"../math/Matrix.h"
+#include"../math/Convert.h"
+#include"../model/Model.h"
+#include"../pso/PSO.h"
+#include"../texture/TextureManager.h"
 
 struct D3DResourceLeakChecker {
 	~D3DResourceLeakChecker() {
@@ -36,14 +47,11 @@ public:
 	/// </summary>
 	void EndFrame();
 
-	DirectXCommon* GetCommon() { return common_; }
 	InputKey* GetKey() { return key_; }
 
 private:
-	//リソースリークチェック
 	D3DResourceLeakChecker leakChecker_;
-
-	DirectXCommon* common_ = nullptr;
 	InputKey* key_ = nullptr;
+
 };
 

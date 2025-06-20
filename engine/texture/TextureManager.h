@@ -3,38 +3,43 @@
 #include <vector>
 #include <string>
 #include <wrl/client.h>
-#include "../../externals/DirectXTex/DirectXTex.h" // DirectXTexに必要なヘッダー
-
-// 前方宣言
-class DirectXCommon; // DirectXCommonクラスの前方宣言
+#include "../../externals/DirectXTex/DirectXTex.h"
+#include<map>
 
 class TextureManager {
 public:
-    // テクスチャハンドル構造体
-    struct TextureHandle {
-        uint32_t index; // テクスチャのインデックス
-    };
+    // シングルトンインスタンスへのアクセスを提供する静的メソッド
+    static TextureManager* GetInstance();
+    static void DestroyInstance();
 
-    TextureManager();
+    // コピーコンストラクタと代入演算子を削除し、コピーを禁止します
+    TextureManager(const TextureManager&) = delete;
+    TextureManager& operator=(const TextureManager&) = delete;
+
+    // デストラクタ
     ~TextureManager();
 
-    // 初期化
-    void Initialize(DirectXCommon* common, uint32_t srvHeapStartOffset = 0);
+    // 初期化 (GetInstanceから呼び出される)
+    void Initialize();
 
-    // テクスチャをロードし、ハンドルを返す
-    TextureHandle LoadTexture(const std::string& filePath);
+    // テクスチャをロードし、そのインデックス（int）を返す
+    int LoadTexture(const std::string& filePath); // 戻り値をintに変更
 
-    // 指定したテクスチャハンドルのGPUディスクリプタハンドルを取得
-    D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(TextureHandle handle) const;
+    // 指定したインデックスのGPUディスクリプタハンドルを取得
+    D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(int textureIndex) const; // 引数をintに変更
 
-    // 指定したテクスチャハンドルのメタデータを取得
-    const DirectX::TexMetadata& GetMetadata(TextureHandle handle) const;
+    // 指定したインデックスのメタデータを取得
+    const DirectX::TexMetadata& GetMetadata(int textureIndex) const; // 引数をintに変更
 
     // GPUがリソースの使用を完了するまで待機し、中間リソースを解放する関数を追加
     void ReleaseIntermediateResources();
 
 private:
-    DirectXCommon* common_ = nullptr; // DirectXCommonへのポインタ
+    // プライベートコンストラクタ (シングルトンパターン用)
+    TextureManager();
+
+    // シングルトンインスタンスを保持する静的メンバー変数
+    static TextureManager* instance_;
 
     std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> textureResources_; // ロードされたテクスチャリソース
     std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> gpuDescriptorHandles_; // GPUディスクリプタハンドル
@@ -43,16 +48,13 @@ private:
     uint32_t nextHandleIndex_ = 0; // マネージャー内部のインデックス
     uint32_t srvHeapBaseOffset_ = 0; // デスクリプタヒープ上の開始オフセット
 
-    // ★追加★
-    // アップロード用の中間リソースを保持するリスト。
-    // 各要素は、そのリソースがGPUによって完了されるべきフェンス値を持つ
+    std::map<std::string, int> loadedTextures_;
+
     struct UploadResourceEntry {
         Microsoft::WRL::ComPtr<ID3D12Resource> resource;
         UINT64 fenceValue;
     };
     std::vector<UploadResourceEntry> pendingUploadResources_;
-
-
 
 private:
     // 内部的なテクスチャ読み込み処理
