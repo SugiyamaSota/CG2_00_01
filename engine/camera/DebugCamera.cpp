@@ -13,15 +13,19 @@ void DebugCamera::Initialize(InputKey* inputKey) {
 	targetPosition_ = { 0,0,0 };
 }
 
-void DebugCamera::Update() {
+void DebugCamera::Update(bool isDebug) {
 	// 入力による移動や回転
 
-	Move();
+	if (isDebug) {
+		Move();
+	}
 
 
 	//ビュー行列の更新
 	if (!isTargeting_) {
-		Rotate();
+		if (isDebug) {
+			Rotate();
+		}
 		Matrix4x4 affineMatrix = MakeAffineMatrix(scale_, matRot_, translation_);
 		viewMatrix_ = Inverse(affineMatrix);
 	} else if (isTargeting_) {
