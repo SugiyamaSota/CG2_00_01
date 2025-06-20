@@ -8,10 +8,10 @@
 #include"../math/Convert.h"
 #include"../math/Matrix.h"
 
-#include"../debugCamera/DebugCamera.h"
+#include"../camera/DebugCamera.h"
+#include"../texture/TextureManager.h"
 
-Model::Model(DirectXCommon* common) {
-	common_ = common;
+Model::Model() {
 	projectionMatrix_ = MakePerspectiveFovMatrix(0.45f, float(1280) / float(720), 0.1f, 100.0f);
 }
 
@@ -19,7 +19,7 @@ void Model::LoadModel(const std::string& fileName) {
 	// モデル読み込み
 	modelData_ = LoadObjFile("resources/" + fileName, fileName + ".obj");
 	// 頂点用のリソース
-	vertexResource_ = CreateBufferResource(common_->GetDevice(), sizeof(VertexData) * modelData_.vertices.size());
+	vertexResource_ = CreateBufferResource(DirectXCommon::GetInstance()->GetDevice(), sizeof(VertexData) * modelData_.vertices.size());
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.vertices.size());
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
@@ -27,20 +27,23 @@ void Model::LoadModel(const std::string& fileName) {
 	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size());
 
 	// マテリアル用のリソース
-	materialResource_ = CreateBufferResource(common_->GetDevice(), sizeof(Material));
+	materialResource_ = CreateBufferResource(DirectXCommon::GetInstance()->GetDevice(), sizeof(Material));
 	materialData_ = nullptr;
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	materialData_->enableLighting = true;
+	materialData_->enableLighting = false;
 	materialData_->uvTransform = MakeIdentity4x4();
 
 	// WVP用のリソース
-	wvpResource_ = CreateBufferResource(common_->GetDevice(), sizeof(TransformationMatrix));
+	wvpResource_ = CreateBufferResource(DirectXCommon::GetInstance()->GetDevice(), sizeof(TransformationMatrix));
 	wvpData_ = nullptr;
 	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
 	wvpData_->WVP = MakeIdentity4x4();
 	wvpData_->World = MakeIdentity4x4();
 
+	textureHandle_ = TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilepath);
+	DirectXCommon::GetInstance()->WaitAndResetCommandList();
+	TextureManager::GetInstance()->ReleaseIntermediateResources();
 }
 
 void Model::Initialize(WorldTransform worldTransform) {
@@ -54,19 +57,19 @@ void Model::Update(WorldTransform worldTransform, DebugCamera* debugCamera) {
 	wvpData_->WVP = worldViewProjectionMatrix;
 }
 
-void Model::Draw(D3D12_GPU_DESCRIPTOR_HANDLE handle) {
+void Model::Draw() {
 	//モデルの描画
-	common_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);//VBVを設定
+	DirectXCommon::GetInstance()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);//VBVを設定
 	//形状を設定。PSOに設定しているものとは別。同じものを設定るすると考える
-	common_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	DirectXCommon::GetInstance()->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//マテリアルCBufferの場所を設定
-	common_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+	DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 	//wvp用のCBufferの場所を設定
-	common_->GetCommandList()->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
+	DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
 	//SRVようのdescriptionTavleの先頭を設定
-	common_->GetCommandList()->SetGraphicsRootDescriptorTable(2, handle);
+	DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetGPUHandle(textureHandle_));
 	//描画!3頂点で1つのインスタンス
-	common_->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+	DirectXCommon::GetInstance()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 }
 
 //mtlファイルの読み込み

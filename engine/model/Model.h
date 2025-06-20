@@ -9,7 +9,7 @@ class DebugCamera;
 
 class Model {
 public:
-	Model(DirectXCommon* common);
+	Model();
 
 	void LoadModel(const std::string& fileName);
 
@@ -17,11 +17,10 @@ public:
 
 	void Update(WorldTransform worldTransform, DebugCamera* debugCamera);
 
-	void Draw(D3D12_GPU_DESCRIPTOR_HANDLE handle);
+	void Draw(); // 引数をintに変更
 
 private:
-	DirectXCommon* common_ = nullptr;
-	ModelData modelData_;
+	ModelData modelData_;//構造体
 
 	// 頂点リソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
@@ -38,10 +37,11 @@ private:
 	WorldTransform transform_;
 	Matrix4x4 projectionMatrix_;
 
+	int textureHandle_ = 0;
+
 	//mtlファイルの読み込み
 	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
 	//objファイルの読み込み
 	ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
 };
-
