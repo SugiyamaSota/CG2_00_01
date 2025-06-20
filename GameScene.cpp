@@ -4,25 +4,28 @@
 void GameScene::Initialize(InputKey* key) {
 	// カメラの初期化
 	camera_.Initialize(key);
+	camera_.Update(false);
+
+	// マップチップフィールド
+	mapChipField_ = new MapChipField;
+	mapChipField_->LoadmapChipCsv("resources/blocks.csv");
 
 	// 自キャラの生成と初期化
 	model_ = new Model();
 	model_->LoadModel("Player");
 	player_ = new Player();
-	player_->Initialize(model_, &camera_);
-	
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2, 17);
+	player_->Initialize(model_, &camera_, playerPosition);
+
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-				blockModel_[i][j] = new Model();
-				blockModel_[i][j]->LoadModel("cube");
-				blockWorldTransform_[i][j].rotate = { 0,0,0 };
-				blockWorldTransform_[i][j].scale = { 1,1,1 };
-				blockWorldTransform_[i][j].translate = { 0,0,0 };
+			blockModel_[i][j] = new Model();
+			blockModel_[i][j]->LoadModel("cube");
+			blockWorldTransform_[i][j].rotate = { 0,0,0 };
+			blockWorldTransform_[i][j].scale = { 1,1,1 };
+			blockWorldTransform_[i][j].translate = { 0,0,0 };
 		}
 	}
-	// マップチップフィールド
-	mapChipField_ = new MapChipField;
-	mapChipField_->LoadmapChipCsv("resources/blocks.csv");
 	GenerateBlocks();
 
 	// 天球
@@ -44,13 +47,31 @@ GameScene::~GameScene() {
 			delete blockModel_[i][j];
 		}
 	}
-	
+
 }
 
-void GameScene::Update() {
-	camera_.Update();
+void GameScene::Update(InputKey* key) {
+	// カメラの更新
+	// このあたりの処理はカメラクラスで一括で管理してもいいかも
+	if (key->IsTrigger(DIK_SPACE)) {
+		if (isDebugCamera) {
+			isDebugCamera = false;
+			camera_.ResetPosition();
+			camera_.ResetRotation()
+		} else {
+			isDebugCamera = true;
+			camera_.ResetPosition();
+			camera_.ResetRotation();
+		}
+	}
+	if (!isDebugCamera) {
+		camera_.SetCameraTranslate(player_->GetPosition());
+	}
+	camera_.Update(isDebugCamera);
+	
+
 	// 自キャラの更新
-	player_->Update();
+	player_->Update(key);
 	// ブロックの更新
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {

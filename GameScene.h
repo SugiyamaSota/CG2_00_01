@@ -6,11 +6,13 @@
 
 class GameScene{
 private:
+	// カメラ
+	DebugCamera camera_;
+	bool isDebugCamera = false;
+
 	//自キャラ
 	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
-	// カメラ
-	DebugCamera camera_;
 	Player* player_ = nullptr;
 	// 3Dモデル
 	Model* model_ = nullptr;
@@ -42,7 +44,7 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update(InputKey* key);
 
 	/// <summary>
 	/// 描画処理

@@ -40,9 +40,12 @@ public:
 
 	void Check() { isTargeting_ = false; }
 
-	void Update(); // 更新
+	void Update(bool isDebug); // 更新
 
 	Matrix4x4 GetViewMatrix()const { return viewMatrix_; }
+	void SetCameraTranslate(Vector3 position) {
+		translation_.x = position.x; translation_.y = position.y;
+	}
 
 	void SetTarget(Vector3 targetPosition);
 

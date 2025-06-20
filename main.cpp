@@ -28,7 +28,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			/// 更新処理ここから
 			///
 			
-			gameScene->Update();
+			gameScene->Update(bonjin->GetKey());
 
 			///
 			/// 更新処理ここまで
