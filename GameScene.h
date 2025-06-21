@@ -1,6 +1,7 @@
 #pragma once
 #include"engine/bonjin/BonjinEngine.h"
 #include"Player.h"
+#include"Enemy.h"
 #include"Skydome.h"
 #include"MapChipField.h"
 
@@ -16,6 +17,10 @@ private:
 	Player* player_ = nullptr;
 	// 3Dモデル
 	Model* model_ = nullptr;
+
+	///// 敵 /////Add commentMore actions
+	Enemy* enemy_ = nullptr;
+	Model* enemyModel_ = nullptr;
 
 	// ブロック
 	static const uint32_t kNumBlockVirtical = 10;

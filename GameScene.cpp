@@ -18,6 +18,13 @@ void GameScene::Initialize(InputKey* key) {
 	player_->Initialize(model_, &camera_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
 
+	///// 敵に関する初期化 /////Add commentMore actions
+	enemyModel_ = new Model();
+	enemyModel_->LoadModel("Enemy");
+	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6, 6);
+	enemy_ = new Enemy;
+	enemy_->Initialize(enemyModel_, &camera_, enemyPosition);
+
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
 			blockModel_[i][j] = new Model();
@@ -39,6 +46,8 @@ void GameScene::Initialize(InputKey* key) {
 GameScene::~GameScene() {
 	delete model_;
 	delete player_;
+	delete enemy_;
+	delete enemyModel_;
 	delete skydome_;
 	delete skydomeModel_;
 	delete mapChipField_;
@@ -73,6 +82,8 @@ void GameScene::Update(InputKey* key) {
 
 	// 自キャラの更新
 	player_->Update(key);
+	// 敵
+	enemy_->Update();
 	// ブロックの更新
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
@@ -88,6 +99,9 @@ void GameScene::Update(InputKey* key) {
 void GameScene::Draw() {
 	// 自キャラの描画
 	player_->Draw();
+
+	// 敵
+	enemy_->Draw();
 
 	// ブロックの描画
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
