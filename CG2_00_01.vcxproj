@@ -109,6 +109,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\input\InputKey.cpp" />
     <ClCompile Include="engine\model\Model.cpp" />
     <ClCompile Include="engine\pso\PSO.cpp" />
+    <ClCompile Include="engine\sprite\Sprite.cpp" />
     <ClCompile Include="engine\texture\TextureManager.cpp" />
     <ClCompile Include="externals\Audio\xaudio_player_mf.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
@@ -118,6 +119,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Fade.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\Convert.cpp" />
@@ -155,6 +157,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\input\InputKey.h" />
     <ClInclude Include="engine\model\Model.h" />
     <ClInclude Include="engine\pso\PSO.h" />
+    <ClInclude Include="engine\sprite\Sprite.h" />
     <ClInclude Include="engine\texture\TextureManager.h" />
     <ClInclude Include="externals\Audio\common.h" />
     <ClInclude Include="externals\Audio\xaudio_player_core.h" />
@@ -171,6 +174,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\math\Matrix.h" />
     <ClInclude Include="engine\math\Struct.h" />
     <ClInclude Include="engine\math\vector.h" />
+    <ClInclude Include="Fade.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="MapChipField.h" />
     <ClInclude Include="Player.h" />

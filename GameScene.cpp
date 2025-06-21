@@ -14,11 +14,10 @@ void GameScene::Initialize() {
 	model_ = new Model();
 	model_->LoadModel("Player");
 	player_ = new Player();
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2, 1);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2, 8);
 	player_->Initialize(model_, &camera_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
-
-	
+	player_->Update();
 
 	///// 敵に関する初期化 /////
 	enemyModel_ = new Model();
@@ -26,6 +25,7 @@ void GameScene::Initialize() {
 	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6, 6);
 	enemy_ = new Enemy;
 	enemy_->Initialize(enemyModel_, &camera_, enemyPosition);
+	enemy_->Update();
 
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
@@ -37,14 +37,28 @@ void GameScene::Initialize() {
 		}
 	}
 	GenerateBlocks();
+	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+				blockModel_[i][j]->Update(blockWorldTransform_[i][j], { 1,1,1,1 }, &camera_);
+			}
+		}
+	}
 
 	// 天球
 	skydomeModel_ = new Model();
 	skydomeModel_->LoadModel("skydome");
 	skydome_ = new Skydome();
 	skydome_->Initialize(skydomeModel_, &camera_);
+	skydome_->Update();
 
-	phase_ = Phase::kPlay;
+	phase_ = Phase::kFadeIn;
+
+	fade_ = new Fade();
+	fade_->Initialize();
+	fade_->Start(Fade::Status::FadeIn, 1.0f);
+
+	
 }
 
 GameScene::~GameScene() {
@@ -56,6 +70,7 @@ GameScene::~GameScene() {
 	delete skydome_;
 	delete skydomeModel_;
 	delete mapChipField_;
+	delete fade_;
 
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
@@ -67,6 +82,18 @@ GameScene::~GameScene() {
 
 void GameScene::Update() {
 	switch (phase_) {
+	case Phase::kFadeIn:
+		camera_.Update(isDebugCamera);
+		fade_->Update();
+		// ブロック
+		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+					blockModel_[i][j]->Update(blockWorldTransform_[i][j], { 1,1,1,1 }, &camera_);
+				}
+			}
+		}
+		break;
 	case Phase::kPlay:
 		// カメラ
 		if (InputKey::GetInstance()->IsTrigger(DIK_SPACE)) {
@@ -99,24 +126,8 @@ void GameScene::Update() {
 			}
 		}
 		CheckAllCollisions();
-		ChangePhase();
 		break;
 	case Phase::kDeath:
-		// カメラ
-		if (InputKey::GetInstance()->IsTrigger(DIK_SPACE)) {
-			if (isDebugCamera) {
-				isDebugCamera = false;
-				camera_.ResetPosition();
-				camera_.ResetRotation();
-			} else {
-				isDebugCamera = true;
-				camera_.ResetPosition();
-				camera_.ResetRotation();
-			}
-		}
-		if (!isDebugCamera) {
-			camera_.SetCameraTranslate(player_->GetPosition());
-		}
 		camera_.Update(isDebugCamera);
 		// 天球
 		skydome_->Update();
@@ -134,13 +145,33 @@ void GameScene::Update() {
 				}
 			}
 		}
-		ChangePhase();
+		break;
+	case Phase::kFadeOut:
+		fade_->Update();
 		break;
 	}
+	ChangePhase();
 }
 
 void GameScene::Draw() {
 	switch (phase_) {
+	case Phase::kFadeIn:
+		// 自キャラ
+		player_->Draw();
+		// 敵
+		enemy_->Draw();
+		// ブロック
+		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+					blockModel_[i][j]->Draw();
+				}
+			}
+		}
+		// 天球
+		skydome_->Draw();
+		fade_->Draw();
+		break;
 	case Phase::kPlay:
 		// 自キャラ
 		player_->Draw();
@@ -174,6 +205,21 @@ void GameScene::Draw() {
 		if (deathParticlesExistFlag) {
 			deathParticles_->Draw();
 		}
+		break;
+	case Phase::kFadeOut:
+		// 敵
+		enemy_->Draw();
+		// ブロック
+		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+					blockModel_[i][j]->Draw();
+				}
+			}
+		}
+		// 天球
+		skydome_->Draw();
+		fade_->Draw();
 		break;
 	}
 }
@@ -212,20 +258,30 @@ void GameScene::CheckAllCollisions() {
 
 void GameScene::ChangePhase() {
 	switch (phase_) {
+	case Phase::kFadeIn:
+		if (fade_->IsFinished()) {
+			phase_ = Phase::kPlay;
+		}
+		break;
 	case Phase::kPlay:
 		if (player_->IsDead()) {
 			const Vector3& deathParticlePosition = player_->GetWorldPosition();
 			deathParticles_ = new DeathParticles();
 			deathParticles_->Initialize("Player", &camera_, deathParticlePosition);
+			deathParticles_->Update();
 			phase_ = Phase::kDeath;
 		}
 		break;
 	case Phase::kDeath:
-
 		if (deathParticles_ && deathParticles_->IsFinished()) {
+			phase_ = Phase::kFadeOut;
+			fade_->Start(Fade::Status::FadeOut, 1);
+		}
+		break;
+	case Phase::kFadeOut:
+		if (fade_->IsFinished()) {
 			finished_ = true;
 		}
-
 		break;
 	}
 }

@@ -5,6 +5,7 @@
 #include"Skydome.h"
 #include"MapChipField.h"
 #include"Deathparticles.h"
+#include"Fade.h"
 
 class GameScene{
 private:
@@ -38,9 +39,13 @@ private:
 	Skydome* skydome_ = nullptr;
 	Model* skydomeModel_ = nullptr;
 
+	Fade* fade_ = nullptr;
+
 	enum class Phase {
+		kFadeIn,
 		kPlay,
 		kDeath,
+		kFadeOut,
 	};
 
 	Phase phase_;

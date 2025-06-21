@@ -3,12 +3,13 @@
 #include"TitleScene.h"
 #include"GameScene.h"
 
+
 //クライアント領域のサイズ
 const int32_t kClientWidth = 1280;
 const int32_t kClientHeight = 720;
 
-GameScene* gameScene = new GameScene();
-TitleScene* titleScene = new TitleScene();
+GameScene* gameScene = nullptr;
+TitleScene* titleScene = nullptr;
 
 enum class Scene {
 	kUnknow = 0,
@@ -74,7 +75,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	bonjin->Initialize(hInstance, kClientWidth, kClientHeight);
 
 	// タイトルシーンのインスタンス生成と初期化
+	titleScene = new TitleScene();
 	titleScene->Initialize();
+
 
 	//ウィンドウの×ボタンが押されるまでループ
 	MSG msg{};
@@ -89,9 +92,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			/// 更新処理ここから
 			///
 			
-			ChangeScene();
 
 			UpdateScene();
+
+
+			ChangeScene();
+
 
 			///
 			/// 更新処理ここまで

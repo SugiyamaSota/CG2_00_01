@@ -13,6 +13,7 @@
 #include"../model/Model.h"
 #include"../pso/PSO.h"
 #include"../texture/TextureManager.h"
+#include"../sprite/Sprite.h"
 
 struct D3DResourceLeakChecker {
 	~D3DResourceLeakChecker() {
