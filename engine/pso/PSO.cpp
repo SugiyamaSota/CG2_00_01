@@ -171,7 +171,20 @@ void PSO::Initialize(
 
     // BlendStateの設定
     D3D12_BLEND_DESC blendDesc{};
-    // すべての色要素を書き込む
+    blendDesc.RenderTarget[0].BlendEnable = TRUE; // ★ アルファブレンドを有効にする
+    blendDesc.RenderTarget[0].LogicOpEnable = FALSE; // 通常はFALSEでOK
+
+    // ソースのアルファ値に基づいてブレンドする一般的な設定
+    blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA; // ソース (描画中のピクセル) の色を、ソースのアルファ値で乗算する
+    blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA; // デスティネーション (レンダーターゲット上の既存ピクセル) の色を、(1 - ソースのアルファ値) で乗算する
+    blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD; // ソースとデスティネーションのブレンド結果を加算する
+
+    // アルファチャンネル自体のブレンド設定 (通常はSrcAlphaとDstAlphaで制御されることが多いが、明示的に設定することも)
+    // 例えば、出力されるアルファ値もソースのアルファ値とデスティネーションのアルファ値を混ぜ合わせる場合
+    blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE; // または D3D12_BLEND_SRC_ALPHA
+    blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO; // または D3D12_BLEND_INV_SRC_ALPHA
+    blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+
     blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
     // ResiterizerStateの設定

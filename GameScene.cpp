@@ -18,6 +18,10 @@ void GameScene::Initialize(InputKey* key) {
 	player_->Initialize(model_, &camera_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
 
+	//仮生成
+	deathParticles_ = new DeathParticles();
+	deathParticles_->Initialize("Player", &camera_, playerPosition);
+
 	///// 敵に関する初期化 /////
 	enemyModel_ = new Model();
 	enemyModel_->LoadModel("Enemy");
@@ -46,6 +50,7 @@ void GameScene::Initialize(InputKey* key) {
 GameScene::~GameScene() {
 	delete model_;
 	delete player_;
+	delete deathParticles_;
 	delete enemy_;
 	delete enemyModel_;
 	delete skydome_;
@@ -82,13 +87,16 @@ void GameScene::Update(InputKey* key) {
 
 	// 自キャラの更新
 	player_->Update(key);
+	if (deathParticlesExistFlag) {
+		deathParticles_->Update();
+	};
 	// 敵
 	enemy_->Update();
 	// ブロックの更新
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
 			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
-				blockModel_[i][j]->Update(blockWorldTransform_[i][j], &camera_);
+				blockModel_[i][j]->Update(blockWorldTransform_[i][j], { 1,1,1,1 }, &camera_);
 			}
 		}
 	}
@@ -101,7 +109,7 @@ void GameScene::Update(InputKey* key) {
 void GameScene::Draw() {
 	// 自キャラの描画
 	player_->Draw();
-
+	
 	// 敵
 	enemy_->Draw();
 
@@ -116,6 +124,10 @@ void GameScene::Draw() {
 
 	// 天球の描画
 	skydome_->Draw();
+
+	if (deathParticlesExistFlag) {
+		deathParticles_->Draw();
+	}
 }
 
 void GameScene::GenerateBlocks() {

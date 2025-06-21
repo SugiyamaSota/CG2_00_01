@@ -50,11 +50,13 @@ void Model::Initialize(WorldTransform worldTransform) {
 	transform_ = worldTransform;
 }
 
-void Model::Update(WorldTransform worldTransform, DebugCamera* debugCamera) {
+void Model::Update(WorldTransform worldTransform, Vector4 color, DebugCamera* debugCamera) {
 	transform_ = worldTransform;
 	wvpData_->World = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 	Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData_->World, Multiply(debugCamera->GetViewMatrix(), projectionMatrix_));
 	wvpData_->WVP = worldViewProjectionMatrix;
+
+	materialData_->color = color;
 }
 
 void Model::Draw() {

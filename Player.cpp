@@ -373,7 +373,7 @@ void Player::Update(InputKey* key) {
 		}
 	}
 
-	model_->Update(worldTransform_,camera_);
+	model_->Update(worldTransform_, { 1,1,1,1 }, camera_);
 }
 
 void Player::Draw() {

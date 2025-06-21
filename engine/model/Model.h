@@ -15,7 +15,7 @@ public:
 
 	void Initialize(WorldTransform worldTransform);
 
-	void Update(WorldTransform worldTransform, DebugCamera* debugCamera);
+	void Update(WorldTransform worldTransform, Vector4 color, DebugCamera* debugCamera);
 
 	void Draw(); // 引数をintに変更
 

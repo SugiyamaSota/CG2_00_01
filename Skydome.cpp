@@ -18,7 +18,7 @@ void Skydome::Initialize(Model* model,DebugCamera* camera) {
 /// 更新
 /// </summary>
 void Skydome::Update() {
-	model_->Update(worldTransform_, camera_);
+	model_->Update(worldTransform_, { 1,1,1,1 }, camera_);
 }
 
 /// <summary>

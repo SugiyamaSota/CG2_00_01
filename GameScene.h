@@ -4,6 +4,7 @@
 #include"Enemy.h"
 #include"Skydome.h"
 #include"MapChipField.h"
+#include"Deathparticles.h"
 
 class GameScene{
 private:
@@ -12,11 +13,13 @@ private:
 	bool isDebugCamera = false;
 
 	//自キャラ
-	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	Player* player_ = nullptr;
-	// 3Dモデル
 	Model* model_ = nullptr;
+
+	///// プレイヤーのパーティクル /////
+	DeathParticles* deathParticles_ = nullptr; // 死亡時
+	bool deathParticlesExistFlag = true;
 
 	///// 敵 /////Add commentMore actions
 	Enemy* enemy_ = nullptr;

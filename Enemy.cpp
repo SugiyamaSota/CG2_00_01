@@ -40,7 +40,7 @@ void Enemy::Update() {
 	}
 
 	// 行列の変換
-	model_->Update(worldTransform_, camera_);
+	model_->Update(worldTransform_, { 1,1,1,1 }, camera_);
 }
 
 void Enemy::Draw() { model_->Draw(); }

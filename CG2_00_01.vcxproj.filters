@@ -147,6 +147,9 @@
     <ClCompile Include="Collision.cpp">
       <Filter>engine\math\ソース</Filter>
     </ClCompile>
+    <ClCompile Include="Deathparticles.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Object3d.VS.hlsl" />
@@ -245,6 +248,9 @@
     </ClInclude>
     <ClInclude Include="Collision.h">
       <Filter>engine\math\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="Deathparticles.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
