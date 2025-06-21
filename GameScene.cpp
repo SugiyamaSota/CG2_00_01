@@ -18,7 +18,7 @@ void GameScene::Initialize(InputKey* key) {
 	player_->Initialize(model_, &camera_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
 
-	///// 敵に関する初期化 /////Add commentMore actions
+	///// 敵に関する初期化 /////
 	enemyModel_ = new Model();
 	enemyModel_->LoadModel("Enemy");
 	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6, 6);
@@ -94,6 +94,8 @@ void GameScene::Update(InputKey* key) {
 	}
 	// 天球の更新
 	skydome_->Update();
+
+	CheckAllCollisions();
 }
 
 void GameScene::Draw() {
@@ -131,5 +133,19 @@ void GameScene::GenerateBlocks() {
 				blockWorldTransform_[i][j].translate = mapChipField_->GetMapChipPositionByIndex(j, i);
 			}
 		}
+	}
+}
+
+void GameScene::CheckAllCollisions() {
+	// 判定対象1と2の座標
+	AABB aabb1, aabb2;
+	// 自キャラの座標
+	aabb1 = player_->GetAABB();
+
+	// 自キャラと敵すべての当たり判定
+	aabb2 = enemy_->GetAABB();
+
+	if (IsCollision(aabb1, aabb2)) {
+		player_->OnCollision(enemy_);
 	}
 }

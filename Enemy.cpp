@@ -57,3 +57,16 @@ void Enemy::TurningControl() {
 		worldTransform_.rotate.y = destinationRotationY;
 	}
 }
+
+Vector3 Enemy::GetWorldPosition() {
+	return worldTransform_.translate;
+}
+
+
+AABB Enemy::GetAABB() {
+	AABB aabb;
+	Vector3 worldPos = GetWorldPosition();
+	aabb.min = { worldPos.x - kWidth_ / 2.0f, worldPos.y - kHeight_ / 2.0f, worldPos.z - kWidth_ / 2.0f };
+	aabb.max = { worldPos.x + kWidth_ / 2.0f, worldPos.y + kHeight_ / 2.0f, worldPos.z + kWidth_ / 2.0f };
+	return aabb;
+}

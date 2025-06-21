@@ -380,3 +380,22 @@ void Player::Draw() {
 	// 自キャラの描画処理
 	model_->Draw();
 }
+
+Vector3 Player::GetWorldPosition() {
+	return worldTransform_.translate;
+}
+
+
+AABB Player::GetAABB() {
+	AABB aabb;
+	Vector3 worldPos = GetWorldPosition();
+	aabb.min = { worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f };
+	aabb.max = { worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f };
+	return aabb;
+}
+
+void Player::OnCollision(const Enemy* enemy) {
+	(void)enemy;
+	//ジャンプ開始
+	velocity_ = Add(velocity_, Vector3(0, kJumpAcceleration, 0));
+}

@@ -9,6 +9,7 @@
 #include"../math/Vector.h"
 #include"../math/Matrix.h"
 #include"../math/Convert.h"
+#include"../math/Collision.h"
 #include"../model/Model.h"
 #include"../pso/PSO.h"
 #include"../texture/TextureManager.h"

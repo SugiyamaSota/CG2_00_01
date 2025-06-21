@@ -15,6 +15,9 @@ private:
 
 	Model* model_ = nullptr; // 3Dモデル
 
+	static inline const float kWidth_ = 2.0f;  // 当たり判定の幅
+	static inline const float kHeight_ = 2.0f; // 当たり判定の高さ
+
 	LRDirection lrDirection_ = LRDirection::kLeft; // モデルの向き
 
 	///// 移動関連 /////
@@ -49,4 +52,8 @@ public:
 	/// モデルの向きの制御
 	/// </summary>
 	void TurningControl();
+
+	Vector3 GetWorldPosition();
+
+	AABB GetAABB();
 };

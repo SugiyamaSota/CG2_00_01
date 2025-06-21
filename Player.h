@@ -3,6 +3,7 @@
 #include <cassert>
 
 class MapChipField;
+class Enemy;
 
 /// <summary>
 /// 自キャラ
@@ -122,4 +123,7 @@ public:
 	const Vector3& GetVelocity() const { return velocity_; }
 	WorldTransform& GetWorldTransform() { return worldTransform_; }
 	Vector3 GetPosition()const { return worldTransform_.translate; }
+	Vector3 GetWorldPosition();
+	AABB GetAABB();
+	void OnCollision(const Enemy* enemy);
 };

@@ -52,3 +52,8 @@ struct WorldTransform {
 	Vector3 translate;
 };
 
+struct AABB {
+	Vector3 min;
+	Vector3 max;
+};
+

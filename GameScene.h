@@ -60,5 +60,8 @@ public:
 	/// ブロック生成
 	/// </summary>
 	void GenerateBlocks();
+
+	//すべての当たり判定Add commentMore actions
+	void CheckAllCollisions();
 };
 
