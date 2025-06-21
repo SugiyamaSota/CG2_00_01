@@ -23,9 +23,6 @@ private:
 
 	Matrix4x4 projectionMatrix_;
 
-	// キー入力に使う変数
-	InputKey* inputKey_;
-
 	const float rotationSpeed_ = 0.01f; //回転速度
 
 	bool isTargeting_;
@@ -36,7 +33,7 @@ private:
 	void Rotate();// 回転処理
 	Matrix4x4 MakeLookAtMatrix(const Vector3& eye, const Vector3& target, const Vector3& up);
 public:
-	void Initialize(InputKey* inputKey); // 初期化
+	void Initialize(); // 初期化
 
 	void Check() { isTargeting_ = false; }
 

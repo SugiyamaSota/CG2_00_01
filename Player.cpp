@@ -18,15 +18,15 @@ void Player::Initialize(Model* model, DebugCamera* camera, const Vector3& positi
 	camera_ = camera;
 }
 
-void Player::Move(InputKey* key) {
+void Player::Move() {
 	// 移動入力
 	// //接地状態
 	if (onGround_) {
 		// 左右移動操作
-		if (key->IsPress(DIK_RIGHT) || key->IsPress(DIK_LEFT)) {
+		if (InputKey::GetInstance()->IsPress(DIK_RIGHT) || InputKey::GetInstance()->IsPress(DIK_LEFT)) {
 			// 左右加速
 			Vector3 acceleration = {};
-			if (key->IsPress(DIK_RIGHT)) {
+			if (InputKey::GetInstance()->IsPress(DIK_RIGHT)) {
 				if (velocity_.x < 0.0f) {
 
 					// 速度と逆方向に入力中は急ブレーキ
@@ -38,7 +38,7 @@ void Player::Move(InputKey* key) {
 					turnFirstRotationY_ = worldTransform_.rotate.y;
 					turnTimer_ = kTimeTurn;
 				}
-			} else if (key->IsPress(DIK_LEFT)) {
+			} else if (InputKey::GetInstance()->IsPress(DIK_LEFT)) {
 				if (velocity_.x > 0.0f) {
 
 					// 速度と逆方向に入力中は急ブレーキ
@@ -60,7 +60,7 @@ void Player::Move(InputKey* key) {
 			// 非入力時は移動減衰をかける
 			velocity_.x *= (1.0f - kAttenuation);
 		}
-		if (key->IsPress(DIK_UP)) {
+		if (InputKey::GetInstance()->IsPress(DIK_UP)) {
 			velocity_ = Add(velocity_, Vector3(0, kJumpAcceleration, 0));
 		}
 	} else {
@@ -336,9 +336,9 @@ void Player::WallCollisionReaction(const CollisionMapInfo& info) {
 	}
 }
 
-void Player::Update(InputKey* key) {
+void Player::Update() {
 	// 1.移動処理
-	Move(key);
+	Move();
 
 	// 2.移動量を加味した衝突判定
 	CollisionMapInfo collisionMapinfo;      // 衝突情報初期化
@@ -397,5 +397,5 @@ AABB Player::GetAABB() {
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
 	//ジャンプ開始
-	velocity_ = Add(velocity_, Vector3(0, kJumpAcceleration, 0));
+	isDead_ = true;
 }

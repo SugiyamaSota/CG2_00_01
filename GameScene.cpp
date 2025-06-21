@@ -1,9 +1,9 @@
 #include "GameScene.h"
 
 
-void GameScene::Initialize(InputKey* key) {
+void GameScene::Initialize() {
 	// カメラの初期化
-	camera_.Initialize(key);
+	camera_.Initialize();
 	camera_.Update(false);
 
 	// マップチップフィールド
@@ -18,9 +18,7 @@ void GameScene::Initialize(InputKey* key) {
 	player_->Initialize(model_, &camera_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
 
-	//仮生成
-	deathParticles_ = new DeathParticles();
-	deathParticles_->Initialize("Player", &camera_, playerPosition);
+	
 
 	///// 敵に関する初期化 /////
 	enemyModel_ = new Model();
@@ -45,6 +43,8 @@ void GameScene::Initialize(InputKey* key) {
 	skydomeModel_->LoadModel("skydome");
 	skydome_ = new Skydome();
 	skydome_->Initialize(skydomeModel_, &camera_);
+
+	phase_ = Phase::kPlay;
 }
 
 GameScene::~GameScene() {
@@ -65,68 +65,116 @@ GameScene::~GameScene() {
 
 }
 
-void GameScene::Update(InputKey* key) {
-	// カメラの更新
-	// このあたりの処理はカメラクラスで一括で管理してもいいかも
-	if (key->IsTrigger(DIK_SPACE)) {
-		if (isDebugCamera) {
-			isDebugCamera = false;
-			camera_.ResetPosition();
-			camera_.ResetRotation();
-		} else {
-			isDebugCamera = true;
-			camera_.ResetPosition();
-			camera_.ResetRotation();
-		}
-	}
-	if (!isDebugCamera) {
-		camera_.SetCameraTranslate(player_->GetPosition());
-	}
-	camera_.Update(isDebugCamera);
-
-
-	// 自キャラの更新
-	player_->Update(key);
-	if (deathParticlesExistFlag) {
-		deathParticles_->Update();
-	};
-	// 敵
-	enemy_->Update();
-	// ブロックの更新
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
-				blockModel_[i][j]->Update(blockWorldTransform_[i][j], { 1,1,1,1 }, &camera_);
+void GameScene::Update() {
+	switch (phase_) {
+	case Phase::kPlay:
+		// カメラ
+		if (InputKey::GetInstance()->IsTrigger(DIK_SPACE)) {
+			if (isDebugCamera) {
+				isDebugCamera = false;
+				camera_.ResetPosition();
+				camera_.ResetRotation();
+			} else {
+				isDebugCamera = true;
+				camera_.ResetPosition();
+				camera_.ResetRotation();
 			}
 		}
+		if (!isDebugCamera) {
+			camera_.SetCameraTranslate(player_->GetPosition());
+		}
+		camera_.Update(isDebugCamera);
+		// 天球
+		skydome_->Update();
+		// プレイヤー
+		player_->Update();
+		// 敵
+		enemy_->Update();
+		// ブロック
+		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+					blockModel_[i][j]->Update(blockWorldTransform_[i][j], { 1,1,1,1 }, &camera_);
+				}
+			}
+		}
+		CheckAllCollisions();
+		ChangePhase();
+		break;
+	case Phase::kDeath:
+		// カメラ
+		if (InputKey::GetInstance()->IsTrigger(DIK_SPACE)) {
+			if (isDebugCamera) {
+				isDebugCamera = false;
+				camera_.ResetPosition();
+				camera_.ResetRotation();
+			} else {
+				isDebugCamera = true;
+				camera_.ResetPosition();
+				camera_.ResetRotation();
+			}
+		}
+		if (!isDebugCamera) {
+			camera_.SetCameraTranslate(player_->GetPosition());
+		}
+		camera_.Update(isDebugCamera);
+		// 天球
+		skydome_->Update();
+		// 敵
+		enemy_->Update();
+		// デスパーティクル
+		if (deathParticlesExistFlag) {
+			deathParticles_->Update();
+		};
+		// ブロック
+		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+					blockModel_[i][j]->Update(blockWorldTransform_[i][j], { 1,1,1,1 }, &camera_);
+				}
+			}
+		}
+		ChangePhase();
+		break;
 	}
-	// 天球の更新
-	skydome_->Update();
-
-	CheckAllCollisions();
 }
 
 void GameScene::Draw() {
-	// 自キャラの描画
-	player_->Draw();
-	
-	// 敵
-	enemy_->Draw();
-
-	// ブロックの描画
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
-				blockModel_[i][j]->Draw();
+	switch (phase_) {
+	case Phase::kPlay:
+		// 自キャラ
+		player_->Draw();
+		// 敵
+		enemy_->Draw();
+		// ブロック
+		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+					blockModel_[i][j]->Draw();
+				}
 			}
 		}
-	}
-
-	// 天球の描画
-	skydome_->Draw();
-
-	if (deathParticlesExistFlag) {
-		deathParticles_->Draw();
+		// 天球
+		skydome_->Draw();
+		break;
+	case Phase::kDeath:
+		// 敵
+		enemy_->Draw();
+		// ブロック
+		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+					blockModel_[i][j]->Draw();
+				}
+			}
+		}
+		// 天球
+		skydome_->Draw();
+		// デスパーティクル
+		if (deathParticlesExistFlag) {
+			deathParticles_->Draw();
+		}
+		break;
 	}
 }
 
@@ -159,5 +207,25 @@ void GameScene::CheckAllCollisions() {
 
 	if (IsCollision(aabb1, aabb2)) {
 		player_->OnCollision(enemy_);
+	}
+}
+
+void GameScene::ChangePhase() {
+	switch (phase_) {
+	case Phase::kPlay:
+		if (player_->IsDead()) {
+			const Vector3& deathParticlePosition = player_->GetWorldPosition();
+			deathParticles_ = new DeathParticles();
+			deathParticles_->Initialize("Player", &camera_, deathParticlePosition);
+			phase_ = Phase::kDeath;
+		}
+		break;
+	case Phase::kDeath:
+
+		if (deathParticles_ && deathParticles_->IsFinished()) {
+			finished_ = true;
+		}
+
+		break;
 	}
 }

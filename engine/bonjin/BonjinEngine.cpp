@@ -26,19 +26,20 @@ std::ofstream logStream(logFilePath);
 void BonjinEngine::Initialize(HINSTANCE hInstance, int32_t clientWidth, int32_t clientHeight) {
 	// directXcommonの初期化
 	DirectXCommon::GetInstance(hInstance, clientWidth, clientHeight);
-	key_ = new InputKey();
-	key_->Initialize(hInstance, DirectXCommon::GetInstance()->GetHWND());
+	InputKey::GetInstance()->Initialize(hInstance, DirectXCommon::GetInstance()->GetHWND());
 }
 
 BonjinEngine::~BonjinEngine() {
-	delete key_;
 	TextureManager::DestroyInstance();
 	DirectXCommon::GetInstance()->DestroyInstance();
 }
 
 void BonjinEngine::NewFrame() {
+	InputKey::GetInstance()->Update();
+}
+
+void BonjinEngine::PreDraw() {
 	DirectXCommon::GetInstance()->NewFeame();
-	key_->Update();
 }
 
 void BonjinEngine::EndFrame() {

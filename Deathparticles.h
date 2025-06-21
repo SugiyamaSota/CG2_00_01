@@ -50,4 +50,6 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	bool IsFinished()const { return isFinished_; }
 };

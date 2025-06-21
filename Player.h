@@ -78,6 +78,7 @@ private:
 	static inline const float kAttenuationTop = 0.5f;
 	static inline const float kAttenuationWall = 0.5f;
 
+	bool isDead_ = false;
 
 public:
 	/// <summary>
@@ -88,7 +89,7 @@ public:
 	/// <summary>
 	/// 移動処理
 	/// </summary>
-	void Move(InputKey* key);
+	void Move();
 
 	void isCollisionMapTop(CollisionMapInfo& info);
 	void isCollisionMapBottom(CollisionMapInfo& info);
@@ -110,7 +111,7 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update(InputKey* key);
+	void Update();
 
 
 
@@ -126,4 +127,5 @@ public:
 	Vector3 GetWorldPosition();
 	AABB GetAABB();
 	void OnCollision(const Enemy* enemy);
+	bool IsDead()const { return isDead_; }
 };

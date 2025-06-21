@@ -44,15 +44,17 @@ public:
 	void NewFrame();
 
 	/// <summary>
+	/// 真ん中に呼び出し
+	/// </summary>
+	void PreDraw();
+
+	/// <summary>
 	/// 最後のフレームに呼び出し
 	/// </summary>
 	void EndFrame();
 
-	InputKey* GetKey() { return key_; }
-
 private:
 	D3DResourceLeakChecker leakChecker_;
-	InputKey* key_ = nullptr;
 
 };
 

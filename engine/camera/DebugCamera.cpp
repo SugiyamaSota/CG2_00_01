@@ -1,13 +1,12 @@
 #include "DebugCamera.h"
 
-void DebugCamera::Initialize(InputKey* inputKey) {
+void DebugCamera::Initialize() {
 	matRot_ = MakeIdentity4x4();
 	translation_ = { 0,0,-50 };
 
 	viewMatrix_ = MakeIdentity4x4();
 	projectionMatrix_ = MakeIdentity4x4();
 
-	inputKey_ = inputKey;
 
 	isTargeting_ = false;
 	targetPosition_ = { 0,0,0 };
@@ -35,7 +34,7 @@ void DebugCamera::Update(bool isDebug) {
 
 void DebugCamera::Move() {
 	// 前移動
-	if (inputKey_->IsPress(DIK_C) && !inputKey_->IsPress(DIK_Z)) {
+	if (InputKey::GetInstance()->IsPress(DIK_C) && !InputKey::GetInstance()->IsPress(DIK_Z)) {
 		const float speed = 0.5f;
 
 		//カメラ移動ベクトル
@@ -49,7 +48,7 @@ void DebugCamera::Move() {
 	}
 
 	// 後ろ移動
-	if (inputKey_->IsPress(DIK_Z) && !inputKey_->IsPress(DIK_C)) {
+	if (InputKey::GetInstance()->IsPress(DIK_Z) && !InputKey::GetInstance()->IsPress(DIK_C)) {
 		const float speed = -0.5f;
 
 		//カメラ移動ベクトル
@@ -63,7 +62,7 @@ void DebugCamera::Move() {
 	}
 
 	// 上移動
-	if (inputKey_->IsPress(DIK_W) && !inputKey_->IsPress(DIK_S)) {
+	if (InputKey::GetInstance()->IsPress(DIK_W) && !InputKey::GetInstance()->IsPress(DIK_S)) {
 		const float speed = 0.5f;
 
 		//カメラ移動ベクトル
@@ -77,7 +76,7 @@ void DebugCamera::Move() {
 	}
 
 	// 下移動
-	if (inputKey_->IsPress(DIK_S) && !inputKey_->IsPress(DIK_W)) {
+	if (InputKey::GetInstance()->IsPress(DIK_S) && !InputKey::GetInstance()->IsPress(DIK_W)) {
 		const float speed = -0.5f;
 
 		//カメラ移動ベクトル
@@ -91,7 +90,7 @@ void DebugCamera::Move() {
 	}
 
 	// 左移動
-	if (inputKey_->IsPress(DIK_A) && !inputKey_->IsPress(DIK_D)) {
+	if (InputKey::GetInstance()->IsPress(DIK_A) && !InputKey::GetInstance()->IsPress(DIK_D)) {
 		const float speed = -0.5f;
 
 		//カメラ移動ベクトル
@@ -105,7 +104,7 @@ void DebugCamera::Move() {
 	}
 
 	// 右移動
-	if (inputKey_->IsPress(DIK_D) && !inputKey_->IsPress(DIK_A)) {
+	if (InputKey::GetInstance()->IsPress(DIK_D) && !InputKey::GetInstance()->IsPress(DIK_A)) {
 		const float speed = 0.5f;
 
 		//カメラ移動ベクトル
@@ -121,36 +120,36 @@ void DebugCamera::Move() {
 
 void DebugCamera::Rotate() {
 	// X軸回転
-	if (inputKey_->IsPress(DIK_UP) && !inputKey_->IsPress(DIK_DOWN)) {
+	if (InputKey::GetInstance()->IsPress(DIK_UP) && !InputKey::GetInstance()->IsPress(DIK_DOWN)) {
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
 		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(-rotationSpeed_));
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
-	if (inputKey_->IsPress(DIK_DOWN) && !inputKey_->IsPress(DIK_UP)) {
+	if (InputKey::GetInstance()->IsPress(DIK_DOWN) && !InputKey::GetInstance()->IsPress(DIK_UP)) {
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
 		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(rotationSpeed_));
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
 
 	// Y軸回転
-	if (inputKey_->IsPress(DIK_LEFT) && !inputKey_->IsPress(DIK_RIGHT)) {
+	if (InputKey::GetInstance()->IsPress(DIK_LEFT) && !InputKey::GetInstance()->IsPress(DIK_RIGHT)) {
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
 		matRotDelta = Multiply(matRotDelta, MakeRotateYMatrix(-rotationSpeed_));
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
-	if (inputKey_->IsPress(DIK_RIGHT) && !inputKey_->IsPress(DIK_LEFT)) {
+	if (InputKey::GetInstance()->IsPress(DIK_RIGHT) && !InputKey::GetInstance()->IsPress(DIK_LEFT)) {
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
 		matRotDelta = Multiply(matRotDelta, MakeRotateYMatrix(rotationSpeed_));
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
 
 	// Z軸回転
-	if (inputKey_->IsPress(DIK_E) && !inputKey_->IsPress(DIK_Q)) {
+	if (InputKey::GetInstance()->IsPress(DIK_E) && !InputKey::GetInstance()->IsPress(DIK_Q)) {
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
 		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(-rotationSpeed_));
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
-	if (inputKey_->IsPress(DIK_Q) && !inputKey_->IsPress(DIK_E)) {
+	if (InputKey::GetInstance()->IsPress(DIK_Q) && !InputKey::GetInstance()->IsPress(DIK_E)) {
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
 		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(rotationSpeed_));
 		matRot_ = Multiply(matRotDelta, matRot_);

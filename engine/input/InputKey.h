@@ -7,13 +7,16 @@
 
 // InputKeyクラス
 class InputKey {
-private:
-    Microsoft::WRL::ComPtr<IDirectInput8> directInput_;
-    Microsoft::WRL::ComPtr<IDirectInputDevice8> keyboard_;
-    BYTE keyState_[256];
-    BYTE prevKeyState_[256];
+private: // ★ コンストラクタを private にする
+    InputKey();
+    // ★ コピーコンストラクタと代入演算子を削除 (C++11以降の書き方)
+    InputKey(const InputKey&) = delete;
+    InputKey& operator=(const InputKey&) = delete;
 
 public:
+    // ★ シングルトンインスタンスを取得する静的メソッド
+    static InputKey* GetInstance();
+
     // 初期化
     void Initialize(HINSTANCE hInstance, HWND hwnd);
 
@@ -25,4 +28,13 @@ public:
 
     // キーがトリガー（押された瞬間）か
     bool IsTrigger(int DIK_KEY);
+
+private:
+    // ★ シングルトンインスタンスを保持する静的メンバ
+    static InputKey* sInstance_;
+
+    Microsoft::WRL::ComPtr<IDirectInput8> directInput_;
+    Microsoft::WRL::ComPtr<IDirectInputDevice8> keyboard_;
+    BYTE keyState_[256];
+    BYTE prevKeyState_[256];
 };

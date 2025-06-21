@@ -38,11 +38,22 @@ private:
 	Skydome* skydome_ = nullptr;
 	Model* skydomeModel_ = nullptr;
 
+	enum class Phase {
+		kPlay,
+		kDeath,
+	};
+
+	Phase phase_;
+
+	void ChangePhase();
+
+	bool finished_ = false;
+
 public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(InputKey* key);
+	void Initialize();
 
 	/// <summary>
 	/// デストラクタ
@@ -52,7 +63,7 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update(InputKey* key);
+	void Update();
 
 	/// <summary>
 	/// 描画処理
@@ -66,5 +77,7 @@ public:
 
 	//すべての当たり判定Add commentMore actions
 	void CheckAllCollisions();
+
+	bool IsFinished() const { return finished_; }
 };
 
