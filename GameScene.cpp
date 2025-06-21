@@ -14,7 +14,7 @@ void GameScene::Initialize(InputKey* key) {
 	model_ = new Model();
 	model_->LoadModel("Player");
 	player_ = new Player();
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2, 17);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2, 1);
 	player_->Initialize(model_, &camera_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
 
@@ -69,7 +69,7 @@ void GameScene::Update(InputKey* key) {
 		camera_.SetCameraTranslate(player_->GetPosition());
 	}
 	camera_.Update(isDebugCamera);
-	
+
 
 	// 自キャラの更新
 	player_->Update(key);

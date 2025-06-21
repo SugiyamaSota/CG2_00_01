@@ -18,8 +18,8 @@ private:
 	Model* model_ = nullptr;
 
 	// ブロック
-	static const uint32_t kNumBlockVirtical = 20;
-	static const uint32_t kNumBlockHorizontal = 100;
+	static const uint32_t kNumBlockVirtical = 10;
+	static const uint32_t kNumBlockHorizontal = 25;
 	Model* blockModel_[kNumBlockVirtical][kNumBlockHorizontal] = { nullptr };
 	WorldTransform blockWorldTransform_[kNumBlockVirtical][kNumBlockHorizontal];
 	

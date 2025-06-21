@@ -9,6 +9,7 @@ class MapChipField;
 /// </summary>
 class Player {
 private:
+private:
 	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
 
@@ -42,21 +43,20 @@ private:
 
 	//接地状態フラグ
 	bool onGround_ = true;
-	float ground_ = 4.0f;
 
 	//重力加速度
-	static inline const float kGravityAcceleration = 0.05f;
+	static inline const float kGravityAcceleration = 0.0025f;
 	//最大落下速度
 	static inline const float kLimitFallSpeed = 2.0f;
 	//ジャンプ初速
-	static inline const float kJumpAcceleration = 0.6f;
+	static inline const float kJumpAcceleration = 0.2f;
 
 	//マップチップフィールド
 	MapChipField* mapChipField_ = nullptr;
 
 	//当たり判定サイズ
-	static inline const float kWidth = 0.8f;
-	static inline const float kHeight = 0.8f;
+	static inline const float kWidth = 2.0f;
+	static inline const float kHeight = 2.0f;
 
 	struct CollisionMapInfo {
 		bool isHotTop_ = false;
@@ -74,6 +74,10 @@ private:
 		kNumCorner
 	};
 
+	static inline const float kAttenuationTop = 0.5f;
+	static inline const float kAttenuationWall = 0.5f;
+
+
 public:
 	/// <summary>
 	/// 初期化
@@ -86,13 +90,17 @@ public:
 	void Move(InputKey* key);
 
 	void isCollisionMapTop(CollisionMapInfo& info);
-	/*void isCollisionMapBottom(CollisionMapInfo& info);
+	void isCollisionMapBottom(CollisionMapInfo& info);
 	void isCollisionMapLeft(CollisionMapInfo& info);
-	void isCollisionMapRight(CollisionMapInfo& info);*/
+	void isCollisionMapRight(CollisionMapInfo& info);
+
+	void CheckLanding(const CollisionMapInfo& info);
+
 
 	void ResolveCollision(const CollisionMapInfo& info);
 
 	void TopCollisionReaction(const CollisionMapInfo& info);
+	void WallCollisionReaction(const CollisionMapInfo& info);
 
 	void isCollisionMap(CollisionMapInfo& info);
 
