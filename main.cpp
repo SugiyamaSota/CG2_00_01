@@ -31,7 +31,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			///
 			/// 更新処理ここから
 			///
-			
+
+			if (Input::GetInstance()->IsMousePress(DIMOFS_BUTTON2)) {
+				transform.rotate.z++;
+			}
+
 			camera->Update(Camera::CameraType::kDebug);
 			model->Update(transform,camera);
 
