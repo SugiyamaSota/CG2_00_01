@@ -4,20 +4,22 @@
 const int32_t kClientWidth = 1280;
 const int32_t kClientHeight = 720;
 
-
 //Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 	BonjinEngine::Initialize(hInstance, kClientWidth, kClientHeight);
 	D3DResourceLeakChecker leakChecker_;
-
-	WorldTransform transform = InitializeWorldTransform();
-	Model* model = new Model();
-	model->LoadModel("axis");
-	model->Initialize(transform);
-
 	Camera* camera = new Camera();
 	camera->Initialize(kClientWidth, kClientHeight);
+
+	WorldTransform modelTransform = InitializeWorldTransform();
+	Model* model = new Model();
+	model->LoadModel("axis");
+	model->Initialize(modelTransform);
+
+	WorldTransform spriteTransform = InitializeWorldTransform();
+	Sprite* sprite = new Sprite();
+	sprite->Initialize(spriteTransform, "uvChecker.png");
 
 	//ウィンドウの×ボタンが押されるまでループ
 	MSG msg{};
@@ -32,12 +34,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			/// 更新処理ここから
 			///
 
-			if (Input::GetInstance()->IsMousePress(DIMOFS_BUTTON2)) {
-				transform.rotate.z++;
-			}
-
 			camera->Update(Camera::CameraType::kDebug);
-			model->Update(transform,camera);
+			model->Update(modelTransform,camera);
+			sprite->Update(spriteTransform, { 1,1,1,1 });
 
 			///
 			/// 更新処理ここまで
@@ -45,8 +44,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			BonjinEngine::PreDraw();
 			///
 			/// 描画処理ここから
+			///
 
 			model->Draw();
+			sprite->Draw();
 
 			///
 			/// 描画処理ここまで
@@ -56,6 +57,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	}
 
 	/////  解放処理 /////
+	delete sprite;
 	delete camera;
 	delete model;
 	BonjinEngine::Finalize();

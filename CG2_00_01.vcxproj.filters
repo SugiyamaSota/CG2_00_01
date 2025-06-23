@@ -61,6 +61,9 @@
     <Filter Include="engine\math\ヘッダー">
       <UniqueIdentifier>{cf199f77-ef45-4d1a-9eb5-a4ee66c5c778}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\sprite">
+      <UniqueIdentifier>{8c687e92-30a5-41af-a221-88eb0af97a08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -129,6 +132,9 @@
     <ClCompile Include="engine\camera\Camera.cpp">
       <Filter>engine\camera</Filter>
     </ClCompile>
+    <ClCompile Include="engine\sprite\sprite.cpp">
+      <Filter>engine\sprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Object3d.VS.hlsl" />
@@ -168,9 +174,6 @@
     <ClInclude Include="externals\Audio\xaudio_player_mf.h">
       <Filter>外部ファイル\audio</Filter>
     </ClInclude>
-    <ClInclude Include="engine\common\DirectXCommon.h">
-      <Filter>engine\directXCommon</Filter>
-    </ClInclude>
     <ClInclude Include="engine\function\Utility.h">
       <Filter>engine\Func</Filter>
     </ClInclude>
@@ -209,6 +212,12 @@
     </ClInclude>
     <ClInclude Include="engine\camera\Camera.h">
       <Filter>engine\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\sprite\sprite.h">
+      <Filter>engine\sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\common\DirectXCommon.h">
+      <Filter>engine\directXCommon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

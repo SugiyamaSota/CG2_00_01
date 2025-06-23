@@ -1,10 +1,6 @@
 #pragma once
 #include <d3d12.h>
 #include <dxgi1_6.h>
-#include <dxgidebug.h>
-#include <dxcapi.h>
-#include <dbghelp.h>
-#include <strsafe.h>
 #include <wrl/client.h>
 #include<stdint.h>
 #include<string>

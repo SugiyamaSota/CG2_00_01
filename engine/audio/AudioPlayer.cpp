@@ -1,5 +1,4 @@
 #include "AudioPlayer.h"
-#include <cassert>
 
 // 音声関連のライブラリリンク
 #pragma comment(lib, "mf.lib")

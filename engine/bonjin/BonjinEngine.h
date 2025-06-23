@@ -12,6 +12,7 @@
 #include"../model/Model.h"
 #include"../pso/PSO.h"
 #include"../texture/TextureManager.h"
+#include"../sprite/sprite.h"
 
 /// <summary>
 /// リソースリークチェッカーの構造体
