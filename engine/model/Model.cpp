@@ -34,7 +34,7 @@ void Model::LoadModel(const std::string& fileName) {
 	materialData_ = nullptr;
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	materialData_->enableLighting = false;
+	materialData_->enableLighting = true;
 	materialData_->uvTransform = MakeIdentity4x4();
 
 	// WVP用のリソース
@@ -53,7 +53,8 @@ void Model::Initialize(WorldTransform worldTransform) {
 	transform_ = worldTransform;
 }
 
-void Model::Update(WorldTransform worldTransform, Camera* camera) {
+void Model::Update(WorldTransform worldTransform, Camera* camera, bool enableLighting) {
+	materialData_->enableLighting = enableLighting;
 	transform_ = worldTransform;
 	wvpData_->World = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 	viewMatrix_ = Inverse(wvpData_->World);

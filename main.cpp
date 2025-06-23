@@ -14,12 +14,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 	WorldTransform modelTransform = InitializeWorldTransform();
 	Model* model = new Model();
-	model->LoadModel("axis");
+	model->LoadModel("bunny");
 	model->Initialize(modelTransform);
 
 	WorldTransform spriteTransform = InitializeWorldTransform();
 	Sprite* sprite = new Sprite();
 	sprite->Initialize(spriteTransform, "uvChecker.png");
+
+	bool lighting = false;
 
 	//ウィンドウの×ボタンが押されるまでループ
 	MSG msg{};
@@ -34,8 +36,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			/// 更新処理ここから
 			///
 
+			if (Input::GetInstance()->IsTrigger(DIK_SPACE)) {
+				if (lighting == true) {
+					lighting=false;
+
+				}
+				else if (lighting == false) {
+					lighting = true;
+				}
+			}
+
 			camera->Update(Camera::CameraType::kDebug);
-			model->Update(modelTransform,camera);
+			model->Update(modelTransform,camera,lighting);
 			sprite->Update(spriteTransform, { 1,1,1,1 });
 
 			///
