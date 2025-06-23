@@ -1,41 +1,45 @@
-#include "DebugCamera.h"
+#include "Camera.h"
 
-void DebugCamera::Initialize(InputKey* inputKey) {
+#include"../input/Input.h"
+
+void Camera::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 	matRot_ = MakeIdentity4x4();
 	translation_ = { 0,0,-50 };
 
 	viewMatrix_ = MakeIdentity4x4();
-	projectionMatrix_ = MakeIdentity4x4();
-
-	inputKey_ = inputKey;
+	projectionMatrix_ = MakePerspectiveFovMatrix(0.45f, float(clientWidth) / float(clientHeight), 0.1f, 100.0f);
 
 	isTargeting_ = false;
 	targetPosition_ = { 0,0,0 };
 }
 
-void DebugCamera::Update(bool isDebug) {
-	// 入力による移動や回転
-
-	if (isDebug) {
-		Move();
+void Camera::Update(CameraType type) {
+	if (Input::GetInstance()->IsTrigger(DIK_R)) {
+		ResetPosition();
+		ResetRotation();
 	}
-
-
-	//ビュー行列の更新
+	switch (type) {
+	case CameraType::kNormal:
+		break;
+	case CameraType::kDebug:
+		Move();
+		Rotate();
+		break;
+	}
+	// ビュー行列の更新
 	if (!isTargeting_) {
-		if (isDebug) {
-			Rotate();
-		}
 		Matrix4x4 affineMatrix = MakeAffineMatrix(scale_, matRot_, translation_);
 		viewMatrix_ = Inverse(affineMatrix);
 	} else if (isTargeting_) {
 		viewMatrix_ = MakeLookAtMatrix(translation_, targetPosition_, { 0, 1, 0 });
 	}
+	// ビュープロジェクション行列の作成
+	viewProjectionMatrix_ = Multiply(viewMatrix_, projectionMatrix_);
 }
 
-void DebugCamera::Move() {
+void Camera::Move() {
 	// 前移動
-	if (inputKey_->IsPress(DIK_C) && !inputKey_->IsPress(DIK_Z)) {
+	if (Input::GetInstance()->IsPress(DIK_C) && !Input::GetInstance()->IsPress(DIK_Z)) {
 		const float speed = 0.5f;
 
 		//カメラ移動ベクトル
@@ -49,7 +53,7 @@ void DebugCamera::Move() {
 	}
 
 	// 後ろ移動
-	if (inputKey_->IsPress(DIK_Z) && !inputKey_->IsPress(DIK_C)) {
+	if (Input::GetInstance()->IsPress(DIK_Z) && !Input::GetInstance()->IsPress(DIK_C)) {
 		const float speed = -0.5f;
 
 		//カメラ移動ベクトル
@@ -63,7 +67,7 @@ void DebugCamera::Move() {
 	}
 
 	// 上移動
-	if (inputKey_->IsPress(DIK_W) && !inputKey_->IsPress(DIK_S)) {
+	if (Input::GetInstance()->IsPress(DIK_W) && !Input::GetInstance()->IsPress(DIK_S)) {
 		const float speed = 0.5f;
 
 		//カメラ移動ベクトル
@@ -77,7 +81,7 @@ void DebugCamera::Move() {
 	}
 
 	// 下移動
-	if (inputKey_->IsPress(DIK_S) && !inputKey_->IsPress(DIK_W)) {
+	if (Input::GetInstance()->IsPress(DIK_S) && !Input::GetInstance()->IsPress(DIK_W)) {
 		const float speed = -0.5f;
 
 		//カメラ移動ベクトル
@@ -91,7 +95,7 @@ void DebugCamera::Move() {
 	}
 
 	// 左移動
-	if (inputKey_->IsPress(DIK_A) && !inputKey_->IsPress(DIK_D)) {
+	if (Input::GetInstance()->IsPress(DIK_A) && !Input::GetInstance()->IsPress(DIK_D)) {
 		const float speed = -0.5f;
 
 		//カメラ移動ベクトル
@@ -105,7 +109,7 @@ void DebugCamera::Move() {
 	}
 
 	// 右移動
-	if (inputKey_->IsPress(DIK_D) && !inputKey_->IsPress(DIK_A)) {
+	if (Input::GetInstance()->IsPress(DIK_D) && !Input::GetInstance()->IsPress(DIK_A)) {
 		const float speed = 0.5f;
 
 		//カメラ移動ベクトル
@@ -119,45 +123,45 @@ void DebugCamera::Move() {
 	}
 }
 
-void DebugCamera::Rotate() {
+void Camera::Rotate() {
 	// X軸回転
-	if (inputKey_->IsPress(DIK_UP) && !inputKey_->IsPress(DIK_DOWN)) {
+	if (Input::GetInstance()->IsPress(DIK_UP) && !Input::GetInstance()->IsPress(DIK_DOWN)) {
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
 		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(-rotationSpeed_));
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
-	if (inputKey_->IsPress(DIK_DOWN) && !inputKey_->IsPress(DIK_UP)) {
+	if (Input::GetInstance()->IsPress(DIK_DOWN) && !Input::GetInstance()->IsPress(DIK_UP)) {
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
 		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(rotationSpeed_));
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
 
 	// Y軸回転
-	if (inputKey_->IsPress(DIK_LEFT) && !inputKey_->IsPress(DIK_RIGHT)) {
+	if (Input::GetInstance()->IsPress(DIK_LEFT) && !Input::GetInstance()->IsPress(DIK_RIGHT)) {
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
 		matRotDelta = Multiply(matRotDelta, MakeRotateYMatrix(-rotationSpeed_));
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
-	if (inputKey_->IsPress(DIK_RIGHT) && !inputKey_->IsPress(DIK_LEFT)) {
+	if (Input::GetInstance()->IsPress(DIK_RIGHT) && !Input::GetInstance()->IsPress(DIK_LEFT)) {
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
 		matRotDelta = Multiply(matRotDelta, MakeRotateYMatrix(rotationSpeed_));
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
 
 	// Z軸回転
-	if (inputKey_->IsPress(DIK_E) && !inputKey_->IsPress(DIK_Q)) {
+	if (Input::GetInstance()->IsPress(DIK_E) && !Input::GetInstance()->IsPress(DIK_Q)) {
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
 		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(-rotationSpeed_));
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
-	if (inputKey_->IsPress(DIK_Q) && !inputKey_->IsPress(DIK_E)) {
+	if (Input::GetInstance()->IsPress(DIK_Q) && !Input::GetInstance()->IsPress(DIK_E)) {
 		Matrix4x4 matRotDelta = MakeIdentity4x4();
 		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(rotationSpeed_));
 		matRot_ = Multiply(matRotDelta, matRot_);
 	}
 }
 
-Matrix4x4 DebugCamera::MakeLookAtMatrix(const Vector3& eye, const Vector3& target, const Vector3& up) {
+Matrix4x4 Camera::MakeLookAtMatrix(const Vector3& eye, const Vector3& target, const Vector3& up) {
 	Vector3 zaxis = Normalize(Subtract(target, eye));
 	Vector3 xaxis = Normalize(Cross(up, zaxis));
 	Vector3 yaxis = Cross(zaxis, xaxis);
@@ -186,8 +190,6 @@ Matrix4x4 DebugCamera::MakeLookAtMatrix(const Vector3& eye, const Vector3& targe
 	return result;
 }
 
-void DebugCamera::SetTarget(Vector3 targetPosition) {
+void Camera::SetTarget(Vector3 targetPosition) {
 	targetPosition_ = targetPosition; isTargeting_ = true;
 }
-
-void DebugCamera::ResetRotation() { matRot_ = MakeIdentity4x4(); }

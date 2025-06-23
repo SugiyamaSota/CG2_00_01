@@ -49,6 +49,9 @@
     <Filter Include="engine\model">
       <UniqueIdentifier>{1c05ca22-0f61-41fb-8493-32755ab606a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\camera">
+      <UniqueIdentifier>{72034ad0-fae9-4e07-b141-f7b6a9a6b86a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="engine\math">
       <UniqueIdentifier>{758a4b7f-54bf-4e22-9b22-3fe1c90ac298}</UniqueIdentifier>
     </Filter>
@@ -57,9 +60,6 @@
     </Filter>
     <Filter Include="engine\math\ヘッダー">
       <UniqueIdentifier>{cf199f77-ef45-4d1a-9eb5-a4ee66c5c778}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="engine\camera">
-      <UniqueIdentifier>{72034ad0-fae9-4e07-b141-f7b6a9a6b86a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -99,7 +99,7 @@
     <ClCompile Include="engine\imgui\ImGuiManager.cpp">
       <Filter>engine\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="engine\input\InputKey.cpp">
+    <ClCompile Include="engine\input\Input.cpp">
       <Filter>engine\input</Filter>
     </ClCompile>
     <ClCompile Include="engine\texture\TextureManager.cpp">
@@ -126,7 +126,7 @@
     <ClCompile Include="engine\bonjin\BonjinEngine.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="engine\camera\DebugCamera.cpp">
+    <ClCompile Include="engine\camera\Camera.cpp">
       <Filter>engine\camera</Filter>
     </ClCompile>
   </ItemGroup>
@@ -177,7 +177,7 @@
     <ClInclude Include="engine\imgui\ImGuiManager.h">
       <Filter>engine\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="engine\input\InputKey.h">
+    <ClInclude Include="engine\input\Input.h">
       <Filter>engine\input</Filter>
     </ClInclude>
     <ClInclude Include="engine\texture\TextureManager.h">
@@ -207,7 +207,7 @@
     <ClInclude Include="engine\math\Struct.h">
       <Filter>engine\math\ヘッダー</Filter>
     </ClInclude>
-    <ClInclude Include="engine\camera\DebugCamera.h">
+    <ClInclude Include="engine\camera\Camera.h">
       <Filter>engine\camera</Filter>
     </ClInclude>
   </ItemGroup>

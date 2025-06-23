@@ -122,3 +122,13 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 	result.m[3][2] = minDepth;
 	return result;
 }
+
+WorldTransform InitializeWorldTransform() {
+	WorldTransform result;
+	result = {
+		{1,1,1},
+		{0,0,0},
+		{0,0,0},
+	};
+	return result;
+}

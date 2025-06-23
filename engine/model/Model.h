@@ -5,7 +5,7 @@
 #include"../math/Struct.h"
 
 class DirectXCommon;
-class DebugCamera;
+class Camera;
 
 class Model {
 public:
@@ -15,7 +15,7 @@ public:
 
 	void Initialize(WorldTransform worldTransform);
 
-	void Update(WorldTransform worldTransform, DebugCamera* debugCamera);
+	void Update(WorldTransform worldTransform,Camera* camera);
 
 	void Draw(); // 引数をintに変更
 
@@ -35,7 +35,12 @@ private:
 	TransformationMatrix* wvpData_ = nullptr;
 
 	WorldTransform transform_;
+	// ビュー行列
+	Matrix4x4 viewMatrix_;
+	// 射影行列
 	Matrix4x4 projectionMatrix_;
+	// ビュープロジェクション行列
+	Matrix4x4 viewProjectionMatrix_;
 
 	int textureHandle_ = 0;
 

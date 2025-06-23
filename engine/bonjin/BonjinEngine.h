@@ -1,10 +1,10 @@
 #pragma once
 #include"../audio/AudioPlayer.h"
-#include"../camera/DebugCamera.h"
+#include"../camera/Camera.h"
 #include"../common/DirectXCommon.h"
 #include"../function/Utility.h"
 #include"../imgui/ImGuiManager.h"
-#include"../input/InputKey.h"
+#include"../input/Input.h"
 #include"../math/Struct.h"
 #include"../math/Vector.h"
 #include"../math/Matrix.h"
@@ -13,6 +13,9 @@
 #include"../pso/PSO.h"
 #include"../texture/TextureManager.h"
 
+/// <summary>
+/// リソースリークチェッカーの構造体
+/// </summary>
 struct D3DResourceLeakChecker {
 	~D3DResourceLeakChecker() {
 		Microsoft::WRL::ComPtr<IDXGIDebug1> debug;
@@ -24,18 +27,16 @@ struct D3DResourceLeakChecker {
 	}
 };
 
-
-class BonjinEngine {
-public:
+namespace BonjinEngine {
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	void Initialize(HINSTANCE hInstance, int32_t kClientWidth, int32_t ClientHeight);
 
 	/// <summary>
-	/// デストラクタ
+	/// 終了関数
 	/// </summary>
-	~BonjinEngine();
+	void Finalize();
 
 	/// <summary>
 	/// 最初のフレームに呼び出し
@@ -43,15 +44,13 @@ public:
 	void NewFrame();
 
 	/// <summary>
+	/// 描画前に呼び出し
+	/// </summary>
+	void PreDraw();
+
+	/// <summary>
 	/// 最後のフレームに呼び出し
 	/// </summary>
 	void EndFrame();
-
-	InputKey* GetKey() { return key_; }
-
-private:
-	D3DResourceLeakChecker leakChecker_;
-	InputKey* key_ = nullptr;
-
-};
+}
 

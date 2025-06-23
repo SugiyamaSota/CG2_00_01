@@ -24,21 +24,24 @@ std::string logFilePath = std::string("logs/") + dateString + ".log";
 std::ofstream logStream(logFilePath);
 
 void BonjinEngine::Initialize(HINSTANCE hInstance, int32_t clientWidth, int32_t clientHeight) {
-	// directXcommonの初期化
+	// directXcommon、Input、テクスチャのインスタンスを取得
 	DirectXCommon::GetInstance(hInstance, clientWidth, clientHeight);
-	key_ = new InputKey();
-	key_->Initialize(hInstance, DirectXCommon::GetInstance()->GetHWND());
+	Input::GetInstance()->Initialize(hInstance, DirectXCommon::GetInstance()->GetHWND());
+	TextureManager::GetInstance();
 }
 
-BonjinEngine::~BonjinEngine() {
-	delete key_;
+void BonjinEngine::Finalize() {
+	// directXcommon、Input、テクスチャのインスタンスを破壊
 	TextureManager::DestroyInstance();
 	DirectXCommon::GetInstance()->DestroyInstance();
 }
 
 void BonjinEngine::NewFrame() {
+	Input::GetInstance()->Update();
+}
+
+void BonjinEngine::PreDraw() {
 	DirectXCommon::GetInstance()->NewFeame();
-	key_->Update();
 }
 
 void BonjinEngine::EndFrame() {

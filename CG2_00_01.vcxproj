@@ -98,12 +98,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="engine\bonjin\BonjinEngine.cpp" />
-    <ClCompile Include="engine\camera\DebugCamera.cpp" />
+    <ClCompile Include="engine\camera\Camera.cpp" />
     <ClCompile Include="engine\audio\AudioPlayer.cpp" />
     <ClCompile Include="engine\common\DirectXCommon.cpp" />
     <ClCompile Include="engine\function\Utility.cpp" />
     <ClCompile Include="engine\imgui\ImGuiManager.cpp" />
-    <ClCompile Include="engine\input\InputKey.cpp" />
+    <ClCompile Include="engine\input\Input.cpp" />
     <ClCompile Include="engine\model\Model.cpp" />
     <ClCompile Include="engine\pso\PSO.cpp" />
     <ClCompile Include="engine\texture\TextureManager.cpp" />
@@ -136,12 +136,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\bonjin\BonjinEngine.h" />
-    <ClInclude Include="engine\camera\DebugCamera.h" />
+    <ClInclude Include="engine\camera\Camera.h" />
     <ClInclude Include="engine\audio\AudioPlayer.h" />
     <ClInclude Include="engine\common\DirectXCommon.h" />
     <ClInclude Include="engine\function\Utility.h" />
     <ClInclude Include="engine\imgui\ImGuiManager.h" />
-    <ClInclude Include="engine\input\InputKey.h" />
+    <ClInclude Include="engine\input\Input.h" />
     <ClInclude Include="engine\model\Model.h" />
     <ClInclude Include="engine\pso\PSO.h" />
     <ClInclude Include="engine\texture\TextureManager.h" />

@@ -4,7 +4,7 @@
 ///// 前方宣言 /////
 struct Vector3;
 struct Matrix4x4;
-struct Transform;
+struct WorldTransform;
 
 /// <summary>
 /// 平行移動行列
@@ -59,3 +59,6 @@ Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float botto
 
 //ビューポート行列
 Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
+
+// ワールドトランスフォームの初期化
+WorldTransform InitializeWorldTransform();

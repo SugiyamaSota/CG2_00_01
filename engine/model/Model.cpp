@@ -8,16 +8,19 @@
 #include"../math/Convert.h"
 #include"../math/Matrix.h"
 
-#include"../camera/DebugCamera.h"
+#include"../camera/Camera.h"
 #include"../texture/TextureManager.h"
 
 Model::Model() {
+	transform_ = InitializeWorldTransform();
+	viewMatrix_ = MakeIdentity4x4();
 	projectionMatrix_ = MakePerspectiveFovMatrix(0.45f, float(1280) / float(720), 0.1f, 100.0f);
+	viewProjectionMatrix_ = MakeIdentity4x4();
 }
 
 void Model::LoadModel(const std::string& fileName) {
 	// モデル読み込み
-	modelData_ = LoadObjFile("resources/" + fileName, fileName + ".obj");
+	modelData_ = LoadObjFile("resources/models/" + fileName, fileName + ".obj");
 	// 頂点用のリソース
 	vertexResource_ = CreateBufferResource(DirectXCommon::GetInstance()->GetDevice(), sizeof(VertexData) * modelData_.vertices.size());
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
@@ -50,11 +53,18 @@ void Model::Initialize(WorldTransform worldTransform) {
 	transform_ = worldTransform;
 }
 
-void Model::Update(WorldTransform worldTransform, DebugCamera* debugCamera) {
+void Model::Update(WorldTransform worldTransform, Camera* camera) {
 	transform_ = worldTransform;
 	wvpData_->World = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-	Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData_->World, Multiply(debugCamera->GetViewMatrix(), projectionMatrix_));
-	wvpData_->WVP = worldViewProjectionMatrix;
+	viewMatrix_ = Inverse(wvpData_->World);
+	if (camera == nullptr) {
+		viewProjectionMatrix_ = Multiply(viewMatrix_, projectionMatrix_);
+		Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData_->World, viewProjectionMatrix_);
+		wvpData_->WVP = worldViewProjectionMatrix;
+	} else {
+		Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData_->World, camera->GetViewProjectionMatrix());
+		wvpData_->WVP = worldViewProjectionMatrix;
+	}
 }
 
 void Model::Draw() {
