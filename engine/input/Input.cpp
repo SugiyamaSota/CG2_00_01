@@ -107,11 +107,11 @@ bool Input::IsMouseTrigger(int button) {
 		(prevMouseState_.rgbButtons[button] & 0x80) == 0;
 }
 
-long Input::GetMouseX() {
+long Input::GetMouseDeltaX() {
 	return mouseState_.lX;
 }
 
-long Input::GetMouseY() {
+long Input::GetMouseDeltaY() {
 	return mouseState_.lY;
 }
 
