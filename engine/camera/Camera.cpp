@@ -38,13 +38,21 @@ void Camera::Update(CameraType type) {
 }
 
 void Camera::Move() {
-	// 前移動
-	if (Input::GetInstance()->IsPress(DIK_C) && !Input::GetInstance()->IsPress(DIK_Z)) {
-		const float speed = 0.5f;
+	// Inputインスタンスを一度だけ取得してキャッシュ
+	Input* input = Input::GetInstance();
 
-		//カメラ移動ベクトル
-		Vector3 move = { 0,0,speed };
-		// 移動ベクトルを回転
+	// マウスホイールによる前後移動
+	if (input->GetMouseWheel() != 0) {
+		long mouseDeltaZ = input->GetMouseWheel();
+		const float speed = 0.01f;
+
+		// カメラ移動ベクトル（Z軸方向のみ）
+		// DirectInputのGetMouseWheel()は、手前にスクロールすると負、奥にスクロールすると正のことが多いですが、
+		// 動作を見て前後を調整してください。ここではmouseDeltaZが正なら前進としています。
+		Vector3 move = { 0, 0, speed * static_cast<float>(mouseDeltaZ) };
+
+		// 移動ベクトルをカメラの現在の回転に合わせて変換
+		// これにより、カメラが向いている方向に前後に移動します。
 		Matrix4x4 rotateMatrix = matRot_;
 		move = Conversion(move, rotateMatrix);
 
@@ -52,69 +60,22 @@ void Camera::Move() {
 		translation_ = Add(translation_, move);
 	}
 
-	// 後ろ移動
-	if (Input::GetInstance()->IsPress(DIK_Z) && !Input::GetInstance()->IsPress(DIK_C)) {
-		const float speed = -0.5f;
+	// マウスホイールボタン (ボタン2) と左Shiftキーが同時に押されている場合
+	if (input->IsMousePress(2) && input->IsPress(DIK_LSHIFT)) {
+		long mouseDeltaX = input->GetMouseDeltaX();
+		long mouseDeltaY = input->GetMouseDeltaY(); // マウスの上下移動量
 
-		//カメラ移動ベクトル
-		Vector3 move = { 0,0,speed };
-		// 移動ベクトルを回転
-		Matrix4x4 rotateMatrix = matRot_;
-		move = Conversion(move, rotateMatrix);
+		const float speed = 0.05f; // 移動速度を調整 (マウス移動量に対する感度)
 
-		// 座標に加算
-		translation_ = Add(translation_, move);
-	}
+		Vector3 move = {
+			static_cast<float>(-mouseDeltaX) * speed, // X軸方向の移動 (左右)
+			static_cast<float>(-mouseDeltaY) * speed, // Y軸方向の移動 (上下)
+			0.0f                                     // Z軸方向はここでは動かさない
+		};
 
-	// 上移動
-	if (Input::GetInstance()->IsPress(DIK_W) && !Input::GetInstance()->IsPress(DIK_S)) {
-		const float speed = 0.5f;
-
-		//カメラ移動ベクトル
-		Vector3 move = { 0,speed,0 };
-		// 移動ベクトルを回転
-		Matrix4x4 rotateMatrix = matRot_;
-		move = Conversion(move, rotateMatrix);
-
-		// 座標に加算
-		translation_ = Add(translation_, move);
-	}
-
-	// 下移動
-	if (Input::GetInstance()->IsPress(DIK_S) && !Input::GetInstance()->IsPress(DIK_W)) {
-		const float speed = -0.5f;
-
-		//カメラ移動ベクトル
-		Vector3 move = { 0,speed,0 };
-		// 移動ベクトルを回転
-		Matrix4x4 rotateMatrix = matRot_;
-		move = Conversion(move, rotateMatrix);
-
-		// 座標に加算
-		translation_ = Add(translation_, move);
-	}
-
-	// 左移動
-	if (Input::GetInstance()->IsPress(DIK_A) && !Input::GetInstance()->IsPress(DIK_D)) {
-		const float speed = -0.5f;
-
-		//カメラ移動ベクトル
-		Vector3 move = { speed,0,0 };
-		// 移動ベクトルを回転
-		Matrix4x4 rotateMatrix = matRot_;
-		move = Conversion(move, rotateMatrix);
-
-		// 座標に加算
-		translation_ = Add(translation_, move);
-	}
-
-	// 右移動
-	if (Input::GetInstance()->IsPress(DIK_D) && !Input::GetInstance()->IsPress(DIK_A)) {
-		const float speed = 0.5f;
-
-		//カメラ移動ベクトル
-		Vector3 move = { speed,0,0 };
-		// 移動ベクトルを回転
+		// 移動ベクトルをカメラの現在の回転に合わせて変換
+		// これが重要です！カメラがどちらを向いていても、そのカメラの
+		// ローカルな左右・上下方向に移動させるために必要です。
 		Matrix4x4 rotateMatrix = matRot_;
 		move = Conversion(move, rotateMatrix);
 
@@ -124,40 +85,25 @@ void Camera::Move() {
 }
 
 void Camera::Rotate() {
-	// X軸回転
-	if (Input::GetInstance()->IsPress(DIK_UP) && !Input::GetInstance()->IsPress(DIK_DOWN)) {
-		Matrix4x4 matRotDelta = MakeIdentity4x4();
-		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(-rotationSpeed_));
-		matRot_ = Multiply(matRotDelta, matRot_);
-	}
-	if (Input::GetInstance()->IsPress(DIK_DOWN) && !Input::GetInstance()->IsPress(DIK_UP)) {
-		Matrix4x4 matRotDelta = MakeIdentity4x4();
-		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(rotationSpeed_));
-		matRot_ = Multiply(matRotDelta, matRot_);
-	}
+	// Inputインスタンスを一度だけ取得してキャッシュ
+	Input* input = Input::GetInstance();
 
-	// Y軸回転
-	if (Input::GetInstance()->IsPress(DIK_LEFT) && !Input::GetInstance()->IsPress(DIK_RIGHT)) {
-		Matrix4x4 matRotDelta = MakeIdentity4x4();
-		matRotDelta = Multiply(matRotDelta, MakeRotateYMatrix(-rotationSpeed_));
-		matRot_ = Multiply(matRotDelta, matRot_);
-	}
-	if (Input::GetInstance()->IsPress(DIK_RIGHT) && !Input::GetInstance()->IsPress(DIK_LEFT)) {
-		Matrix4x4 matRotDelta = MakeIdentity4x4();
-		matRotDelta = Multiply(matRotDelta, MakeRotateYMatrix(rotationSpeed_));
-		matRot_ = Multiply(matRotDelta, matRot_);
-	}
+	// マウスホイールボタン (ボタン2) が押されており、かつ左Shiftキーが押されていない場合
+	if (input->IsMousePress(2) && !input->IsPress(DIK_LSHIFT)) { // !input->IsPress(DIK_LSHIFT) を使用
+		long mouseDeltaX = input->GetMouseDeltaX();
+		long mouseDeltaY = input->GetMouseDeltaY();
 
-	// Z軸回転
-	if (Input::GetInstance()->IsPress(DIK_E) && !Input::GetInstance()->IsPress(DIK_Q)) {
-		Matrix4x4 matRotDelta = MakeIdentity4x4();
-		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(-rotationSpeed_));
-		matRot_ = Multiply(matRotDelta, matRot_);
-	}
-	if (Input::GetInstance()->IsPress(DIK_Q) && !Input::GetInstance()->IsPress(DIK_E)) {
-		Matrix4x4 matRotDelta = MakeIdentity4x4();
-		matRotDelta = Multiply(matRotDelta, MakeRotateXMatrix(rotationSpeed_));
-		matRot_ = Multiply(matRotDelta, matRot_);
+		// マウスのX軸移動によるY軸回転 (左右の首振り)
+		if (mouseDeltaX != 0) {
+			Matrix4x4 matRotDeltaY = MakeRotateYMatrix(static_cast<float>(-mouseDeltaX) * rotationSpeed_);
+			matRot_ = Multiply(matRotDeltaY, matRot_);
+		}
+
+		// マウスのY軸移動によるX軸回転 (上下の首振り)
+		if (mouseDeltaY != 0) {
+			Matrix4x4 matRotDeltaX = MakeRotateXMatrix(static_cast<float>(-mouseDeltaY) * rotationSpeed_);
+			matRot_ = Multiply(matRotDeltaX, matRot_);
+		}
 	}
 }
 

@@ -45,12 +45,13 @@ public:
     // マウスボタンがトリガー（押された瞬間）か
     bool IsMouseTrigger(int button);
 
-    // マウスのX移動量を取得
-    long GetMouseX();
-
-    // マウスのY移動量を取得
-    long GetMouseY();
+    // マウスのX軸方向の移動量を取得
+    long GetMouseDeltaX();
+    // マウスのY軸方向の移動量を取得
+    long GetMouseDeltaY();
 
     // マウスのホイール移動量を取得
     long GetMouseWheel();
+
+
 };

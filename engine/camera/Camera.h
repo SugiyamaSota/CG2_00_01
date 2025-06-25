@@ -26,7 +26,7 @@ private:
 	Matrix4x4 viewProjectionMatrix_;
 
 	//回転速度
-	const float rotationSpeed_ = 0.01f;
+	const float rotationSpeed_ = 0.001f;
 
 	// ターゲット関連
 	bool isTargeting_;       // フラグ
