@@ -19,17 +19,33 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg
 class ImGuiManager
 {
 public:
-	ImGuiManager(HWND hwnd, ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12DescriptorHeap* srvDescriptorHeap);
-	~ImGuiManager();
+	// シングルトンインスタンスの取得
+	static ImGuiManager* GetInstance();
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
+
+	/// <summary>
+	/// 最初のフレーム
+	/// </summary>
 	void NewFrame();
+
+	/// <summary>
+	/// 最後のフレーム
+	/// </summary>
 	void EndFrame();
 
 private:
-	HWND hwnd_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Device> device_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_ = nullptr;
-};
+	// コンストラクタとデストラクタをprivateにする
+	ImGuiManager();
+	~ImGuiManager();
 
+	// コピーコンストラクタと代入演算子を禁止する
+	ImGuiManager(const ImGuiManager&) = delete;
+	ImGuiManager& operator=(const ImGuiManager&) = delete;
+
+	// 静的メンバ変数の追加
+	static ImGuiManager* sInstance;
+};

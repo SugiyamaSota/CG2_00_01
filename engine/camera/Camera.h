@@ -1,25 +1,19 @@
 #pragma once
+#include <cmath>
+#include <algorithm>
 
-// 数学関連
 #include"../math/Struct.h"
-#include "../math/Vector.h"
-#include "../math/Matrix.h"
-#include "../math/Convert.h"
 
-// 球面座標系の計算に必要なもの
-#include <cmath>      // std::sin, std::cos, std::atan2, std::fmod など
-#include <algorithm>  // std::clamp のため
 
 class Camera {
 private:
 	///// --- 変数 --- /////
-	// 累積回転行列 (球面座標を使う場合、直接操作することは減るかもしれません)
-	Matrix4x4 matRot_; // これは引き続きカメラの向きを表す行列として利用します
+	// 累積回転行列
+	Matrix4x4 matRot_;
 
-	// ローカル座標 (球面座標から計算されるため、直接設定は減ります)
+	// ローカル座標
 	Vector3 translation_;
 
-	//MakeAffineで使うため(基本変えないためconst)
 	const Vector3 scale_{ 1,1,1 };
 
 	// ビュー行列
@@ -30,7 +24,7 @@ private:
 	Matrix4x4 viewProjectionMatrix_;
 
 	// カメラの速度(ズーム、移動、回転)
-	const float rotationSpeed_ = 0.01f; 
+	const float multiSpeed_ = 0.01f; 
 
 	// ターゲット関連
 	bool isTargeting_;       // フラグ

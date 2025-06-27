@@ -4,8 +4,8 @@
 Sprite::Sprite() {
 	transform_ = InitializeWorldTransform();
 	viewMatrix_ = MakeIdentity4x4();
-	projectionMatrix_ = MakeOrthographicMatrix(0.0f, static_cast<float>(1280), static_cast<float>(720), 0.0f, 0.0f, 100.0f);
-	viewProjectionMatrix_ = MakeIdentity4x4();
+	projectionMatrix_ = MakeOrthographicMatrix(0.0f, 0.0f, static_cast<float>(1280), static_cast<float>(720), 0.0f, 100.0f);
+	viewProjectionMatrix_ = Multiply(viewMatrix_, projectionMatrix_);
 }
 
 Sprite::~Sprite() {
@@ -86,21 +86,20 @@ void Sprite::Initialize(WorldTransform worldTransform, const std::string& textur
 	textureHandle_ = TextureManager::GetInstance()->LoadTexture("resources/textures/" + textureFilePath);
 }
 
-void Sprite::Update(WorldTransform worldTransform, Vector4 color) {
+void Sprite::Update(WorldTransform worldTransform, Color color) {
 	transform_ = worldTransform;
 
 	// ワールド行列の計算
 	wvpData_->World = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 
-	// WVP 行列の計算ください。
-	Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData_->World, Multiply(viewMatrix_, projectionMatrix_));
+	// WVP 行列の計算
+	Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData_->World, viewProjectionMatrix_);
 	wvpData_->WVP = worldViewProjectionMatrix;
 
 	// マテリアルの更新
-	materialData_->color = color;
+	materialData_->color = ToVector4(color); // enum Color を Vector4 に変換して設定
 
-	// UV 変換行列の更新 (必要に応じて)
-	// 例えば、スプライトシートアニメーションなどを行う場合に、uvTransform を更新します。
+	// UV 変換行列の更新
 	Matrix4x4 uvTransformMatrix = MakeScaleMatrix(transform_.scale); // スプライトのスケールをUV変換に適用
 	uvTransformMatrix = Multiply(uvTransformMatrix, MakeRotateZMatrix(transform_.rotate.z)); // Z軸回転をUV変換に適用
 	uvTransformMatrix = Multiply(uvTransformMatrix, MakeTranslateMatrix({ transform_.translate.x, transform_.translate.y, 0.0f })); // 平行移動をUV変換に適用

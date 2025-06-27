@@ -1,37 +1,43 @@
 #include "ImGuiManager.h"
+#include"../common/DirectXCommon.h"
 
-ImGuiManager::ImGuiManager(HWND hwnd, ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12DescriptorHeap* srvDescriptorHeap) {
-	hwnd_ = hwnd;
-	device_ = device;
-	commandList_ = commandList;
-	srvDescriptorHeap_ = srvDescriptorHeap;
+// 静的メンバ変数の初期化
+ImGuiManager* ImGuiManager::sInstance = nullptr; // 静的メンバ変数を初期化
+
+ImGuiManager* ImGuiManager::GetInstance() {
+	if (sInstance == nullptr) { // インスタンスがまだ作成されていない場合
+		sInstance = new ImGuiManager(); // 新しいインスタンスを作成
+	}
+	return sInstance; // 既存のインスタンスを返す
+}
+
+ImGuiManager::ImGuiManager() {
 }
 
 ImGuiManager::~ImGuiManager() {
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+	// シングルトンインスタンスをnullptrに戻す
+	sInstance = nullptr; // インスタンス破棄時にsInstanceをnullptrに戻す
 }
 
 void ImGuiManager::Initialize() {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
-	ImGui_ImplWin32_Init(hwnd_);
-	// ImGui_ImplDX12_Init の引数を修正
-	// SRVディスクリプタヒープを渡す
+	ImGui_ImplWin32_Init(DirectXCommon::GetInstance()->GetHWND());
 	ImGui_ImplDX12_Init(
-		device_.Get(),
-		2, // フレームバッファの数 (スワップチェーンのバッファ数と同じ)
-		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, // レンダーターゲットのフォーマット
-		srvDescriptorHeap_.Get(), // ImGuiが使用するSRVディスクリプタヒープ
-		srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(), // ImGuiのフォントテクスチャのCPUハンドル
-		srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart()
-	);// ImGuiのフォントテクスチャのGPUハンドル
+		DirectXCommon::GetInstance()->GetDevice(),
+		2,
+		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+		DirectXCommon::GetInstance()->GetSRVDescriptorHeap(),
+		DirectXCommon::GetInstance()->GetSRVDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(),
+		DirectXCommon::GetInstance()->GetSRVDescriptorHeap()->GetGPUDescriptorHandleForHeapStart()
+	);
 }
 
 void ImGuiManager::NewFrame() {
-	//フレームの最初
 	ImGui_ImplWin32_NewFrame();
 	ImGui_ImplDX12_NewFrame();
 	ImGui::NewFrame();
@@ -39,5 +45,5 @@ void ImGuiManager::NewFrame() {
 
 void ImGuiManager::EndFrame() {
 	ImGui::Render();
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList_.Get());
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), DirectXCommon::GetInstance()->GetCommandList());
 }

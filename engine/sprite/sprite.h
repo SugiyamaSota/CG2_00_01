@@ -1,5 +1,6 @@
 #pragma once
 #include"../bonjin/BonjinEngine.h"
+#include"../color/Color.h"
 
 class Sprite {
 public:
@@ -18,9 +19,7 @@ public:
     /// </summary>
     /// <param name="worldTransform">ワールド変換</param>
     /// <param name="color">色</param>
-    /// <param name="viewMatrix">ビュー行列</param>
-    /// <param name="projectionMatrix">プロジェクション行列</param>
-    void Update(WorldTransform worldTransform, Vector4 color);
+    void Update(WorldTransform worldTransform, Color color);
 
     /// <summary>
     /// スプライトの描画

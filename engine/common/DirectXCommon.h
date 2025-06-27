@@ -78,8 +78,6 @@ public:
 	// PSO
 	PSO pso;
 
-	//imgui
-	ImGuiManager* imguiManager_;
 
 private:
 	// プライベートコンストラクタ

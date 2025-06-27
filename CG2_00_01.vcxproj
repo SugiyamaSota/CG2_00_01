@@ -97,6 +97,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\color\Color.cpp" />
     <ClCompile Include="engine\bonjin\BonjinEngine.cpp" />
     <ClCompile Include="engine\camera\Camera.cpp" />
     <ClCompile Include="engine\audio\AudioPlayer.cpp" />
@@ -136,6 +137,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\color\Color.h" />
     <ClInclude Include="engine\bonjin\BonjinEngine.h" />
     <ClInclude Include="engine\camera\Camera.h" />
     <ClInclude Include="engine\audio\AudioPlayer.h" />

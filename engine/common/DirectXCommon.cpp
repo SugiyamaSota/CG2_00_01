@@ -182,8 +182,6 @@ void DirectXCommon::Initialize() {
 	scissorRect_.top = 0;
 	scissorRect_.bottom = LONG(clientHeight_);
 
-	imguiManager_ = new ImGuiManager(hwnd_, device_.Get(), commandList_.Get(), srvDescriptorHeap_.Get());
-	imguiManager_->Initialize();
 }
 
 
@@ -194,12 +192,9 @@ DirectXCommon::~DirectXCommon() {
 	}
 	CoUninitialize();
 	CloseWindow(hwnd_);
-	delete imguiManager_;
 }
 
 void DirectXCommon::NewFeame() {
-	//imgui
-	imguiManager_->NewFrame();
 
 	//これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
@@ -240,8 +235,6 @@ void DirectXCommon::NewFeame() {
 }
 
 void DirectXCommon::EndFrame() {
-
-	imguiManager_->EndFrame();
 
 	//画面に描く処理はすべて終わり、画面に映すので、状態を遷移
 	//今回はRenderTargetからPresentにする

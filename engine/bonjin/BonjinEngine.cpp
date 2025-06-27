@@ -28,6 +28,7 @@ void BonjinEngine::Initialize(HINSTANCE hInstance, int32_t clientWidth, int32_t 
 	DirectXCommon::GetInstance(hInstance, clientWidth, clientHeight);
 	Input::GetInstance()->Initialize(hInstance, DirectXCommon::GetInstance()->GetHWND());
 	TextureManager::GetInstance();
+	ImGuiManager::GetInstance()->Initialize();
 }
 
 void BonjinEngine::Finalize() {
@@ -38,6 +39,9 @@ void BonjinEngine::Finalize() {
 
 void BonjinEngine::NewFrame() {
 	Input::GetInstance()->Update();
+	ID3D12DescriptorHeap* descriptorHeaps[] = { DirectXCommon::GetInstance()->GetSRVDescriptorHeap() };
+	DirectXCommon::GetInstance()->GetCommandList()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+	ImGuiManager::GetInstance()->NewFrame();
 }
 
 void BonjinEngine::PreDraw() {
@@ -45,5 +49,6 @@ void BonjinEngine::PreDraw() {
 }
 
 void BonjinEngine::EndFrame() {
+	ImGuiManager::GetInstance()->EndFrame();
 	DirectXCommon::GetInstance()->EndFrame();
 }

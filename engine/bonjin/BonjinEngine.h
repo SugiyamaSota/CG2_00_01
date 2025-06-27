@@ -13,6 +13,7 @@
 #include"../pso/PSO.h"
 #include"../texture/TextureManager.h"
 #include"../sprite/sprite.h"
+#include"../color/Color.h"
 
 /// <summary>
 /// リソースリークチェッカーの構造体
