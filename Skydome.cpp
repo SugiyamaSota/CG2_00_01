@@ -6,7 +6,7 @@
 /// </summary>
 void Skydome::Initialize(Model* model,DebugCamera* camera) {
 	worldTransform_ = {
-		{1,1,1},
+		{3,3,3},
 		{0,0,0},
 		{0,0,0},
 	};

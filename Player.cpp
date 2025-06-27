@@ -363,8 +363,8 @@ void Player::Update() {
 			turnTimer_ -= 1.0f / 60.0f;
 			// 左右の自キャラ角度テーブル
 			float destinationRotationYTable[] = {
-				std::numbers::pi_v<float> *-4.0f / 2.0f,
 				std::numbers::pi_v<float> *2.0f / 2.0f,
+				std::numbers::pi_v<float> * -4.0f / 2.0f,
 			};
 			// 状況に応じた角度を取得する
 			float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];

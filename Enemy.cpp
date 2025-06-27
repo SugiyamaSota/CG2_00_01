@@ -48,8 +48,8 @@ void Enemy::Draw() { model_->Draw(); }
 void Enemy::TurningControl() {
 	{
 		float destinationRotationYTable[] = {
+			std::numbers::pi_v<float> * 2.0f / 2.0f,
 			std::numbers::pi_v<float> *-4.0f / 2.0f,
-			std::numbers::pi_v<float> *2.0f / 2.0f,
 		};
 		// 状況に応じた角度を取得する
 		float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];
