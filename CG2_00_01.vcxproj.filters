@@ -141,6 +141,9 @@
     <ClCompile Include="engine\color\Color.cpp">
       <Filter>engine\color</Filter>
     </ClCompile>
+    <ClCompile Include="GameScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -223,6 +226,9 @@
     </ClInclude>
     <ClInclude Include="engine\color\Color.h">
       <Filter>engine\color</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
