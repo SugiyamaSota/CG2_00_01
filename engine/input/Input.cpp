@@ -46,6 +46,7 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
 	mouse_->Acquire();
 }
 
+
 void Input::Update() {
     // 前のフレームのキー状態を保存
     memcpy(prevKeyState_, keyState_, sizeof(keyState_));

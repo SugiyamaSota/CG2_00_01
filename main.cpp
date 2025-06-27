@@ -9,8 +9,9 @@ const int32_t kClientHeight = 720;
 //Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
-	Initialize(hInstance, kClientWidth, kClientHeight);
 	D3DResourceLeakChecker leakChecker_;
+	Initialize(hInstance, kClientWidth, kClientHeight);
+
 	Camera* camera = new Camera();
 	camera->Initialize(kClientWidth, kClientHeight);
 

@@ -37,6 +37,8 @@ public:
 	/// </summary>
 	void EndFrame();
 
+	static void DestroyInstance();
+
 private:
 	// コンストラクタとデストラクタをprivateにする
 	ImGuiManager();

@@ -14,12 +14,17 @@ ImGuiManager* ImGuiManager::GetInstance() {
 ImGuiManager::ImGuiManager() {
 }
 
+void ImGuiManager::DestroyInstance() {
+	delete sInstance; // ここでデストラクタが呼ばれる
+	sInstance = nullptr;
+}
+
+
 ImGuiManager::~ImGuiManager() {
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 	// シングルトンインスタンスをnullptrに戻す
-	sInstance = nullptr; // インスタンス破棄時にsInstanceをnullptrに戻す
 }
 
 void ImGuiManager::Initialize() {

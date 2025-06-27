@@ -35,6 +35,7 @@ void BonjinEngine::Finalize() {
 	// directXcommon、Input、テクスチャのインスタンスを破壊
 	TextureManager::DestroyInstance();
 	DirectXCommon::GetInstance()->DestroyInstance();
+	ImGuiManager::DestroyInstance();
 }
 
 void BonjinEngine::NewFrame() {

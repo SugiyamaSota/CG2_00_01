@@ -64,6 +64,9 @@
     <Filter Include="engine\sprite">
       <UniqueIdentifier>{8c687e92-30a5-41af-a221-88eb0af97a08}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\color">
+      <UniqueIdentifier>{94a88ef5-e7c6-4281-8040-35b348a1800e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -136,12 +139,8 @@
       <Filter>engine\sprite</Filter>
     </ClCompile>
     <ClCompile Include="engine\color\Color.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>engine\color</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Object3d.VS.hlsl" />
-    <FxCompile Include="Object3d.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -223,7 +222,7 @@
       <Filter>engine\directXCommon</Filter>
     </ClInclude>
     <ClInclude Include="engine\color\Color.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>engine\color</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +231,10 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Object3d.hlsli" />
+    <None Include="engine\shander\Object3d.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="engine\shander\Object3d.PS.hlsl" />
+    <FxCompile Include="engine\shander\Object3d.VS.hlsl" />
   </ItemGroup>
 </Project>
