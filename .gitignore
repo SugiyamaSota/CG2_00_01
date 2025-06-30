@@ -76,7 +76,12 @@ StyleCopReport.xml
 *.ilk
 *.meta
 *.obj
-!resources/
+!resources/models/axis/axis.obj
+!resources/models/bunny/bunny.obj
+!resources/models/cube/cube.obj
+!resources/models/multiMaterial/multiMaterial.obj
+!resources/models/multiMesh/multiMesh.obj
+!resources/models/plane/plane.obj
 *.iobj
 *.pch
 *.pdb
