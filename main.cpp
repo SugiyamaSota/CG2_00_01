@@ -19,6 +19,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	WorldTransform worldTransform = InitializeWorldTransform();
 	Model* model = new Model();
 	model->LoadModel("axis");
+	model->Initialize(worldTransform);
 
 	//ウィンドウの×ボタンが押されるまでループ
 	MSG msg{};
