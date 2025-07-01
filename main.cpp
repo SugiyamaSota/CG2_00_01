@@ -15,6 +15,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	Camera* camera = new Camera();
 	camera->Initialize(kClientWidth, kClientHeight);
 
+
+	WorldTransform worldTransform = InitializeWorldTransform();
+	Model* model = new Model();
+	model->LoadModel("axis");
+
 	//ウィンドウの×ボタンが押されるまでループ
 	MSG msg{};
 	while (msg.message != WM_QUIT) {
@@ -30,6 +35,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			
 			camera->Update(Camera::CameraType::kDebug);
 
+			model->Update(worldTransform, camera, false);
+			
+
 			///
 			/// 更新処理ここまで
 			/// 
@@ -38,7 +46,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			/// 描画処理ここから
 			///
 
-			// それぞれの描画処理
+			model->Draw();
 
 			///
 			/// 描画処理ここまで
@@ -48,6 +56,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	}
 
 	/////  解放処理 /////
+	delete model;
 	delete camera;
 	Finalize();
 	return 0;
