@@ -3,12 +3,23 @@
 
 class GameScene {
 public:
-	//初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
-	//更新
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~GameScene();
+
+	/// <summary>
+	/// 更新処理
+	/// </summary>
 	void Update();
 
-	//描画
+	/// <summary>
+	/// 描画処理
+	/// </summary>
 	void Draw();
 };

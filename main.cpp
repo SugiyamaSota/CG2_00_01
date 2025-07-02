@@ -1,4 +1,5 @@
 #include"engine/bonjin/BonjinEngine.h"
+#include"GameScene.h"
 
 using namespace BonjinEngine;
 
@@ -12,8 +13,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	D3DResourceLeakChecker leakChecker_;
 	Initialize(hInstance, kClientWidth, kClientHeight);
 
-	Camera* camera = new Camera();
-	camera->Initialize(kClientWidth, kClientHeight);
+	GameScene* gameScene = new GameScene();
+	gameScene->Initialize();
 
 	//ウィンドウの×ボタンが押されるまでループ
 	MSG msg{};
@@ -28,7 +29,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			/// 更新処理ここから
 			///
 			
-			camera->Update(Camera::CameraType::kDebug);
+			gameScene->Update();
 
 			///
 			/// 更新処理ここまで
@@ -38,7 +39,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			/// 描画処理ここから
 			///
 
-			// それぞれの描画処理
+			gameScene->Update();
 
 			///
 			/// 描画処理ここまで
@@ -48,6 +49,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	}
 
 	/////  解放処理 /////
+	delete gameScene;
 	delete camera;
 	Finalize();
 	return 0;

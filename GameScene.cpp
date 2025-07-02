@@ -4,6 +4,10 @@ void GameScene::Initialize() {
 	//ゲーム内の初期化処理を書く
 }
 
+void GameScene::~GameScene() {
+
+}
+
 void GameScene::Update() {
 	//ゲーム内の更新処理を書く
 }
