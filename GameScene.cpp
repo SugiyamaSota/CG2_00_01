@@ -1,17 +1,32 @@
 #include "GameScene.h"
 
-void GameScene::Initialize() {
-	//ゲーム内の初期化処理を書く
+void GameScene::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
+	// カメラ
+	camera_ = new Camera();
+	camera_->Initialize(clientWidth, clientHeight);
+
+	// プレイヤー
+	playerModel_ = new Model();
+	playerModel_->LoadModel("cube");
+	player_ = new Player();
+	player_->Initialize(playerModel_);
 }
 
-void GameScene::~GameScene() {
-
+GameScene::~GameScene() {
+	delete player_;
+	delete playerModel_;
+	delete camera_;
 }
 
 void GameScene::Update() {
-	//ゲーム内の更新処理を書く
+	// カメラ
+	camera_->Update(Camera::CameraType::kDebug);
+
+	// プレイヤー
+	player_->Update(camera_);
 }
 
 void GameScene::Draw() {
-	//ゲーム内の描画処理を書く
+	// プレイヤー
+	player_->Draw();
 }

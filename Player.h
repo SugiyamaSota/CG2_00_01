@@ -1,35 +1,33 @@
 #pragma once
 #include"engine/bonjin/BonjinEngine.h"
 
-#include"Player.h"
-
-class GameScene {
+class Player{
 private:
-	// カメラ
-	Camera* camera_ = nullptr;
+	// モデル
+	Model* model_ = nullptr;
 
-	// プレイヤー
-	Model* playerModel_ = nullptr;
-	Player* player_ = nullptr;
+	// ワールド変換
+	WorldTransform worldTransform_{};
 
 public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(uint32_t clientWidth, uint32_t clientHeight);
+	void Initialize(Model* model);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~GameScene();
+	~Player();
 
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update(Camera* camera);
 
 	/// <summary>
 	/// 描画処理
 	/// </summary>
 	void Draw();
 };
+

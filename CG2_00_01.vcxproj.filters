@@ -67,6 +67,15 @@
     <Filter Include="engine\color">
       <UniqueIdentifier>{94a88ef5-e7c6-4281-8040-35b348a1800e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AL3">
+      <UniqueIdentifier>{ca4775d8-c24a-499a-a108-cb033c567195}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AL3\gameScene">
+      <UniqueIdentifier>{e0e6f089-41d7-4bf2-9025-8231d9707b91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AL3\Player">
+      <UniqueIdentifier>{c46add73-c0f6-4dce-9359-eae34b5b64db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -142,7 +151,10 @@
       <Filter>engine\color</Filter>
     </ClCompile>
     <ClCompile Include="GameScene.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>AL3\gameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>AL3\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -228,7 +240,10 @@
       <Filter>engine\color</Filter>
     </ClInclude>
     <ClInclude Include="GameScene.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>AL3\gameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>AL3\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
