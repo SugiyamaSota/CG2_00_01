@@ -57,15 +57,8 @@ void Model::Update(WorldTransform worldTransform, Camera* camera, bool enableLig
 	materialData_->enableLighting = enableLighting;
 	transform_ = worldTransform;
 	wvpData_->World = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-	viewMatrix_ = Inverse(wvpData_->World);
-	if (camera == nullptr) {
-		viewProjectionMatrix_ = Multiply(viewMatrix_, projectionMatrix_);
-		Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData_->World, viewProjectionMatrix_);
-		wvpData_->WVP = worldViewProjectionMatrix;
-	} else {
-		Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData_->World, camera->GetViewProjectionMatrix());
-		wvpData_->WVP = worldViewProjectionMatrix;
-	}
+	Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData_->World, camera->GetViewProjectionMatrix());
+	wvpData_->WVP = worldViewProjectionMatrix;
 }
 
 void Model::Draw() {

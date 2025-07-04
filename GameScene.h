@@ -7,6 +7,7 @@ class GameScene {
 private:
 	// カメラ
 	Camera* camera_ = nullptr;
+	Camera::CameraType cameraType_;
 
 	// プレイヤー
 	Model* playerModel_ = nullptr;
