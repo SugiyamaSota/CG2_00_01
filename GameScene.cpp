@@ -8,7 +8,7 @@ void GameScene::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 
 	// プレイヤー
 	playerModel_ = new Model();
-	playerModel_->LoadModel("cube");
+	playerModel_->LoadModel("bunny");
 	player_ = new Player();
 	player_->Initialize(playerModel_);
 }

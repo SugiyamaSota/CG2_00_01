@@ -76,6 +76,9 @@
     <Filter Include="AL3\Player">
       <UniqueIdentifier>{c46add73-c0f6-4dce-9359-eae34b5b64db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AL3\PlayerBullet">
+      <UniqueIdentifier>{658bbd93-e4cf-43f2-a78e-de68c3642437}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -155,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>AL3\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerBullet.cpp">
+      <Filter>AL3\PlayerBullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -244,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>AL3\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerBullet.h">
+      <Filter>AL3\PlayerBullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
