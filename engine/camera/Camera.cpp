@@ -9,10 +9,10 @@ float DegToRad(float deg) {
 
 void Camera::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 	radius_ = 50.0f;
-	theta_ = DegToRad(0.0f);
+	theta_ = DegToRad(180.0f);
 	phi_ = DegToRad(90.0f);
 	targetPosition_ = { 0,0,0 };
-	isTargeting_ = true; 
+	isTargeting_ = true;
 
 	viewMatrix_ = MakeIdentity4x4();
 	projectionMatrix_ = MakePerspectiveFovMatrix(0.45f, float(clientWidth) / float(clientHeight), 0.1f, 1000.0f);
@@ -46,7 +46,7 @@ void Camera::Move() {
 	if (input->GetMouseWheel() != 0) {
 		long mouseDeltaZ = input->GetMouseWheel();
 
-		radius_ -= static_cast<float>(mouseDeltaZ) * multiSpeed_; 
+		radius_ -= static_cast<float>(mouseDeltaZ) * multiSpeed_;
 		radius_ = std::clamp(radius_, 1.0f, 500.0f);
 	}
 
@@ -82,7 +82,7 @@ void Camera::Rotate() {
 		long mouseDeltaY = input->GetMouseDeltaY();
 
 		// Y軸回転
-		theta_ += static_cast<float>(mouseDeltaX) * multiSpeed_; 
+		theta_ += static_cast<float>(mouseDeltaX) * multiSpeed_;
 
 		// X軸回転
 		phi_ += static_cast<float>(-mouseDeltaY) * multiSpeed_;
@@ -119,8 +119,10 @@ void Camera::ResetRotation() {
 
 Matrix4x4 Camera::MakeLookAtMatrix(const Vector3& eye, const Vector3& target, const Vector3& up) {
 	Vector3 zaxis = Normalize(Subtract(target, eye));
+	//Vector3 xaxis = Normalize(Cross(zaxis, up));
+	//Vector3 yaxis = Normalize(Cross(xaxis, zaxis));
 	Vector3 xaxis = Normalize(Cross(up, zaxis));
-	Vector3 yaxis = Cross(zaxis, xaxis);
+	Vector3 yaxis = Normalize(Cross(zaxis, xaxis));
 
 	Matrix4x4 result;
 	result.m[0][0] = xaxis.x;
