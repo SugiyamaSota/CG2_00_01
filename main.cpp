@@ -100,8 +100,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			model->Draw();
 
 			// グリッドの描画
-			DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootSignature(DirectXCommon::GetInstance()->GetPSO()->GetGridRootSignature());
-			DirectXCommon::GetInstance()->GetCommandList()->SetPipelineState(DirectXCommon::GetInstance()->GetPSO()->GetGridPipelineState());
+			DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootSignature(DirectXCommon::GetInstance()->GetPSO()->GetLineRootSignature());
+			DirectXCommon::GetInstance()->GetCommandList()->SetPipelineState(DirectXCommon::GetInstance()->GetPSO()->GetLinePipelineState());
 			DirectXCommon::GetInstance()->GetCommandList()->IASetVertexBuffers(0, 1, &gridVbView);
 			DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(0, gridTransformationMatrixResource->GetGPUVirtualAddress()); // b0 レジスタに設定
 			DirectXCommon::GetInstance()->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // ラインリストとして描画

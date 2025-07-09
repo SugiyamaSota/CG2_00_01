@@ -198,6 +198,7 @@ DirectXCommon::~DirectXCommon() {
 	}
 	CoUninitialize();
 	CloseWindow(hwnd_);
+	delete pso;
 }
 
 void DirectXCommon::NewFeame() {

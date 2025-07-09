@@ -277,10 +277,10 @@ void PSO::InitializeLinePSO(
 
     // Shaderをコンパイルする (グリッド専用のシェーダーファイルを用意)
     // 例えば、line.VS.hlsl と line.PS.hlsl
-    Microsoft::WRL::ComPtr<IDxcBlob> lineVertexShaderBlob = CompileShader(L"line.VS.hlsl", L"vs_6_0", dxcUtils.Get(), dxcCompiler.Get(), includeHandler.Get());
+    Microsoft::WRL::ComPtr<IDxcBlob> lineVertexShaderBlob = CompileShader(L"Grid.VS.hlsl", L"vs_6_0", dxcUtils.Get(), dxcCompiler.Get(), includeHandler.Get());
     assert(lineVertexShaderBlob != nullptr);
 
-    Microsoft::WRL::ComPtr<IDxcBlob> linePixelShaderBlob = CompileShader(L"line.PS.hlsl", L"ps_6_0", dxcUtils.Get(), dxcCompiler.Get(), includeHandler.Get());
+    Microsoft::WRL::ComPtr<IDxcBlob> linePixelShaderBlob = CompileShader(L"Grid.PS.hlsl", L"ps_6_0", dxcUtils.Get(), dxcCompiler.Get(), includeHandler.Get());
     assert(linePixelShaderBlob != nullptr);
 
     // DepthStencilStateの設定 (グリッド用)
