@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# my objFile To un-ignore
+!resources/models/cube/cube.obj
+!resources/models/enemy/enemy.obj
+!resources/models/player/player.obj
+!resources/models/skydome/skydome.obj
+!resources/models/title/title.obj

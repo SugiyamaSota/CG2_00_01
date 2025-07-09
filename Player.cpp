@@ -209,7 +209,7 @@ void Player::isCollisionMapRight(CollisionMapInfo& info) {
 		if (indexSetNow.xIndex != indexSet.xIndex) {
 			MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 			// 修正: プレイヤーの底面が地面の上端に乗るように
-			info.movement_.x = std::max(0.0f, rect.left - worldTransform_.translate.x - kWidth);
+			info.movement_.x = std::max(0.0f, rect.right - worldTransform_.translate.x - kWidth);
 			info.isHitWall_ = true;
 		}
 	}

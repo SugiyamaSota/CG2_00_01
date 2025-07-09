@@ -12,7 +12,7 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成と初期化
 	model_ = new Model();
-	model_->LoadModel("Player");
+	model_->LoadModel("player");
 	player_ = new Player();
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2, 8);
 	player_->Initialize(model_, &camera_, playerPosition);
@@ -21,7 +21,7 @@ void GameScene::Initialize() {
 
 	///// 敵に関する初期化 /////
 	enemyModel_ = new Model();
-	enemyModel_->LoadModel("Enemy");
+	enemyModel_->LoadModel("enemy");
 	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6, 6);
 	enemy_ = new Enemy;
 	enemy_->Initialize(enemyModel_, &camera_, enemyPosition);
