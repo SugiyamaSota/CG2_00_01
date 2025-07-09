@@ -363,8 +363,8 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # my objFile To un-ignore
-!resources/models/cube/cube.obj
-!resources/models/enemy/enemy.obj
-!resources/models/player/player.obj
-!resources/models/skydome/skydome.obj
-!resources/models/title/title.obj
+!resources/cube/cube.obj
+!resources/enemy/enemy.obj
+!resources/player/player.obj
+!resources/skydome/skydome.obj
+!resources/title/title.obj
