@@ -141,6 +141,9 @@
     <ClCompile Include="engine\color\Color.cpp">
       <Filter>engine\color</Filter>
     </ClCompile>
+    <ClCompile Include="LineRenderer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -224,6 +227,9 @@
     <ClInclude Include="engine\color\Color.h">
       <Filter>engine\color</Filter>
     </ClInclude>
+    <ClInclude Include="LineRenderer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt">
@@ -236,5 +242,7 @@
   <ItemGroup>
     <FxCompile Include="engine\shander\Object3d.PS.hlsl" />
     <FxCompile Include="engine\shander\Object3d.VS.hlsl" />
+    <FxCompile Include="Grid.VS.hlsl" />
+    <FxCompile Include="Grid.PS.hlsl" />
   </ItemGroup>
 </Project>

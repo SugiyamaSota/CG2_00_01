@@ -22,13 +22,27 @@ public:
         DXGI_FORMAT rtvFormat,
         DXGI_FORMAT dsvFormat);
 
+    // グリッド描画用のPSOを初期化します
+    void InitializeLinePSO(
+        ID3D12Device* device,
+        DXGI_FORMAT rtvFormat,
+        DXGI_FORMAT dsvFormat);
+
     // 作成されたオブジェクトのゲッター
     ID3D12RootSignature* GetRootSignature() const { return rootSignature_.Get(); }
     ID3D12PipelineState* GetPipelineState() const { return graphicsPipelineState_.Get(); }
 
+    // グリッド用オブジェクトのゲッター
+    ID3D12RootSignature* GetLineRootSignature() const { return lineRootSignature_.Get(); }
+    ID3D12PipelineState* GetLinePipelineState() const { return lineGraphicsPipelineState_.Get(); }
+
+
 private:
     Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
     Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_;
+
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> lineRootSignature_;
+    Microsoft::WRL::ComPtr<ID3D12PipelineState> lineGraphicsPipelineState_;
 
     // シェーダーコンパイルのヘルパー関数 (staticにするか、ユーティリティに移動することも可能)
     Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(

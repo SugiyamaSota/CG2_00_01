@@ -76,7 +76,8 @@ public:
 	ID3D12Resource* GetDirectionalLightResource() { return directionalLightResource_.Get(); }
 
 	// PSO
-	PSO pso;
+	PSO* pso = nullptr;
+	PSO* GetPSO()const { return pso; }
 
 
 private:

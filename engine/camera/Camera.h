@@ -24,7 +24,7 @@ private:
 	Matrix4x4 viewProjectionMatrix_;
 
 	// カメラの速度(ズーム、移動、回転)
-	const float multiSpeed_ = 0.01f; 
+	const float multiSpeed_ = 0.01f;
 
 	// ターゲット関連
 	bool isTargeting_;       // フラグ
@@ -75,6 +75,7 @@ public:
 
 	///// --- ゲッター関数 --- /////
 	Matrix4x4 GetViewMatrix()const { return viewMatrix_; }
+	Matrix4x4 GetProjectionMatrix()const {return projectionMatrix_; }
 	Matrix4x4 GetViewProjectionMatrix()const { return viewProjectionMatrix_; }
 
 	///// --- セッター関数 --- /////

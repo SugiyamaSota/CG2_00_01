@@ -1,18 +1,14 @@
 #include "PSO.h"
 #include <cassert>
 #include <format>
-#include "../function/Utility.h" // Log関数とConvertString関数がここにあると仮定
-
-// コンパイル用にダミーのLog関数とLogStreamを定義 (実際のプロジェクトに合わせてください)
-// void Log(LogStream& stream, const std::string& message) { /* 実装 */ }
-// std::string ConvertString(const std::wstring& wstr) { /* 実装 */ return ""; }
+#include "../function/Utility.h"
 
 PSO::PSO() {
-    // コンストラクタでの初期化（必要であれば）
+    
 }
 
 PSO::~PSO() {
-    // デストラクタでのクリーンアップ（ComPtrが自動的に解放するため、通常は不要）
+   
 }
 
 Microsoft::WRL::ComPtr<IDxcBlob> PSO::CompileShader(
@@ -21,10 +17,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> PSO::CompileShader(
     IDxcUtils* dxcUtils,
     IDxcCompiler3* dxcCompiler,
     IDxcIncludeHandler* includeHandler
-/*, LogStream& logStream*/) { // LogStreamを引数として渡す場合
-    // これからシェーダーをコンパイルする旨をログに出す
-    // Log(logStream, ConvertString(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile))); // LogStreamを使用する場合
-
+) {
     // hlslファイルを読む
     Microsoft::WRL::ComPtr<IDxcBlobEncoding> shaderSource = nullptr;
     HRESULT hr = dxcUtils->LoadFile(filePath.c_str(), nullptr, shaderSource.GetAddressOf());
@@ -79,7 +72,6 @@ Microsoft::WRL::ComPtr<IDxcBlob> PSO::CompileShader(
 
 void PSO::Initialize(
     ID3D12Device* device,
-    // LogStream& logStream, // LogStreamを引数として渡す場合
     DXGI_FORMAT rtvFormat,
     DXGI_FORMAT dsvFormat) {
 
@@ -219,5 +211,100 @@ void PSO::Initialize(
 
     // 実際に生成
     hr = device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(graphicsPipelineState_.GetAddressOf()));
+    assert(SUCCEEDED(hr));
+}
+
+void PSO::InitializeLinePSO(
+    ID3D12Device* device,
+    DXGI_FORMAT rtvFormat,
+    DXGI_FORMAT dsvFormat) {
+
+    HRESULT hr;
+
+    Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils = nullptr;
+    Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler = nullptr;
+    hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(dxcUtils.GetAddressOf()));
+    assert(SUCCEEDED(hr));
+    hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(dxcCompiler.GetAddressOf()));
+    assert(SUCCEEDED(hr));
+
+    Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler = nullptr;
+    hr = dxcUtils->CreateDefaultIncludeHandler(includeHandler.GetAddressOf());
+    assert(SUCCEEDED(hr));
+
+    // RootSignature作成 (グリッド用)
+    D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
+    descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+    // グリッド描画用のRootParameter (必要に応じて調整)
+    // 例えば、ビュープロジェクション行列用のCBVなど
+    D3D12_ROOT_PARAMETER rootParameters[1] = {};
+    rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; // CBVを使う
+    rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // VertexShaderで使う
+    rootParameters[0].Descriptor.ShaderRegister = 0; // レジスタ番号0とバインド
+    descriptionRootSignature.pParameters = rootParameters;
+    descriptionRootSignature.NumParameters = _countof(rootParameters);
+
+    // シリアライズしてバイナリにする
+    Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
+    Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+    hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, signatureBlob.GetAddressOf(), errorBlob.GetAddressOf());
+    if (FAILED(hr)) {
+        OutputDebugStringA(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
+        assert(false);
+    }
+    hr = device->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(lineRootSignature_.GetAddressOf()));
+    assert(SUCCEEDED(hr));
+
+    // InputLayout (グリッド用、POSITIONのみで十分)
+    D3D12_INPUT_ELEMENT_DESC inputElementDescs[1] = {};
+    inputElementDescs[0].SemanticName = "POSITION";
+    inputElementDescs[0].SemanticIndex = 0;
+    inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+    inputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+    D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
+    inputLayoutDesc.pInputElementDescs = inputElementDescs;
+    inputLayoutDesc.NumElements = _countof(inputElementDescs);
+
+    // BlendStateの設定 (グリッド用)
+    D3D12_BLEND_DESC blendDesc{};
+    blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+    // ResiterizerStateの設定 (グリッド用、カリングなし)
+    D3D12_RASTERIZER_DESC rasterizerDesc{};
+    rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE; // グリッドは両面描画するためカリングなし
+    rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+
+    // Shaderをコンパイルする (グリッド専用のシェーダーファイルを用意)
+    // 例えば、line.VS.hlsl と line.PS.hlsl
+    Microsoft::WRL::ComPtr<IDxcBlob> lineVertexShaderBlob = CompileShader(L"line.VS.hlsl", L"vs_6_0", dxcUtils.Get(), dxcCompiler.Get(), includeHandler.Get());
+    assert(lineVertexShaderBlob != nullptr);
+
+    Microsoft::WRL::ComPtr<IDxcBlob> linePixelShaderBlob = CompileShader(L"line.PS.hlsl", L"ps_6_0", dxcUtils.Get(), dxcCompiler.Get(), includeHandler.Get());
+    assert(linePixelShaderBlob != nullptr);
+
+    // DepthStencilStateの設定 (グリッド用)
+    D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
+    depthStencilDesc.DepthEnable = true;
+    depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO; // グリッドは深度を書き込まない
+    depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL; // 通常のオブジェクトより手前に描画されるように
+
+    // PSOを生成 (グリッド用)
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
+    graphicsPipelineStateDesc.pRootSignature = lineRootSignature_.Get();
+    graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;
+    graphicsPipelineStateDesc.VS = { lineVertexShaderBlob->GetBufferPointer(), lineVertexShaderBlob->GetBufferSize() };
+    graphicsPipelineStateDesc.PS = { linePixelShaderBlob->GetBufferPointer(), linePixelShaderBlob->GetBufferSize() };
+    graphicsPipelineStateDesc.BlendState = blendDesc;
+    graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;
+    graphicsPipelineStateDesc.NumRenderTargets = 1;
+    graphicsPipelineStateDesc.RTVFormats[0] = rtvFormat;
+    graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE; // グリッドは線で描画
+    graphicsPipelineStateDesc.SampleDesc.Count = 1;
+    graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+    graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
+    graphicsPipelineStateDesc.DSVFormat = dsvFormat;
+
+    hr = device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(lineGraphicsPipelineState_.GetAddressOf()));
     assert(SUCCEEDED(hr));
 }
