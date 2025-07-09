@@ -10,15 +10,15 @@ void Player::Initialize(Model* model) {
 
 	// ワールド変換
 	worldTransform_ = InitializeWorldTransform();
-
-	// 弾
-	bulletModel_ = new Model();
-	bulletModel_->LoadModel("cube");
 }
 
 Player::~Player() {
-	delete bullet_;
-	delete bulletModel_;
+	for (PlayerBullet* bullet : bullets_) {
+		delete bullet;
+	}
+	for (Model* model : bulletModel_) {
+		delete model;
+	}
 }
 
 void Player::Update(Camera* camera) {
@@ -31,8 +31,8 @@ void Player::Update(Camera* camera) {
 	// 攻撃
 	Attack();
 
-	if (bullet_) {
-		bullet_->Update(camera);
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Update(camera);
 	}
 
 	model_->Update(worldTransform_, camera, false);
@@ -93,18 +93,23 @@ void Player::Rotate() {
 
 void Player::Attack() {
 	if (Input::GetInstance()->IsTrigger(DIK_J)) {
+		Model* newModel = new Model();
+		newModel->LoadModel("cube");
+
+		bulletModel_.push_back(newModel);
+
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(bulletModel_, worldTransform_.translate);
+		newBullet->Initialize(newModel, worldTransform_.translate);
 
 		// 弾を登録する
-		bullet_ = newBullet;
+		bullets_.push_back(newBullet);
 	}
 }
 
 void Player::Draw() {
 	// 弾
-	if (bullet_) {
-		bullet_->Draw();
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Draw();
 	}
 
 	// プレイヤー

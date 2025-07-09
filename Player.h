@@ -1,5 +1,6 @@
 #pragma once
 #include"engine/bonjin/BonjinEngine.h"
+#include<list>
 
 #include"PlayerBullet.h"
 
@@ -12,8 +13,8 @@ private:
 	WorldTransform worldTransform_{};
 
 	// 弾
-	PlayerBullet* bullet_ = nullptr;
-	Model* bulletModel_ = nullptr;
+	std::list<PlayerBullet*> bullets_;
+	std::list<Model*> bulletModel_;
 
 	/// <summary>
 	/// 移動処理
