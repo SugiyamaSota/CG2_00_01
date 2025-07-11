@@ -82,6 +82,7 @@ StyleCopReport.xml
 !resources/models/multiMaterial/multiMaterial.obj
 !resources/models/multiMesh/multiMesh.obj
 !resources/models/plane/plane.obj
+!resources/models/skydome/skydome.obj
 *.iobj
 *.pch
 *.pdb

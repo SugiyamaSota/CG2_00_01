@@ -35,6 +35,10 @@ private:
 	float theta_;
 	float phi_;
 
+	// 遠クリップ距離 
+	float farZ_;
+
+
 	///// --- 関数 --- /////
 	// 移動処理
 	void Move();
@@ -77,6 +81,8 @@ public:
 	Matrix4x4 GetViewMatrix()const { return viewMatrix_; }
 	Matrix4x4 GetProjectionMatrix()const {return projectionMatrix_; }
 	Matrix4x4 GetViewProjectionMatrix()const { return viewProjectionMatrix_; }
+	Vector3 GetEye() const { return translation_; } // カメラの視点位置を返す
+	float GetFarZ() const { return farZ_; }         // 遠クリップ距離を返す
 
 	///// --- セッター関数 --- /////
 	void ResetPosition();

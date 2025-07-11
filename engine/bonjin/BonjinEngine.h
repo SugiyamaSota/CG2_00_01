@@ -14,6 +14,7 @@
 #include"../texture/TextureManager.h"
 #include"../sprite/sprite.h"
 #include"../color/Color.h"
+#include"../draw/Grid.h"
 
 /// <summary>
 /// リソースリークチェッカーの構造体

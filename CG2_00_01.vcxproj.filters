@@ -67,6 +67,12 @@
     <Filter Include="engine\color">
       <UniqueIdentifier>{94a88ef5-e7c6-4281-8040-35b348a1800e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\draw">
+      <UniqueIdentifier>{d19a01a2-c0d0-4e5e-80e3-3da67379ee2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\draw\grid">
+      <UniqueIdentifier>{3b8f584c-f6e4-4388-bb46-932f7028ce40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -141,8 +147,8 @@
     <ClCompile Include="engine\color\Color.cpp">
       <Filter>engine\color</Filter>
     </ClCompile>
-    <ClCompile Include="LineRenderer.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="engine\draw\Grid.cpp">
+      <Filter>engine\draw\grid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -227,8 +233,8 @@
     <ClInclude Include="engine\color\Color.h">
       <Filter>engine\color</Filter>
     </ClInclude>
-    <ClInclude Include="LineRenderer.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="engine\draw\Grid.h">
+      <Filter>engine\draw\grid</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -242,7 +248,7 @@
   <ItemGroup>
     <FxCompile Include="engine\shander\Object3d.PS.hlsl" />
     <FxCompile Include="engine\shander\Object3d.VS.hlsl" />
-    <FxCompile Include="Grid.VS.hlsl" />
-    <FxCompile Include="Grid.PS.hlsl" />
+    <FxCompile Include="engine\shader\Grid.VS.hlsl" />
+    <FxCompile Include="engine\shader\Grid.PS.hlsl" />
   </ItemGroup>
 </Project>

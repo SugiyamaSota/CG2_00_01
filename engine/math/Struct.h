@@ -52,3 +52,10 @@ struct WorldTransform {
 	Vector3 translate;
 };
 
+//平面
+struct Plane {
+	Vector3 normal;
+	float distance;
+};
+
+

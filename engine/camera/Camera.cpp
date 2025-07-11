@@ -13,9 +13,10 @@ void Camera::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 	phi_ = DegToRad(90.0f);
 	targetPosition_ = { 0,0,0 };
 	isTargeting_ = true;
+	farZ_ = 1000.0f;
 
 	viewMatrix_ = MakeIdentity4x4();
-	projectionMatrix_ = MakePerspectiveFovMatrix(0.45f, float(clientWidth) / float(clientHeight), 0.1f, 1000.0f);
+	projectionMatrix_ = MakePerspectiveFovMatrix(0.45f, float(clientWidth) / float(clientHeight), 0.1f, farZ_);
 }
 
 void Camera::Update(CameraType type) {

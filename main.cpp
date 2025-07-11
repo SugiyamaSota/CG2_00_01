@@ -31,43 +31,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	model->LoadModel("axis");
 	model->Initialize(worldTransform);
 
-	// Gridの頂点データを生成
-	std::vector<GridVertex> gridVertices;
-	const float gridSize = 10.0f; // グリッドの範囲
-	const int numDivisions = 10;   // 分割数
-	const float step = gridSize / static_cast<float>(numDivisions);
+	// Gridクラスのインスタンスを生成し、初期化
+	Grid* grid = new Grid();
+	grid->Initialize(); // グリッドの初期化 (デフォルトのサイズと分割数)
 
-	// X軸に平行な線
-	for (int i = 0; i <= numDivisions; ++i) {
-		float z = -gridSize / 2.0f + i * step;
-		gridVertices.push_back({ { -gridSize / 2.0f, 0.0f, z, 1.0f } });
-		gridVertices.push_back({ { gridSize / 2.0f, 0.0f, z, 1.0f } });
-	}
-	// Z軸に平行な線
-	for (int i = 0; i <= numDivisions; ++i) {
-		float x = -gridSize / 2.0f + i * step;
-		gridVertices.push_back({ { x, 0.0f, -gridSize / 2.0f, 1.0f } });
-		gridVertices.push_back({ { x, 0.0f, gridSize / 2.0f, 1.0f } });
-	}
-
-	// グリッド用頂点バッファの作成
-	Microsoft::WRL::ComPtr<ID3D12Resource> gridVertexBuffer = CreateBufferResource(DirectXCommon::GetInstance()->GetDevice(), sizeof(GridVertex) * gridVertices.size());
-	GridVertex* mappedGridVertices = nullptr;
-	HRESULT hr = gridVertexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&mappedGridVertices));
-	assert(SUCCEEDED(hr));
-	std::copy(gridVertices.begin(), gridVertices.end(), mappedGridVertices);
-	gridVertexBuffer->Unmap(0, nullptr);
-
-	D3D12_VERTEX_BUFFER_VIEW gridVbView{};
-	gridVbView.BufferLocation = gridVertexBuffer->GetGPUVirtualAddress();
-	gridVbView.SizeInBytes = static_cast<UINT>(sizeof(GridVertex) * gridVertices.size());
-	gridVbView.StrideInBytes = sizeof(GridVertex);
-
-	// グリッド用定数バッファの作成
-	Microsoft::WRL::ComPtr<ID3D12Resource> gridTransformationMatrixResource = CreateBufferResource(DirectXCommon::GetInstance()->GetDevice(), sizeof(GridTransformationMatrix));
-	GridTransformationMatrix* gridTransformationMatrixData = nullptr;
-	hr = gridTransformationMatrixResource->Map(0, nullptr, reinterpret_cast<void**>(&gridTransformationMatrixData));
-	assert(SUCCEEDED(hr));
+	WorldTransform skydomeWorldTransform = InitializeWorldTransform();
+	Model* skydome = new Model();
+	skydome->LoadModel("skydome");
+	skydome->Initialize(skydomeWorldTransform);
 
 	//ウィンドウの×ボタンが押されるまでループ
 	MSG msg{};
@@ -81,13 +52,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			///
 			/// 更新処理ここから
 			///
-			
+
 			camera->Update(Camera::CameraType::kDebug);
+
 
 			model->Update(worldTransform, camera, false);
 
-			gridTransformationMatrixData->worldviewProjection = Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix());
-			
+			// グリッドとデバッグ用天球の更新
+			skydome->Update(skydomeWorldTransform, camera, false);
+			grid->Update(camera);
+
 
 			///
 			/// 更新処理ここまで
@@ -96,16 +70,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			///
 			/// 描画処理ここから
 			///
-
 			model->Draw();
 
-			// グリッドの描画
-			DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootSignature(DirectXCommon::GetInstance()->GetPSO()->GetLineRootSignature());
-			DirectXCommon::GetInstance()->GetCommandList()->SetPipelineState(DirectXCommon::GetInstance()->GetPSO()->GetLinePipelineState());
-			DirectXCommon::GetInstance()->GetCommandList()->IASetVertexBuffers(0, 1, &gridVbView);
-			DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(0, gridTransformationMatrixResource->GetGPUVirtualAddress()); // b0 レジスタに設定
-			DirectXCommon::GetInstance()->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // ラインリストとして描画
-			DirectXCommon::GetInstance()->GetCommandList()->DrawInstanced(static_cast<UINT>(gridVertices.size()), 1, 0, 0);
+			// グリッドとデバッグ用天球の描画
+			skydome->Draw();
+			grid->Draw();
+
 
 			///
 			/// 描画処理ここまで
@@ -115,6 +85,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	}
 
 	/////  解放処理 /////
+	delete skydome;
+	delete grid;
 	delete model;
 	delete camera;
 	Finalize();
