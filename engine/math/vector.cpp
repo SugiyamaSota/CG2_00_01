@@ -63,3 +63,35 @@ Vector3 Cross(const Vector3& vector1, const Vector3& vector2) {
 	result.z = vector1.x * vector2.y - vector1.y * vector2.x;
 	return result;
 }
+
+Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
+	Vector3 result = {};
+	result.x = (v1.x * (1.0f - t)) + (v2.x * t);
+	result.y = (v1.y * (1.0f - t)) + (v2.y * t);
+	result.z = (v1.z * (1.0f - t)) + (v2.z * t);
+	return result;
+}
+
+float EaseOut(const float& start, const float& end, float t) {
+	if (t < 0.0f) {
+		t = 0.0f;
+	} else if (t > 1.0f) {
+		t = 1.0f;
+	}
+
+	float eased_t = 1.0f - (1.0f - t) * (1.0f - t);
+
+	return start + (end - start) * eased_t;
+}
+
+float EaseIn(const float& start, const float& end, float t) {
+	if (t < 0.0f) {
+		t = 0.0f;
+	} else if (t > 1.0f) {
+		t = 1.0f;
+	}
+
+	float eased_t = t * t;
+
+	return start + (end - start) * eased_t;
+}

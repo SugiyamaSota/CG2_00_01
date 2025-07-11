@@ -69,14 +69,14 @@ void DrawScene() {
 //Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
-	scene = Scene::kTitle;
+	scene = Scene::kGame;
 
 	BonjinEngine* bonjin = new BonjinEngine();
 	bonjin->Initialize(hInstance, kClientWidth, kClientHeight);
 
 	// タイトルシーンのインスタンス生成と初期化
-	titleScene = new TitleScene();
-	titleScene->Initialize();
+	gameScene = new GameScene();
+	gameScene->Initialize();
 
 
 	//ウィンドウの×ボタンが押されるまでループ

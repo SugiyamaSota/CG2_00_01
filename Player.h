@@ -80,6 +80,40 @@ private:
 
 	bool isDead_ = false;
 
+	// --- 攻撃の実装！ ---
+	void BehaviorRootUpdate();
+	void BehaviorAttackUpdate();
+
+	enum class Behavior {
+		kRoot,
+		kAttack,
+		kUnknown,
+	};
+
+	Behavior behavior_ = Player::Behavior::kRoot;
+	Behavior behaviorRequest_ = Player::Behavior::kUnknown;
+
+	void BehaviorRootInitialize();
+	void BehaviorAttackInitialize();
+
+	// 攻撃の経過時間
+	uint32_t attackParameter_ = 0;
+	const uint32_t attackTime_ = 10;
+	const uint32_t chargeTime_ = 5;
+	const uint32_t RecoveryTime_ = 5;
+
+	const Vector3 attackVelocity_ = { 1.0f,0,0 };
+
+	enum class AttackPhase {
+		kCharge,
+		kAttack,
+		kRecovery,
+	};
+
+	AttackPhase attackPhase_;
+
+	CollisionMapInfo collisionMapinfo_;      // 衝突情報初期化
+
 public:
 	/// <summary>
 	/// 初期化
