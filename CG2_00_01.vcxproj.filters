@@ -73,6 +73,9 @@
     <Filter Include="engine\draw\grid">
       <UniqueIdentifier>{3b8f584c-f6e4-4388-bb46-932f7028ce40}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\draw\line">
+      <UniqueIdentifier>{6a943e0f-3c78-43b0-b014-72ce0f37b151}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

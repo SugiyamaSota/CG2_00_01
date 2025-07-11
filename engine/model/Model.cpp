@@ -11,11 +11,25 @@
 #include"../camera/Camera.h"
 #include"../texture/TextureManager.h"
 
-Model::Model() {
+Model::Model(bool debugEnabled, const std::string& modelName) {
 	transform_ = InitializeWorldTransform();
 	viewMatrix_ = MakeIdentity4x4();
 	projectionMatrix_ = MakePerspectiveFovMatrix(0.45f, float(1280) / float(720), 0.1f, 100.0f);
 	viewProjectionMatrix_ = MakeIdentity4x4();
+	debugEnabled_ = debugEnabled;
+	if (debugEnabled) {
+		// デバッグが有効
+		if (!modelName.empty()) {
+			// 名前を代入
+			modelName_ = modelName;
+		} else {
+			// modelNameがnullなら既定の名前を代入
+			modelName_ = "UnnamedModel_Debug";
+		}
+	} else {
+		// デバッグが無効
+		modelName_ = "";
+	}
 }
 
 void Model::LoadModel(const std::string& fileName) {
@@ -53,9 +67,19 @@ void Model::Initialize(WorldTransform worldTransform) {
 	transform_ = worldTransform;
 }
 
-void Model::Update(WorldTransform worldTransform, Camera* camera, bool enableLighting) {
-	materialData_->enableLighting = enableLighting;
-	transform_ = worldTransform;
+void Model::Update(WorldTransform worldTransform, Camera* camera, bool enableLighting, Vector4 color) {
+	// デバッグを使用しない場合
+	if (!debugEnabled_) {
+		transform_ = worldTransform;
+		materialData_->enableLighting = enableLighting;
+		materialData_->color = color;
+	}
+
+	// デバッグを使用する場合
+	if (debugEnabled_) {
+		DrawImGui();
+	}
+
 	wvpData_->World = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 	viewMatrix_ = Inverse(wvpData_->World);
 	if (camera == nullptr) {
@@ -166,5 +190,39 @@ ModelData Model::LoadObjFile(const std::string& directoryPath, const std::string
 		}
 	}
 	return modelData;
+}
+
+void Model::DrawImGui() {
+	if (debugEnabled_ == true) {
+		ImGui::Begin(modelName_.c_str());
+		if (ImGui::CollapsingHeader("wvpData")) {
+			// スケール
+			std::string scaleLabel = modelName_ + ": scale";
+			ImGui::DragFloat3(scaleLabel.c_str(), &transform_.scale.x, 1.0f, -100.0f, 100.0f);
+
+			// 回転
+			std::string rotateLabel = modelName_ + ": rotate";
+			ImGui::DragFloat3(rotateLabel.c_str(), &transform_.rotate.x, 1.0f, -100.0f, 100.0f);
+
+			// 移動
+			std::string translateLabel = modelName_ + ": translate";
+			ImGui::DragFloat3(translateLabel.c_str(), &transform_.translate.x, 1.0f, -100.0f, 100.0f);
+		}
+		if (ImGui::CollapsingHeader("materialData")) {
+			// 色
+			std::string colorLabel = modelName_ + ": color";
+			ImGui::ColorEdit4(colorLabel.c_str(), &materialData_->color.x);
+
+			// ライティング
+			std::string enableLightingLabel = modelName_ + " : Enable Lighting";
+
+			bool isLightingEnabled = (materialData_->enableLighting != 0);
+
+			if (ImGui::Checkbox(enableLightingLabel.c_str(), &isLightingEnabled)) {
+				materialData_->enableLighting = isLightingEnabled ? 1 : 0;
+			}
+		}
+		ImGui::End();
+	}
 }
 

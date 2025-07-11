@@ -27,7 +27,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 
 	WorldTransform worldTransform = InitializeWorldTransform();
-	Model* model = new Model();
+	Model* model = new Model(true, "axis");
 	model->LoadModel("axis");
 	model->Initialize(worldTransform);
 
@@ -37,7 +37,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 	WorldTransform skydomeWorldTransform = InitializeWorldTransform();
 	Model* skydome = new Model();
-	skydome->LoadModel("skydome");
+	skydome->LoadModel("debugSkydome");
 	skydome->Initialize(skydomeWorldTransform);
 
 	//ウィンドウの×ボタンが押されるまでループ
@@ -56,10 +56,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			camera->Update(Camera::CameraType::kDebug);
 
 
-			model->Update(worldTransform, camera, false);
+			model->Update(worldTransform, camera, false, { 1,1,1,1 });
 
 			// グリッドとデバッグ用天球の更新
-			skydome->Update(skydomeWorldTransform, camera, false);
+			skydome->Update(skydomeWorldTransform, camera, false, { 0.05f,0.05f,0.05f,1.0f });
 			grid->Update(camera);
 
 
