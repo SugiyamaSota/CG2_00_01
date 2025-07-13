@@ -13,9 +13,11 @@ void GameScene::Initialize() {
 	// 自キャラの生成と初期化
 	model_ = new Model();
 	model_->LoadModel("player");
+	playerAttackModel_ = new Model();
+	playerAttackModel_->LoadModel("attackEffect");
 	player_ = new Player();
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2, 8);
-	player_->Initialize(model_, &camera_, playerPosition);
+	player_->Initialize(model_, playerAttackModel_,&camera_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
 	player_->Update();
 
@@ -64,6 +66,7 @@ void GameScene::Initialize() {
 GameScene::~GameScene() {
 	delete model_;
 	delete player_;
+	delete playerAttackModel_;
 	delete deathParticles_;
 	delete enemy_;
 	delete enemyModel_;

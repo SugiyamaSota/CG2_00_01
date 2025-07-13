@@ -5,7 +5,7 @@
 #include <numbers>
 #include<array>
 
-void Player::Initialize(Model* model, DebugCamera* camera, const Vector3& position) {
+void Player::Initialize(Model* model, Model* attackModel, DebugCamera* camera, const Vector3& position) {
 	assert(model);
 	model_ = model;
 
@@ -16,6 +16,14 @@ void Player::Initialize(Model* model, DebugCamera* camera, const Vector3& positi
 	};
 
 	camera_ = camera;
+
+	assert(attackModel);
+	attackModel_ = attackModel;
+	attackWorldTransform_ = {
+		{1,1,1},
+		{0,0,0},
+		position,
+	};
 }
 
 void Player::Update() {
@@ -62,6 +70,10 @@ void Player::Update() {
 
 	model_->Update(worldTransform_, { 1,1,1,1 }, camera_);
 
+	attackWorldTransform_.translate = worldTransform_.translate;
+	attackWorldTransform_.translate.x += 1;
+	attackWorldTransform_.rotate = worldTransform_.rotate;
+	attackModel_->Update(attackWorldTransform_, { 1,1,1,1 }, camera_);
 }
 
 void Player::BehaviorRootUpdate() {
@@ -116,7 +128,7 @@ void Player::BehaviorAttackUpdate() {
 		break;
 	}
 	case AttackPhase::kAttack: {
-		float t = static_cast<float>(attackParameter_) / chargeTime_;
+		float t = static_cast<float>(attackParameter_) / attackTime_;
 		worldTransform_.scale.z = EaseOut(0.3f, 1.3f, t);
 		worldTransform_.scale.y = EaseOut(1.6f, 0.7f, t);
 
@@ -128,18 +140,18 @@ void Player::BehaviorAttackUpdate() {
 		}
 
 		// 攻撃動作へ移行
-		if (attackParameter_ >= chargeTime_) {
+		if (attackParameter_ >= attackTime_) {
 			attackPhase_ = AttackPhase::kRecovery;
 			attackParameter_ = 0;
 		}
 		break;
 	}
 	case AttackPhase::kRecovery: {
-		float t = static_cast<float>(attackParameter_) / chargeTime_;
+		float t = static_cast<float>(attackParameter_) / recoveryTime_;
 		worldTransform_.scale.z = EaseOut(1.3f, 1.0f, t);
 		worldTransform_.scale.y = EaseOut(0.7f, 1.0f, t);
 		// 攻撃動作へ移行
-		if (attackParameter_ >= chargeTime_) {
+		if (attackParameter_ >= recoveryTime_) {
 			attackPhase_ = AttackPhase::kCharge;
 			attackParameter_ = 0;
 			behaviorRequest_ = Behavior::kRoot;
@@ -150,6 +162,7 @@ void Player::BehaviorAttackUpdate() {
 
 	// 衝突判定初期化
 	collisionMapinfo_.movement_ = velocity;
+
 
 	attackParameter_++;
 
@@ -484,6 +497,8 @@ void Player::WallCollisionReaction(const CollisionMapInfo& info) {
 void Player::Draw() {
 	// 自キャラの描画処理
 	model_->Draw();
+		attackModel_->Draw();
+	
 }
 
 Vector3 Player::GetWorldPosition() {

@@ -17,6 +17,7 @@ private:
 	WorldTransform worldTransform_;
 	Player* player_ = nullptr;
 	Model* model_ = nullptr;
+	Model* playerAttackModel_ = nullptr;
 
 	///// プレイヤーのパーティクル /////
 	DeathParticles* deathParticles_ = nullptr; // 死亡時

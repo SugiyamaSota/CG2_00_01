@@ -100,7 +100,7 @@ private:
 	uint32_t attackParameter_ = 0;
 	const uint32_t attackTime_ = 10;
 	const uint32_t chargeTime_ = 5;
-	const uint32_t RecoveryTime_ = 5;
+	const uint32_t recoveryTime_ = 5;
 
 	const Vector3 attackVelocity_ = { 1.0f,0,0 };
 
@@ -114,11 +114,15 @@ private:
 
 	CollisionMapInfo collisionMapinfo_;      // 衝突情報初期化
 
+	// 攻撃エフェクト
+	Model* attackModel_ = nullptr;
+	WorldTransform attackWorldTransform_;
+
 public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model, DebugCamera* camera, const Vector3& position);
+	void Initialize(Model* model, Model* attackModel, DebugCamera* camera, const Vector3& position);
 
 	/// <summary>
 	/// 移動処理
