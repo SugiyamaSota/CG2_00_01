@@ -12,7 +12,7 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成と初期化
 	model_ = new Model();
-	model_->LoadModel("player");
+	model_->LoadModel("Player");
 	playerAttackModel_ = new Model();
 	playerAttackModel_->LoadModel("attackEffect");
 	player_ = new Player();

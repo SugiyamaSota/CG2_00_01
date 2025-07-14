@@ -71,7 +71,12 @@ void Player::Update() {
 	model_->Update(worldTransform_, { 1,1,1,1 }, camera_);
 
 	attackWorldTransform_.translate = worldTransform_.translate;
-	attackWorldTransform_.translate.x += 1;
+	if (lrDirection_ == LRDirection::kRight) {
+		attackWorldTransform_.translate.x += 1;
+	} else {
+
+		attackWorldTransform_.translate.x -= 1;
+	}
 	attackWorldTransform_.rotate = worldTransform_.rotate;
 	attackModel_->Update(attackWorldTransform_, { 1,1,1,1 }, camera_);
 }
@@ -136,7 +141,9 @@ void Player::BehaviorAttackUpdate() {
 		if (lrDirection_ == LRDirection::kRight) {
 			velocity = attackVelocity_;
 		} else {
-			velocity = attackVelocity_;
+			velocity.x = -attackVelocity_.x;
+			velocity.y = -attackVelocity_.y;
+			velocity.z = -attackVelocity_.z;
 		}
 
 		// 攻撃動作へ移行
@@ -169,7 +176,7 @@ void Player::BehaviorAttackUpdate() {
 }
 
 void  Player::BehaviorRootInitialize() {
-
+	velocity_ = { 0,0,0 };
 }
 
 void  Player::BehaviorAttackInitialize() {
@@ -497,8 +504,10 @@ void Player::WallCollisionReaction(const CollisionMapInfo& info) {
 void Player::Draw() {
 	// 自キャラの描画処理
 	model_->Draw();
+	if (attackPhase_ == AttackPhase::kAttack || attackPhase_ == AttackPhase::kRecovery) {
 		attackModel_->Draw();
-	
+	}
+
 }
 
 Vector3 Player::GetWorldPosition() {
