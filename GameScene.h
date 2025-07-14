@@ -23,9 +23,9 @@ private:
 	DeathParticles* deathParticles_ = nullptr; // 死亡時
 	bool deathParticlesExistFlag = true;
 
-	///// 敵 /////Add commentMore actions
-	Enemy* enemy_ = nullptr;
-	Model* enemyModel_ = nullptr;
+	///// 敵 /////
+	std::list<Enemy*>enemies_;
+	std::list<Model*>enemyModels_;
 
 	// ブロック
 	static const uint32_t kNumBlockVirtical = 10;

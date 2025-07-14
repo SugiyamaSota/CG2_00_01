@@ -1,6 +1,9 @@
 #pragma once
 #include"engine/bonjin/BonjinEngine.h"
 
+//--- 前方宣言 ---
+class Player;
+
 class Enemy {
 private:
 	// 向いている方向の情報enum
@@ -31,6 +34,26 @@ private:
 	float walkTimer_ = 0.0f;
 	static inline const float pi = float(3.14159265359);
 
+	bool isDead_;
+
+	// 死亡状態の繊維
+	enum class Behavior {
+		kWalk,
+		kDeath,
+		kUnknown,
+	};
+
+	Behavior behavior_ = Behavior::kWalk;
+	Behavior behaviorRequest_ = Behavior::kUnknown;
+
+	void BehaviorWalkUpdate();
+	void BehaviorDeathUpdate();
+
+	uint32_t deathParameter_ = 0;
+	const uint32_t deathTime_ = 180;
+	const float deathjump_ = 0.3f;
+
+	bool isDeathMotion_;
 
 public:
 	/// <summary>
@@ -56,4 +79,10 @@ public:
 	Vector3 GetWorldPosition();
 
 	AABB GetAABB();
+
+	void OnCollision(const Player* player);
+
+	bool IsDead()const { return isDead_; }
+
+	bool IsDeathMotion()const { return isDeathMotion_; }
 };

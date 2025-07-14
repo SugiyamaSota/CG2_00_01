@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <numbers>
 #include<array>
+#include"Enemy.h"
 
 void Player::Initialize(Model* model, Model* attackModel, DebugCamera* camera, const Vector3& position) {
 	assert(model);
@@ -525,6 +526,17 @@ AABB Player::GetAABB() {
 
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
+	if (IsAttack()||enemy->IsDeathMotion()) {
+		return;
+	}
 	//ジャンプ開始
 	isDead_ = true;
+}
+
+bool Player::IsAttack() const {
+	if (behavior_ == Behavior::kAttack) {
+		return true;
+	} else {
+		return false;
+	}
 }

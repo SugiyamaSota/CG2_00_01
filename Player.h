@@ -166,4 +166,5 @@ public:
 	AABB GetAABB();
 	void OnCollision(const Enemy* enemy);
 	bool IsDead()const { return isDead_; }
+	bool IsAttack()const;
 };

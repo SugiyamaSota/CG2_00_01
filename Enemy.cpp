@@ -1,7 +1,7 @@
 #include "Enemy.h"
 #include <cmath>
 #include <numbers>
-
+#include"Player.h"
 
 void Enemy::Initialize(Model* model, DebugCamera* camera, const Vector3& position) {
 
@@ -18,10 +18,49 @@ void Enemy::Initialize(Model* model, DebugCamera* camera, const Vector3& positio
 	velocity_ = { -kWalkSpeed, 0, 0 };
 
 	walkTimer_ = 0.0f;
+
+	isDead_ = false;
+
+	deathParameter_ = 0;
+
+	isDeathMotion_ = false;
 }
 
 void Enemy::Update() {
 
+	if (behaviorRequest_ != Behavior::kUnknown) {
+		// ふるまいを変更する
+		behavior_ = behaviorRequest_;
+
+		// 各振る舞いごとの初期化
+		switch (behavior_) {
+		case Behavior::kWalk:
+			
+			break;
+		case Behavior::kDeath:
+			velocity_.y = deathjump_;
+			isDeathMotion_ = true;
+			break;
+		}
+
+		// ふるまいのリセット
+		behaviorRequest_ = Behavior::kUnknown;
+	}
+
+	switch (behavior_) {
+	case Behavior::kWalk:
+		BehaviorWalkUpdate();
+		break;
+	case Behavior::kDeath:
+		BehaviorDeathUpdate();
+		break;
+	}
+
+	// 行列の変換
+	model_->Update(worldTransform_, { 1,1,1,1 }, camera_);
+}
+
+void Enemy::BehaviorWalkUpdate() {
 	// 移動処理
 	worldTransform_.translate = Add(worldTransform_.translate, velocity_);
 
@@ -39,8 +78,25 @@ void Enemy::Update() {
 		walkTimer_ = 0.0f;
 	}
 
-	// 行列の変換
-	model_->Update(worldTransform_, { 1,1,1,1 }, camera_);
+	
+}
+
+void Enemy::BehaviorDeathUpdate() {
+	float t= static_cast<float>(deathParameter_) / deathTime_;
+	worldTransform_.rotate.y++;
+
+	// 死んだ瞬間に飛ばせて地底まで落下させたい
+	velocity_.x = kWalkSpeed;
+	velocity_.y -= 0.0098f;
+
+	// 移動処理
+	worldTransform_.translate = Add(worldTransform_.translate, velocity_);
+
+	if (deathParameter_ >= deathTime_) {
+		isDead_ = true;
+	}
+
+	deathParameter_++;
 }
 
 void Enemy::Draw() { model_->Draw(); }
@@ -69,4 +125,17 @@ AABB Enemy::GetAABB() {
 	aabb.min = { worldPos.x - kWidth_ / 2.0f, worldPos.y - kHeight_ / 2.0f, worldPos.z - kWidth_ / 2.0f };
 	aabb.max = { worldPos.x + kWidth_ / 2.0f, worldPos.y + kHeight_ / 2.0f, worldPos.z + kWidth_ / 2.0f };
 	return aabb;
+}
+
+void Enemy::OnCollision(const Player* player) {
+	(void)player;
+
+	if (behavior_ == Behavior::kDeath) {
+		return;
+	}
+
+	if (player->IsAttack()) {
+		behaviorRequest_ = Behavior::kDeath;
+		
+	}
 }

@@ -17,17 +17,29 @@ void GameScene::Initialize() {
 	playerAttackModel_->LoadModel("attackEffect");
 	player_ = new Player();
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2, 8);
-	player_->Initialize(model_, playerAttackModel_,&camera_, playerPosition);
+	player_->Initialize(model_, playerAttackModel_, &camera_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
 	player_->Update();
 
 	///// 敵に関する初期化 /////
-	enemyModel_ = new Model();
-	enemyModel_->LoadModel("enemy");
-	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6, 6);
-	enemy_ = new Enemy;
-	enemy_->Initialize(enemyModel_, &camera_, enemyPosition);
-	enemy_->Update();
+	for (int i = 0; i < 3; ++i) {
+		Model* newModel = new Model();
+		newModel->LoadModel("enemy");
+
+		enemyModels_.push_back(newModel);
+
+		Enemy* newEnemy = new Enemy();
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6 + i, 6 + i);
+		newEnemy->Initialize(newModel, &camera_, enemyPosition);
+
+		enemies_.push_back(newEnemy);
+	}
+	// 敵
+	for (Enemy* enemy : enemies_) {
+		enemy->Update();
+	}
+
+
 
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
@@ -60,7 +72,7 @@ void GameScene::Initialize() {
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
 
-	
+
 }
 
 GameScene::~GameScene() {
@@ -68,8 +80,12 @@ GameScene::~GameScene() {
 	delete player_;
 	delete playerAttackModel_;
 	delete deathParticles_;
-	delete enemy_;
-	delete enemyModel_;
+	for (Enemy* enemy : enemies_) {
+		delete enemy;
+	}
+	for (Model* model : enemyModels_) {
+		delete model;
+	}
 	delete skydome_;
 	delete skydomeModel_;
 	delete mapChipField_;
@@ -80,15 +96,29 @@ GameScene::~GameScene() {
 			delete blockModel_[i][j];
 		}
 	}
-
 }
 
 void GameScene::Update() {
-	switch (phase_) {
-	case Phase::kFadeIn:
+	// 非フェードアウト時
+	if (phase_ != Phase::kFadeOut) {
+		// カメラの更新
 		camera_.Update(isDebugCamera);
-		fade_->Update();
-		// ブロック
+
+		// 敵の更新
+		for (Enemy* enemy : enemies_) {
+			enemy->Update();
+		}
+		// 敵のデスフラグ処理
+
+		enemies_.remove_if([](Enemy* enemy) {
+			if (enemy->IsDead()) {
+				delete enemy;
+				return true;
+			}
+			return false;
+			});
+
+		// ブロックの更新
 		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
 				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
@@ -96,6 +126,19 @@ void GameScene::Update() {
 				}
 			}
 		}
+	}
+
+	// 非フェード時
+	if (phase_ != Phase::kFadeIn && phase_ != Phase::kFadeOut) {
+		// 天球の更新
+		skydome_->Update();
+	}
+
+	/// --- 各フェーズ固有の更新処理 ---
+	switch (phase_) {
+	case Phase::kFadeIn:
+		// フェードインの更新
+		fade_->Update();
 		break;
 	case Phase::kPlay:
 		// カメラ
@@ -110,118 +153,67 @@ void GameScene::Update() {
 				camera_.ResetRotation();
 			}
 		}
+		// 非デバッグカメラ時のプレイヤー追従
 		if (!isDebugCamera) {
 			camera_.SetCameraTranslate(player_->GetPosition());
 		}
-		camera_.Update(isDebugCamera);
-		// 天球
-		skydome_->Update();
-		// プレイヤー
+		// プレイヤーの更新
 		player_->Update();
-		// 敵
-		enemy_->Update();
-		// ブロック
-		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
-					blockModel_[i][j]->Update(blockWorldTransform_[i][j], { 1,1,1,1 }, &camera_);
-				}
-			}
-		}
+		// 当たり判定のチェック
 		CheckAllCollisions();
 		break;
 	case Phase::kDeath:
-		camera_.Update(isDebugCamera);
-		// 天球
-		skydome_->Update();
-		// 敵
-		enemy_->Update();
 		// デスパーティクル
 		if (deathParticlesExistFlag) {
 			deathParticles_->Update();
 		};
-		// ブロック
-		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
-					blockModel_[i][j]->Update(blockWorldTransform_[i][j], { 1,1,1,1 }, &camera_);
-				}
-			}
-		}
 		break;
 	case Phase::kFadeOut:
+		// フェードアウトの更新
 		fade_->Update();
 		break;
 	}
+
+	/// --- 共通の更新処理 ---
+	// フェーズの変更処理
 	ChangePhase();
 }
-
 void GameScene::Draw() {
+	/// --- 共通の描画処理 ---
+	// 敵
+	for (Enemy* enemy : enemies_) {
+		enemy->Draw();
+	}
+	// ブロック
+	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+				blockModel_[i][j]->Draw();
+			}
+		}
+	}
+	// 天球
+	skydome_->Draw();
+
+	/// --- 各フェーズ固有の描画処理 ---
 	switch (phase_) {
 	case Phase::kFadeIn:
 		// 自キャラ
 		player_->Draw();
-		// 敵
-		enemy_->Draw();
-		// ブロック
-		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
-					blockModel_[i][j]->Draw();
-				}
-			}
-		}
-		// 天球
-		skydome_->Draw();
 		fade_->Draw();
 		break;
 	case Phase::kPlay:
 		// 自キャラ
 		player_->Draw();
-		// 敵
-		enemy_->Draw();
-		// ブロック
-		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
-					blockModel_[i][j]->Draw();
-				}
-			}
-		}
-		// 天球
-		skydome_->Draw();
 		break;
 	case Phase::kDeath:
-		// 敵
-		enemy_->Draw();
-		// ブロック
-		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
-					blockModel_[i][j]->Draw();
-				}
-			}
-		}
-		// 天球
-		skydome_->Draw();
 		// デスパーティクル
 		if (deathParticlesExistFlag) {
 			deathParticles_->Draw();
 		}
 		break;
 	case Phase::kFadeOut:
-		// 敵
-		enemy_->Draw();
-		// ブロック
-		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
-					blockModel_[i][j]->Draw();
-				}
-			}
-		}
-		// 天球
-		skydome_->Draw();
+		// フェード
 		fade_->Draw();
 		break;
 	}
@@ -247,15 +239,18 @@ void GameScene::GenerateBlocks() {
 
 void GameScene::CheckAllCollisions() {
 	// 判定対象1と2の座標
-	AABB aabb1, aabb2;
+	AABB aabb1; // aabb2 はループ内で代入されるため、ここで初期化する必要はありません。
 	// 自キャラの座標
 	aabb1 = player_->GetAABB();
 
 	// 自キャラと敵すべての当たり判定
-	aabb2 = enemy_->GetAABB();
+	for (Enemy* enemy : enemies_) {
+		AABB aabb2 = enemy->GetAABB(); // ✨ 修正点: 敵のAABBをaabb2に代入します。
 
-	if (IsCollision(aabb1, aabb2)) {
-		player_->OnCollision(enemy_);
+		if (IsCollision(aabb1, aabb2)) {
+			player_->OnCollision(enemy);
+			enemy->OnCollision(player_);
+		}
 	}
 }
 
