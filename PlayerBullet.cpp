@@ -5,6 +5,8 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 	assert(model);
 	model_ = model;
 
+	model_->SetColor({ 0,0,0,1 });
+
 	// ワールド変換
 	worldTransform_ = InitializeWorldTransform();
 	worldTransform_.translate = position;

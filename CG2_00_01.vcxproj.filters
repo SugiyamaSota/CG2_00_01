@@ -82,6 +82,9 @@
     <Filter Include="AL3\Enemy">
       <UniqueIdentifier>{d8e3c081-3009-458e-aae9-97dd22249e01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AL3\EnemyBullet">
+      <UniqueIdentifier>{7e65f27e-7433-4498-bfd4-2c9f5d3beb28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -167,6 +170,9 @@
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>AL3\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyBullet.cpp">
+      <Filter>AL3\EnemyBullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -262,6 +268,9 @@
     </ClInclude>
     <ClInclude Include="Enemy.h">
       <Filter>AL3\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBullet.h">
+      <Filter>AL3\EnemyBullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -17,7 +17,9 @@ public:
 
 	void Update(WorldTransform worldTransform,Camera* camera, bool enableLighting);
 
-	void Draw(); // 引数をintに変更
+	void Draw();
+
+	void SetColor(Vector4 color) { materialData_->color = color; }
 
 private:
 	ModelData modelData_;//構造体
