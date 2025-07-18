@@ -7,13 +7,35 @@ void Enemy::Initialize(Model* model, const Vector3& startPosition) {
 }
 
 void Enemy::Update(Camera* camera) {
-	Vector3 velocity = { 0,0,-kMoveSpeed };
 
-	worldTransform_.translate += velocity;
+
+	switch (phase_) {
+	case Phase::Approach:
+	default:
+		ApproachPhaseUpdate();
+		break;
+	case Phase::Leave:
+		LeavePhaseUpdate();
+		break;
+	}
 
 	model_->Update(worldTransform_, camera, false);
 }
 
 void Enemy::Draw() {
 	model_->Draw();
+}
+
+void Enemy::ApproachPhaseUpdate() {
+	// 速度を加算
+	worldTransform_.translate += kApproachSpeed;
+	// 一定座標に来たら離脱
+	if (worldTransform_.translate.z < 0.0f) {
+		phase_ = Phase::Leave;
+	}
+}
+
+void Enemy::LeavePhaseUpdate() {
+	// 速度を加算
+	worldTransform_.translate += kLeaveSpeed;
 }

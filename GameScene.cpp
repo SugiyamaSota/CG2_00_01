@@ -16,7 +16,7 @@ void GameScene::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 	enemyModel_ = new Model();
 	enemyModel_->LoadModel("axis");
 	enemy_ = new Enemy();
-	Vector3 enemyStartPosition = { 0,0,0 };
+	Vector3 enemyStartPosition = { 0,5,120 };
 	enemy_->Initialize(enemyModel_, enemyStartPosition);
 }
 

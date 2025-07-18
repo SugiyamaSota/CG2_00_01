@@ -6,7 +6,19 @@ private:
 	Model* model_ = nullptr;
 	WorldTransform worldTransform_;
 
-	const float kMoveSpeed = 1.0f;
+	const float kMoveSpeed = 0.5f;
+	const Vector3 kApproachSpeed = { 0,0,-kMoveSpeed };
+	const Vector3 kLeaveSpeed = { kMoveSpeed,0,0 };
+
+	enum class Phase {
+		Approach,
+		Leave,
+	};
+
+	Phase phase_ = Phase::Approach;
+
+	void ApproachPhaseUpdate();
+	void LeavePhaseUpdate();
 public:
 	/// <summary>
 	/// 初期化
