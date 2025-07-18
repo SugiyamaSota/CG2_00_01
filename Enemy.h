@@ -17,8 +17,12 @@ private:
 
 	Phase phase_ = Phase::Approach;
 
+	// フェーズごとの関数
 	void ApproachPhaseUpdate();
 	void LeavePhaseUpdate();
+
+	// メンバ関数ポインタ
+	static void(Enemy::* phaseFunctionTable[])();
 public:
 	/// <summary>
 	/// 初期化

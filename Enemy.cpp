@@ -1,5 +1,10 @@
 #include "Enemy.h"
 
+void(Enemy::* Enemy::phaseFunctionTable[])() = {
+	&Enemy::ApproachPhaseUpdate,
+	&Enemy::LeavePhaseUpdate
+};
+
 void Enemy::Initialize(Model* model, const Vector3& startPosition) {
 	model_ = model;
 	worldTransform_ = InitializeWorldTransform();
@@ -9,15 +14,7 @@ void Enemy::Initialize(Model* model, const Vector3& startPosition) {
 void Enemy::Update(Camera* camera) {
 
 
-	switch (phase_) {
-	case Phase::Approach:
-	default:
-		ApproachPhaseUpdate();
-		break;
-	case Phase::Leave:
-		LeavePhaseUpdate();
-		break;
-	}
+	(this->*phaseFunctionTable[static_cast<size_t>(phase_)])();
 
 	model_->Update(worldTransform_, camera, false);
 }
