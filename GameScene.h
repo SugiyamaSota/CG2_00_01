@@ -2,6 +2,7 @@
 #include"engine/bonjin/BonjinEngine.h"
 
 #include"Player.h"
+#include"Enemy.h"
 
 class GameScene {
 private:
@@ -12,6 +13,10 @@ private:
 	// プレイヤー
 	Model* playerModel_ = nullptr;
 	Player* player_ = nullptr;
+
+	// 敵
+	Model* enemyModel_ = nullptr;
+	Enemy* enemy_ = nullptr;
 
 public:
 	/// <summary>
