@@ -11,13 +11,13 @@ void GameScene::Initialize() {
 	mapChipField_->LoadmapChipCsv("resources/blocks.csv");
 
 	// 自キャラの生成と初期化
-	model_ = new Model();
-	model_->LoadModel("Player");
+	playerModel_ = new Model();
+	playerModel_->LoadModel("Player");
 	playerAttackModel_ = new Model();
 	playerAttackModel_->LoadModel("attackEffect");
 	player_ = new Player();
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2, 8);
-	player_->Initialize(model_, playerAttackModel_, &camera_, playerPosition);
+	player_->Initialize(playerModel_, playerAttackModel_, &camera_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
 	player_->Update();
 
@@ -29,7 +29,7 @@ void GameScene::Initialize() {
 		enemyModels_.push_back(newModel);
 
 		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6 + i, 6 + i);
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6 + i, 6 + i*2);
 		newEnemy->Initialize(newModel, &camera_, enemyPosition);
 
 		enemies_.push_back(newEnemy);
@@ -72,20 +72,32 @@ void GameScene::Initialize() {
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
 
-
+	// ヒットエフェクト
+	HitEffect::SetCamera(&camera_);
 }
 
 GameScene::~GameScene() {
-	delete model_;
+	// HitEffect インスタンスの解放
+	for (HitEffect* hitEffect : hitEffects_) {
+		delete hitEffect;
+	}
+	hitEffects_.clear();
+
+	delete playerModel_;
 	delete player_;
 	delete playerAttackModel_;
 	delete deathParticles_;
+
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
 	}
+	enemies_.clear();
+
 	for (Model* model : enemyModels_) {
 		delete model;
 	}
+	enemyModels_.clear();
+
 	delete skydome_;
 	delete skydomeModel_;
 	delete mapChipField_;
@@ -96,6 +108,16 @@ GameScene::~GameScene() {
 			delete blockModel_[i][j];
 		}
 	}
+
+	for (Model* model : hitEffectCircleModel_) {
+		delete model;
+	}
+	hitEffectCircleModel_.clear(); // リストもクリアする
+
+	for (Model* model : hitEffectEllipseModel_) {
+		delete model;
+	}
+	hitEffectEllipseModel_.clear(); // リストもクリアする
 }
 
 void GameScene::Update() {
@@ -157,8 +179,12 @@ void GameScene::Update() {
 		if (!isDebugCamera) {
 			camera_.SetCameraTranslate(player_->GetPosition());
 		}
-		// プレイヤーの更新
+		// プレイヤー
 		player_->Update();
+		// ヒットエフェクト
+		for (HitEffect* hitEffect : hitEffects_) {
+			hitEffect->Update();
+		}
 		// 当たり判定のチェック
 		CheckAllCollisions();
 		break;
@@ -200,11 +226,18 @@ void GameScene::Draw() {
 	case Phase::kFadeIn:
 		// 自キャラ
 		player_->Draw();
+		// ヒットエフェクト
+		for (HitEffect* hitEffect : hitEffects_) {
+			hitEffect->Draw();
+		}
 		fade_->Draw();
 		break;
 	case Phase::kPlay:
 		// 自キャラ
 		player_->Draw();
+		for (HitEffect* hitEffect : hitEffects_) {
+			hitEffect->Draw();
+		}
 		break;
 	case Phase::kDeath:
 		// デスパーティクル
@@ -249,7 +282,7 @@ void GameScene::CheckAllCollisions() {
 
 		if (IsCollision(aabb1, aabb2)) {
 			player_->OnCollision(enemy);
-			enemy->OnCollision(player_);
+			enemy->OnCollision(player_,this);
 		}
 	}
 }
@@ -282,4 +315,27 @@ void GameScene::ChangePhase() {
 		}
 		break;
 	}
+}
+
+const void GameScene::CreateEffect(Vector3 startPosition) {
+	Model* newCircleModel = new Model();
+	newCircleModel->LoadModel("hitEffect");
+	hitEffectCircleModel_.push_back(newCircleModel);
+
+	// 2つの異なる楕円モデルを作成
+	Model* newEllipseModel1 = new Model();
+	newEllipseModel1->LoadModel("hitEffect");
+	hitEffectEllipseModel_.push_back(newEllipseModel1);
+
+	Model* newEllipseModel2 = new Model();
+	newEllipseModel2->LoadModel("hitEffect");
+	hitEffectEllipseModel_.push_back(newEllipseModel2);
+
+	// std::array を作成し、生成した2つのモデルポインタを格納
+	std::array<Model*, 2> ellipseModelsArray = { newEllipseModel1, newEllipseModel2 };
+
+	HitEffect* newHitEffect = new HitEffect();
+	// Create 関数に std::array を渡す
+	newHitEffect = HitEffect::Create(newCircleModel, ellipseModelsArray, startPosition);
+	hitEffects_.push_back(newHitEffect); 
 }

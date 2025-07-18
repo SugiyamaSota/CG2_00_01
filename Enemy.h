@@ -3,6 +3,7 @@
 
 //--- 前方宣言 ---
 class Player;
+class GameScene;
 
 class Enemy {
 private:
@@ -80,7 +81,7 @@ public:
 
 	AABB GetAABB();
 
-	void OnCollision(const Player* player);
+	void OnCollision(const Player* player,GameScene* gameScene);
 
 	bool IsDead()const { return isDead_; }
 

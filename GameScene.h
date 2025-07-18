@@ -6,6 +6,7 @@
 #include"MapChipField.h"
 #include"Deathparticles.h"
 #include"Fade.h"
+#include"HitEffect.h"
 
 class GameScene{
 private:
@@ -16,7 +17,7 @@ private:
 	//自キャラ
 	WorldTransform worldTransform_;
 	Player* player_ = nullptr;
-	Model* model_ = nullptr;
+	Model* playerModel_ = nullptr;
 	Model* playerAttackModel_ = nullptr;
 
 	///// プレイヤーのパーティクル /////
@@ -55,6 +56,12 @@ private:
 
 	bool finished_ = false;
 
+	// ヒットエフェクト
+	std::list<Model*> hitEffectCircleModel_;
+	std::list<Model*> hitEffectEllipseModel_;
+	std::list<HitEffect*>hitEffects_;
+
+	
 public:
 	/// <summary>
 	/// 初期化
@@ -85,5 +92,9 @@ public:
 	void CheckAllCollisions();
 
 	bool IsFinished() const { return finished_; }
+
+	// エフェクトの生成
+	const void CreateEffect(Vector3 startPosition);
+
 };
 

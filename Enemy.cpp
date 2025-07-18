@@ -2,6 +2,7 @@
 #include <cmath>
 #include <numbers>
 #include"Player.h"
+#include"GameScene.h"
 
 void Enemy::Initialize(Model* model, DebugCamera* camera, const Vector3& position) {
 
@@ -35,7 +36,7 @@ void Enemy::Update() {
 		// 各振る舞いごとの初期化
 		switch (behavior_) {
 		case Behavior::kWalk:
-			
+
 			break;
 		case Behavior::kDeath:
 			velocity_.y = deathjump_;
@@ -78,11 +79,11 @@ void Enemy::BehaviorWalkUpdate() {
 		walkTimer_ = 0.0f;
 	}
 
-	
+
 }
 
 void Enemy::BehaviorDeathUpdate() {
-	float t= static_cast<float>(deathParameter_) / deathTime_;
+	float t = static_cast<float>(deathParameter_) / deathTime_;
 	worldTransform_.rotate.y++;
 
 	// 死んだ瞬間に飛ばせて地底まで落下させたい
@@ -104,7 +105,7 @@ void Enemy::Draw() { model_->Draw(); }
 void Enemy::TurningControl() {
 	{
 		float destinationRotationYTable[] = {
-			std::numbers::pi_v<float> * -2.0f / 2.0f,
+			std::numbers::pi_v<float> *-2.0f / 2.0f,
 			std::numbers::pi_v<float> *2.0f / 2.0f,
 		};
 		// 状況に応じた角度を取得する
@@ -127,7 +128,7 @@ AABB Enemy::GetAABB() {
 	return aabb;
 }
 
-void Enemy::OnCollision(const Player* player) {
+void Enemy::OnCollision(const Player* player, GameScene* gameScene) {
 	(void)player;
 
 	if (behavior_ == Behavior::kDeath) {
@@ -136,6 +137,12 @@ void Enemy::OnCollision(const Player* player) {
 
 	if (player->IsAttack()) {
 		behaviorRequest_ = Behavior::kDeath;
+
+		Vector3 effectPos = (Add(worldTransform_.translate, player->GetPosition()));
+		effectPos.x = effectPos.x / 2.0f;
+		effectPos.y = effectPos.y / 2.0f;
+		effectPos.z = effectPos.z / 2.0f;
 		
+		gameScene->CreateEffect(effectPos);
 	}
 }
