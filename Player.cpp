@@ -31,6 +31,15 @@ void Player::Update(Camera* camera) {
 	// 攻撃
 	Attack();
 
+	// デスフラグが立った弾を削除
+	bullets_.remove_if([](PlayerBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+		});
+
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Update(camera);
 	}
@@ -93,13 +102,21 @@ void Player::Rotate() {
 
 void Player::Attack() {
 	if (Input::GetInstance()->IsTrigger(DIK_J)) {
+		// 弾の速度
+		const float kBulletSpeed = 1.0f;
+		Vector3 velocity = { 0,0,kBulletSpeed };
+
+		Matrix4x4 worldMatrix = MakeAffineMatrix(worldTransform_.scale, worldTransform_.rotate, worldTransform_.translate);
+
+		velocity = TransformNormal(velocity,worldMatrix);
+
 		Model* newModel = new Model();
 		newModel->LoadModel("cube");
 
 		bulletModel_.push_back(newModel);
 
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(newModel, worldTransform_.translate);
+		newBullet->Initialize(newModel, worldTransform_.translate, velocity);
 
 		// 弾を登録する
 		bullets_.push_back(newBullet);
@@ -114,9 +131,4 @@ void Player::Draw() {
 
 	// プレイヤー
 	model_->Draw();
-
-
-	ImGui::Begin("pos");
-	ImGui::DragFloat3("position", &worldTransform_.translate.x);
-	ImGui::End();
 }

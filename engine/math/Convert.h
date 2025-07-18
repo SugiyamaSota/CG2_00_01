@@ -62,3 +62,6 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 
 // ワールドトランスフォームの初期化
 WorldTransform InitializeWorldTransform();
+
+// 
+Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);

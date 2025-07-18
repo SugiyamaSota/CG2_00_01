@@ -1,6 +1,6 @@
 #include "PlayerBullet.h"
 
-void PlayerBullet::Initialize(Model* model, const Vector3& position) {
+void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
 	// モデル
 	assert(model);
 	model_ = model;
@@ -8,6 +8,8 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position) {
 	// ワールド変換
 	worldTransform_ = InitializeWorldTransform();
 	worldTransform_.translate = position;
+
+	velocity_ = velocity;
 }
 
 PlayerBullet::~PlayerBullet() {
@@ -15,6 +17,13 @@ PlayerBullet::~PlayerBullet() {
 }
 
 void PlayerBullet::Update(Camera* camera) {
+	// 一定時間でデス
+	if (--deathTimer_ <= 0) {
+		isDead_ = true;
+	}
+
+	worldTransform_.translate += velocity_;
+
 	model_->Update(worldTransform_, camera, false);
 }
 
