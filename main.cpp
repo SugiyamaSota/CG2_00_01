@@ -15,6 +15,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 	GameScene* gameScene = new GameScene();
 	gameScene->Initialize(kClientWidth,kClientHeight);
+	gameScene->Update();
+
+	bool gameStart = false;
 
 	//ウィンドウの×ボタンが押されるまでループ
 	MSG msg{};
@@ -29,7 +32,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			/// 更新処理ここから
 			///
 			
-			gameScene->Update();
+			if (ImGui::Button("start")) {
+				gameStart = true;
+			}
+
+			if (gameStart) {
+				gameScene->Update();
+			}
 
 			///
 			/// 更新処理ここまで
