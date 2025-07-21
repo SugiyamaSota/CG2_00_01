@@ -80,7 +80,7 @@ void Enemy::ChangeState(BaseEnemyState* newState) {
 }
 
 void Enemy::Fire() {
-	const float kBulletSpeed = 1.0f;
+	const float kBulletSpeed = 0.5f;
 
 	worldMatrix_ = MakeAffineMatrix(worldTransform_.scale, worldTransform_.rotate, worldTransform_.translate);
 

@@ -29,7 +29,7 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector
 
 		roll = 0.0f;
 	
-	worldTransform_.rotate = { pitch, yaw, roll };
+	worldTransform_.rotate = { pitch, -yaw, roll };
 }
 
 EnemyBullet::~EnemyBullet() {
