@@ -32,7 +32,7 @@ private:
 	Model* model_ = nullptr;
 	WorldTransform worldTransform_;
 
-	const float kMoveSpeed = 0.5f;
+	const float kMoveSpeed = 0.25f;
 	const Vector3 kApproachSpeed = { 0,0,-kMoveSpeed };
 	const Vector3 kLeaveSpeed = { -kMoveSpeed,0,0 };
 

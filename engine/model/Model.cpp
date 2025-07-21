@@ -83,6 +83,8 @@ MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, c
 	std::ifstream file(directoryPath + '/' + filename);
 	assert(file.is_open());
 
+	materialData.textureFilepath = "resources/textures/default.png";
+
 	while (std::getline(file, line)) {
 		std::string identifier;
 		std::istringstream s(line);
