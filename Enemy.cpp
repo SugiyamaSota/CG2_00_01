@@ -9,7 +9,10 @@ void Enemy::Initialize(Model* model, const Vector3& startPosition) {
 
     // 初期状態を設定
     state_ = new EnemyStateApproach(); // 初期状態
-    fireTimer_ = kFireInterval; // ApproachPhaseInitializeの内容をここに移動
+    fireFunction_ = std::bind(&Enemy::Fire, this);
+
+    timedCalls_.push_back(
+        new TimedCall(std::bind(&Enemy::FireAndReset, this), kFireInterval));
 }
 
 Enemy::~Enemy() {
@@ -20,6 +23,9 @@ Enemy::~Enemy() {
     for (Model* model : bulletModel_) {
         delete model;
     }
+    for (TimedCall* timedCall : timedCalls_) {
+        delete timedCall;
+    }
 }
 
 void Enemy::Update(Camera* camera) {
@@ -29,9 +35,23 @@ void Enemy::Update(Camera* camera) {
 
     model_->Update(worldTransform_, camera, false);
 
+    timedCalls_.remove_if([](TimedCall* timedCall) {
+        if (timedCall->IsFinished()) {
+            delete timedCall;
+            return true;
+        }
+        return false;
+        });
+
+    for (TimedCall* timedCall : timedCalls_) {
+        timedCall->Update();
+    }
+
+
     for (EnemyBullet* bullet : bullets_) {
         bullet->Update(camera);
     }
+
 }
 
 void Enemy::Draw() {
@@ -68,17 +88,7 @@ void Enemy::Fire() {
     bullets_.push_back(newBullet);
 }
 
-// EnemyStateApproach クラスのUpdateメソッドの実装
 void EnemyStateApproach::Update(Enemy* enemy) {
-    // カウントダウン
-    enemy->DecrementFireTimer();
-
-    // 指定時間に達した
-    if (enemy->GetFireTimer() <= 0) {
-        enemy->Fire();
-        enemy->ResetFireTimer();
-    }
-
     // 速度を加算
     enemy->MoveApproach();
     // 一定座標に来たら離脱
@@ -91,4 +101,11 @@ void EnemyStateApproach::Update(Enemy* enemy) {
 void EnemyStateLeave::Update(Enemy* enemy) {
     // 速度を加算
     enemy->MoveLeave();
+}
+
+void Enemy::FireAndReset() {
+    Fire();
+
+    timedCalls_.push_back(
+        new TimedCall(std::bind(&Enemy::FireAndReset, this), kFireInterval));
 }

@@ -70,26 +70,32 @@
     <Filter Include="AL3">
       <UniqueIdentifier>{ca4775d8-c24a-499a-a108-cb033c567195}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AL3\enemy">
-      <UniqueIdentifier>{d8e3c081-3009-458e-aae9-97dd22249e01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AL3\enemyBullet">
-      <UniqueIdentifier>{7e65f27e-7433-4498-bfd4-2c9f5d3beb28}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AL3\gameScene">
       <UniqueIdentifier>{e0e6f089-41d7-4bf2-9025-8231d9707b91}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AL3\player">
+    <Filter Include="AL3\敵関連">
+      <UniqueIdentifier>{6b3506b9-a581-46ab-803c-eda6a47b9632}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AL3\敵関連\enemy">
+      <UniqueIdentifier>{d8e3c081-3009-458e-aae9-97dd22249e01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AL3\敵関連\enemyBullet">
+      <UniqueIdentifier>{7e65f27e-7433-4498-bfd4-2c9f5d3beb28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AL3\プレイヤー関連">
+      <UniqueIdentifier>{8bbe0a1b-ae19-4100-bab6-b0be39a9b481}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AL3\プレイヤー関連\player">
       <UniqueIdentifier>{c46add73-c0f6-4dce-9359-eae34b5b64db}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AL3\playerBullet">
+    <Filter Include="AL3\プレイヤー関連\playerBullet">
       <UniqueIdentifier>{658bbd93-e4cf-43f2-a78e-de68c3642437}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AL3\敵関連\timedCall">
+      <UniqueIdentifier>{fe82c384-471a-49f0-bf76-083c060d186f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="externals\imgui\imgui.cpp">
       <Filter>外部ファイル\imgui</Filter>
     </ClCompile>
@@ -163,16 +169,22 @@
       <Filter>AL3\gameScene</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>AL3\player</Filter>
+      <Filter>AL3\プレイヤー関連\player</Filter>
     </ClCompile>
     <ClCompile Include="PlayerBullet.cpp">
-      <Filter>AL3\playerBullet</Filter>
+      <Filter>AL3\プレイヤー関連\playerBullet</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
-      <Filter>AL3\enemy</Filter>
+      <Filter>AL3\敵関連\enemy</Filter>
     </ClCompile>
     <ClCompile Include="EnemyBullet.cpp">
-      <Filter>AL3\enemyBullet</Filter>
+      <Filter>AL3\敵関連\enemyBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="TimedCall.cpp">
+      <Filter>AL3\敵関連\timedCall</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -261,16 +273,19 @@
       <Filter>AL3\gameScene</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>AL3\player</Filter>
+      <Filter>AL3\プレイヤー関連\player</Filter>
     </ClInclude>
     <ClInclude Include="PlayerBullet.h">
-      <Filter>AL3\playerBullet</Filter>
+      <Filter>AL3\プレイヤー関連\playerBullet</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
-      <Filter>AL3\enemy</Filter>
+      <Filter>AL3\敵関連\enemy</Filter>
     </ClInclude>
     <ClInclude Include="EnemyBullet.h">
-      <Filter>AL3\enemyBullet</Filter>
+      <Filter>AL3\敵関連\enemyBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="TimedCall.h">
+      <Filter>AL3\敵関連\timedCall</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
