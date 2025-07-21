@@ -1,5 +1,5 @@
 #include"engine/bonjin/BonjinEngine.h"
-#include"GameScene.h"
+#include"game/GameScene.h"
 
 using namespace BonjinEngine;
 

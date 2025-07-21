@@ -1,5 +1,5 @@
 #pragma once
-#include"engine/bonjin/BonjinEngine.h"
+#include"../../engine/bonjin/BonjinEngine.h"
 
 class PlayerBullet {
 private:

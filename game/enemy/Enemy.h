@@ -1,9 +1,9 @@
 #pragma once
-#include"engine/bonjin/BonjinEngine.h"
+#include"../../engine/bonjin/BonjinEngine.h"
 #include"EnemyBullet.h"
 #include <list>
 #include<functional>
-#include"TimedCall.h"
+#include"../utility/TimedCall.h"
 
 class Enemy;
 

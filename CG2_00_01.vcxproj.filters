@@ -91,7 +91,10 @@
     <Filter Include="AL3\プレイヤー関連\playerBullet">
       <UniqueIdentifier>{658bbd93-e4cf-43f2-a78e-de68c3642437}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AL3\敵関連\timedCall">
+    <Filter Include="AL3\汎用ファイル">
+      <UniqueIdentifier>{9123b8ce-79a2-4098-a96d-01111b742acc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AL3\汎用ファイル\timedCall">
       <UniqueIdentifier>{fe82c384-471a-49f0-bf76-083c060d186f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -165,26 +168,26 @@
     <ClCompile Include="engine\color\Color.cpp">
       <Filter>engine\color</Filter>
     </ClCompile>
-    <ClCompile Include="GameScene.cpp">
-      <Filter>AL3\gameScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>AL3\プレイヤー関連\player</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerBullet.cpp">
-      <Filter>AL3\プレイヤー関連\playerBullet</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>AL3\敵関連\enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyBullet.cpp">
-      <Filter>AL3\敵関連\enemyBullet</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="TimedCall.cpp">
-      <Filter>AL3\敵関連\timedCall</Filter>
+    <ClCompile Include="game\GameScene.cpp">
+      <Filter>AL3\gameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="game\utility\TimedCall.cpp">
+      <Filter>AL3\汎用ファイル\timedCall</Filter>
+    </ClCompile>
+    <ClCompile Include="game\player\Player.cpp">
+      <Filter>AL3\プレイヤー関連\player</Filter>
+    </ClCompile>
+    <ClCompile Include="game\player\PlayerBullet.cpp">
+      <Filter>AL3\プレイヤー関連\playerBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="game\enemy\Enemy.cpp">
+      <Filter>AL3\敵関連\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="game\enemy\EnemyBullet.cpp">
+      <Filter>AL3\敵関連\enemyBullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -269,23 +272,23 @@
     <ClInclude Include="engine\color\Color.h">
       <Filter>engine\color</Filter>
     </ClInclude>
-    <ClInclude Include="GameScene.h">
+    <ClInclude Include="game\GameScene.h">
       <Filter>AL3\gameScene</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
+    <ClInclude Include="game\utility\TimedCall.h">
+      <Filter>AL3\汎用ファイル\timedCall</Filter>
+    </ClInclude>
+    <ClInclude Include="game\player\Player.h">
       <Filter>AL3\プレイヤー関連\player</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerBullet.h">
+    <ClInclude Include="game\player\PlayerBullet.h">
       <Filter>AL3\プレイヤー関連\playerBullet</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
+    <ClInclude Include="game\enemy\Enemy.h">
       <Filter>AL3\敵関連\enemy</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyBullet.h">
+    <ClInclude Include="game\enemy\EnemyBullet.h">
       <Filter>AL3\敵関連\enemyBullet</Filter>
-    </ClInclude>
-    <ClInclude Include="TimedCall.h">
-      <Filter>AL3\敵関連\timedCall</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

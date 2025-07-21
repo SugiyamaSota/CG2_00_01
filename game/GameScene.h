@@ -1,8 +1,8 @@
 #pragma once
-#include"engine/bonjin/BonjinEngine.h"
+#include"../engine/bonjin/BonjinEngine.h"
 
-#include"Player.h"
-#include"Enemy.h"
+#include"player/Player.h"
+#include"enemy/Enemy.h"
 
 class GameScene {
 private:

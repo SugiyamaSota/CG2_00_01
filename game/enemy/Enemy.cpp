@@ -64,9 +64,18 @@ void Enemy::Draw() {
 
 void Enemy::ChangeState(BaseEnemyState* newState) {
     if (state_) {
+        EnemyStateLeave* leaveState = dynamic_cast<EnemyStateLeave*>(newState);
+        if (leaveState != nullptr) {
+            // 新しい状態がLeaveの場合、すべての予約されたTimedCallをキャンセル（削除）
+            for (TimedCall* timedCall : timedCalls_) {
+                delete timedCall;
+            }
+            timedCalls_.clear(); // リストもクリア
+        }
         delete state_; // 古い状態を削除
     }
     state_ = newState; // 新しい状態を設定
+
 }
 
 void Enemy::Fire() {
