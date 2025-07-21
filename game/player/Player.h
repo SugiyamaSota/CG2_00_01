@@ -12,6 +12,8 @@ private:
 	// ワールド変換
 	WorldTransform worldTransform_{};
 
+	Matrix4x4 worldMatrix_;
+
 	// 弾
 	std::list<PlayerBullet*> bullets_;
 	std::list<Model*> bulletModel_;
@@ -51,5 +53,7 @@ public:
 	/// 描画処理
 	/// </summary>
 	void Draw();
+
+	Vector3 GetWorldPosition();
 };
 

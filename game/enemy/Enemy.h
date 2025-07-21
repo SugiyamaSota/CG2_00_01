@@ -5,6 +5,7 @@
 #include<functional>
 #include"../utility/TimedCall.h"
 
+class Player;
 class Enemy;
 
 class BaseEnemyState {
@@ -44,6 +45,10 @@ private:
 
 	std::list<TimedCall*>timedCalls_;
 
+	Player* player_ = nullptr;
+
+	Matrix4x4 worldMatrix_;
+
 public:
 	static const int kFireInterval = 60;
 
@@ -80,4 +85,7 @@ public:
 
 	void FireAndReset();
 
+	void SetPlayer(Player* player) { player_ = player; }
+
+	Vector3 GetWorldPosition();
 };

@@ -10,6 +10,8 @@ void Player::Initialize(Model* model) {
 
 	// ワールド変換
 	worldTransform_ = InitializeWorldTransform();
+
+	worldMatrix_ = MakeIdentity4x4();
 }
 
 Player::~Player() {
@@ -43,6 +45,8 @@ void Player::Update(Camera* camera) {
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Update(camera);
 	}
+
+	worldMatrix_ = MakeAffineMatrix(worldTransform_.scale, worldTransform_.rotate, worldTransform_.translate);
 
 	model_->Update(worldTransform_, camera, false);
 }
@@ -106,9 +110,9 @@ void Player::Attack() {
 		const float kBulletSpeed = 1.0f;
 		Vector3 velocity = { 0,0,kBulletSpeed };
 
-		Matrix4x4 worldMatrix = MakeAffineMatrix(worldTransform_.scale, worldTransform_.rotate, worldTransform_.translate);
+		
 
-		velocity = TransformNormal(velocity,worldMatrix);
+		velocity = TransformNormal(velocity,worldMatrix_);
 
 		Model* newModel = new Model();
 		newModel->LoadModel("cube");
@@ -131,4 +135,14 @@ void Player::Draw() {
 
 	// プレイヤー
 	model_->Draw();
+}
+
+Vector3 Player::GetWorldPosition() {
+	Vector3 worldPos;
+
+	worldPos.x = worldMatrix_.m[3][0];
+	worldPos.y = worldMatrix_.m[3][1];
+	worldPos.z = worldMatrix_.m[3][2];
+
+	return worldPos;
 }
