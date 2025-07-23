@@ -183,11 +183,11 @@
     <ClCompile Include="game\player\PlayerBullet.cpp">
       <Filter>AL3\プレイヤー関連\playerBullet</Filter>
     </ClCompile>
-    <ClCompile Include="game\enemy\Enemy.cpp">
-      <Filter>AL3\敵関連\enemy</Filter>
-    </ClCompile>
     <ClCompile Include="game\enemy\EnemyBullet.cpp">
       <Filter>AL3\敵関連\enemyBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="game\enemy\Enemy.cpp">
+      <Filter>AL3\敵関連\enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

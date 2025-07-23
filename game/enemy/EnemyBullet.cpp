@@ -75,3 +75,8 @@ Vector3 EnemyBullet::GetWorldPosition() {
 
 	return worldPos;
 }
+
+void EnemyBullet::OnCollision() {
+	// デスフラグをたてる
+	isDead_ = true;
+}

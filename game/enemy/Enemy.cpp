@@ -58,6 +58,14 @@ void Enemy::Update(Camera* camera) {
 void Enemy::Draw() {
 	model_->Draw();
 
+	bullets_.remove_if([](EnemyBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+		});
+
 	for (EnemyBullet* bullet : bullets_) {
 		bullet->Draw();
 	}
@@ -139,4 +147,8 @@ Vector3 Enemy::GetWorldPosition() {
 	worldPos.z = worldMatrix_.m[3][2];
 
 	return worldPos;
+}
+
+void Enemy::OnCollision() {
+	// 何も起きない
 }

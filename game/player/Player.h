@@ -4,7 +4,7 @@
 
 #include"PlayerBullet.h"
 
-class Player{
+class Player {
 private:
 	// モデル
 	Model* model_ = nullptr;
@@ -17,6 +17,8 @@ private:
 	// 弾
 	std::list<PlayerBullet*> bullets_;
 	std::list<Model*> bulletModel_;
+
+	const float kRadius = 2.0f;
 
 	/// <summary>
 	/// 移動処理
@@ -55,5 +57,16 @@ public:
 	void Draw();
 
 	Vector3 GetWorldPosition();
+
+	/// <summary>
+	/// 衝突を検知したら呼び出される
+	/// </summary>
+	void OnCollision();
+
+	const std::list<PlayerBullet*>& GetBullets()const { return bullets_; }
+
+	float GetRadius()const { return kRadius; }
+
+
 };
 

@@ -49,6 +49,8 @@ private:
 
 	Matrix4x4 worldMatrix_;
 
+	const float kRadius = 2.0f;
+
 public:
 	static const int kFireInterval = 60;
 
@@ -88,4 +90,13 @@ public:
 	void SetPlayer(Player* player) { player_ = player; }
 
 	Vector3 GetWorldPosition();
+
+	/// <summary>
+	/// 衝突を検知したら呼び出される
+	/// </summary>
+	void OnCollision();
+
+	const std::list<EnemyBullet*>& GetBullets()const { return bullets_; }
+
+	float GetRadius()const { return kRadius; }
 };

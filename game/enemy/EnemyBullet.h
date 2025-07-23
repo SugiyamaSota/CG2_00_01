@@ -27,6 +27,8 @@ private:
 
 	Player* player_ = nullptr;
 
+	const float kRadius = 2.0f;
+
 public:
 	/// <summary>
 	/// 初期化
@@ -53,4 +55,11 @@ public:
 	void SetPlayer(Player* player) { player_ = player; }
 
 	Vector3 GetWorldPosition();
+
+	/// <summary>
+	/// 衝突を検知したら呼び出される
+	/// </summary>
+	void OnCollision();
+
+	float GetRadius()const { return kRadius; }
 };
