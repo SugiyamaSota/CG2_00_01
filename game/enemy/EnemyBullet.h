@@ -1,9 +1,10 @@
 #pragma once
 #include"../../engine/bonjin/BonjinEngine.h"
+#include"../utility/Collider.h"
 
 class Player;
 
-class EnemyBullet {
+class EnemyBullet : public Collider {
 private:
 	// モデル
 	Model* model_ = nullptr;
@@ -54,12 +55,12 @@ public:
 
 	void SetPlayer(Player* player) { player_ = player; }
 
-	Vector3 GetWorldPosition();
+	Vector3 GetWorldPosition()override;
 
 	/// <summary>
 	/// 衝突を検知したら呼び出される
 	/// </summary>
-	void OnCollision();
+	void OnCollision()override;
 
 	float GetRadius()const { return kRadius; }
 };

@@ -3,6 +3,7 @@
 
 #include"player/Player.h"
 #include"enemy/Enemy.h"
+#include"utility/Collider.h"
 
 class GameScene {
 private:
@@ -17,6 +18,8 @@ private:
 	// 敵
 	Model* enemyModel_ = nullptr;
 	Enemy* enemy_ = nullptr;
+
+	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
 
 public:
 	/// <summary>

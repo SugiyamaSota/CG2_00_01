@@ -97,6 +97,9 @@
     <Filter Include="AL3\汎用ファイル\timedCall">
       <UniqueIdentifier>{fe82c384-471a-49f0-bf76-083c060d186f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AL3\汎用ファイル\collider">
+      <UniqueIdentifier>{a136d659-b06c-4658-819d-c6e665280719}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="externals\imgui\imgui.cpp">
@@ -188,6 +191,9 @@
     </ClCompile>
     <ClCompile Include="game\enemy\Enemy.cpp">
       <Filter>AL3\敵関連\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="game\utility\Collider.cpp">
+      <Filter>AL3\汎用ファイル\collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -289,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="game\enemy\EnemyBullet.h">
       <Filter>AL3\敵関連\enemyBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="game\utility\Collider.h">
+      <Filter>AL3\汎用ファイル\collider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

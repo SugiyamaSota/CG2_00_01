@@ -3,8 +3,9 @@
 #include<list>
 
 #include"PlayerBullet.h"
+#include"../utility/Collider.h"
 
-class Player {
+class Player : public Collider {
 private:
 	// モデル
 	Model* model_ = nullptr;
@@ -56,12 +57,12 @@ public:
 	/// </summary>
 	void Draw();
 
-	Vector3 GetWorldPosition();
+	Vector3 GetWorldPosition()override;
 
 	/// <summary>
 	/// 衝突を検知したら呼び出される
 	/// </summary>
-	void OnCollision();
+	void OnCollision()override;
 
 	const std::list<PlayerBullet*>& GetBullets()const { return bullets_; }
 

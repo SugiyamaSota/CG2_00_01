@@ -4,6 +4,7 @@
 #include <list>
 #include<functional>
 #include"../utility/TimedCall.h"
+#include"../utility/Collider.h"
 
 class Player;
 class Enemy;
@@ -27,7 +28,7 @@ public:
 	void Update(Enemy* enemy) override;
 };
 
-class Enemy {
+class Enemy : public Collider {
 private:
 	Model* model_ = nullptr;
 	WorldTransform worldTransform_;
@@ -89,12 +90,12 @@ public:
 
 	void SetPlayer(Player* player) { player_ = player; }
 
-	Vector3 GetWorldPosition();
+	Vector3 GetWorldPosition()override;
 
 	/// <summary>
 	/// 衝突を検知したら呼び出される
 	/// </summary>
-	void OnCollision();
+	void OnCollision()override;
 
 	const std::list<EnemyBullet*>& GetBullets()const { return bullets_; }
 

@@ -1,8 +1,9 @@
 #pragma once
 #include"../../engine/bonjin/BonjinEngine.h"
 
+#include"../utility/Collider.h"
 
-class PlayerBullet {
+class PlayerBullet : public Collider {
 private:
 	// モデル
 	Model* model_ = nullptr;
@@ -52,10 +53,10 @@ public:
 	/// <summary>
 	/// 衝突を検知したら呼び出される
 	/// </summary>
-	void OnCollision();
+	void OnCollision()override;
 
 	float GetRadius()const { return kRadius; }
 
-	Vector3 GetWorldPosition();
+	Vector3 GetWorldPosition()override;
 };
 

@@ -67,61 +67,37 @@ void GameScene::CheckAllCollisions() {
 	const std::list<EnemyBullet*>enemyBullets = enemy_->GetBullets();
 
 #pragma region 自キャラと敵の弾
-	posA = player_->GetWorldPosition();
-
 	for (EnemyBullet* bullet : enemyBullets) {
-		// 敵の弾の座標
-		posB = bullet->GetWorldPosition();
-
-		// 座標の差分
-		Vector3 distance = posA - posB;
-		float length = Length(distance);
-
-		if (player_->GetRadius() + bullet->GetRadius() > length) {
-			player_->OnCollision();
-			bullet->OnCollision();
-		}
+		CheckCollisionPair(player_, bullet);
 	}
 #pragma endregion
 
 #pragma region 自分の弾と敵キャラ
-	posA = enemy_->GetWorldPosition();
-
 	for (PlayerBullet* bullet : playerBullets) {
-		// 敵の弾の座標
-		posB = bullet->GetWorldPosition();
-
-		// 座標の差分
-		Vector3 distance = posA - posB;
-		float length = Length(distance);
-
-		if (player_->GetRadius() + bullet->GetRadius() > length) {
-			enemy_->OnCollision();
-			bullet->OnCollision();
-		}
+		CheckCollisionPair(enemy_, bullet);
 	}
 #pragma endregion
 
 
 #pragma region 自分の弾と敵の弾
 	for (PlayerBullet* playerBullet : playerBullets) {
-		// 敵の弾の座標
-		posA = playerBullet->GetWorldPosition();
-
 		for (EnemyBullet* enemyBullet : enemyBullets) {
-			// 敵の弾の座標
-			posB = enemyBullet->GetWorldPosition();
-
-			// 座標の差分
-			Vector3 distance = posA - posB;
-			float length = Length(distance);
-
-			if (playerBullet->GetRadius() + enemyBullet->GetRadius() > length) {
-				playerBullet->OnCollision();
-				enemyBullet->OnCollision();
-			}
+			CheckCollisionPair(playerBullet, enemyBullet);
 		}
 	}
 #pragma endregion
 
+}
+
+void GameScene::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
+	Vector3 posA, posB;
+	posA = colliderA->GetWorldPosition();
+	posB = colliderB->GetWorldPosition();
+	// 座標の差分
+	Vector3 distance = posA - posB;
+	float length = Length(distance);
+	if (colliderA->GetRadius() + colliderB->GetRadius() > length) {
+		colliderA->OnCollision();
+		colliderB->OnCollision();
+	}
 }
