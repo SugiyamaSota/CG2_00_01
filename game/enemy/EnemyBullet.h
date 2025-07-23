@@ -1,6 +1,8 @@
 #pragma once
 #include"../../engine/bonjin/BonjinEngine.h"
 
+class Player;
+
 class EnemyBullet {
 private:
 	// モデル
@@ -8,6 +10,8 @@ private:
 
 	// ワールド変換
 	WorldTransform worldTransform_;
+
+	Matrix4x4 worldMatrix_;
 
 	// 速度
 	Vector3 velocity_;
@@ -21,11 +25,13 @@ private:
 	// デスフラグ
 	bool isDead_ = false;
 
+	Player* player_ = nullptr;
+
 public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
+	void Initialize(Model* model, const Vector3& position, const Vector3& velocity,Player& player);
 
 	/// <summary>
 	/// デストラクタ
@@ -43,4 +49,8 @@ public:
 	void Draw();
 
 	bool IsDead()const { return isDead_; }
+
+	void SetPlayer(Player* player) { player_ = player; }
+
+	Vector3 GetWorldPosition();
 };

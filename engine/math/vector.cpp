@@ -63,3 +63,41 @@ Vector3 Cross(const Vector3& vector1, const Vector3& vector2) {
 	result.z = vector1.x * vector2.y - vector1.y * vector2.x;
 	return result;
 }
+
+Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
+	Vector3 result = {};
+	result.x = (v1.x * (1.0f - t)) + (v2.x * t);
+	result.y = (v1.y * (1.0f - t)) + (v2.y * t);
+	result.z = (v1.z * (1.0f - t)) + (v2.z * t);
+	return result;
+}
+
+Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t) {
+	t = std::fmax(0.0f, std::fmin(1.0f, t));
+
+	float dot = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+
+	dot = std::fmax(-1.0f, std::fmin(1.0f, dot));
+
+	float theta = std::acos(dot);
+
+	if (std::fabs(theta) < 1e-6f) {
+		Vector3 result = {};
+		result.x = (v1.x * (1.0f - t)) + (v2.x * t);
+		result.y = (v1.y * (1.0f - t)) + (v2.y * t);
+		result.z = (v1.z * (1.0f - t)) + (v2.z * t);
+		return result;
+	}
+
+	float sinTheta = std::sin(theta);
+
+	float weight1 = std::sin((1.0f - t) * theta) / sinTheta;
+	float weight2 = std::sin(t * theta) / sinTheta;
+
+	Vector3 result = {};
+	result.x = (v1.x * weight1) + (v2.x * weight2);
+	result.y = (v1.y * weight1) + (v2.y * weight2);
+	result.z = (v1.z * weight1) + (v2.z * weight2);
+
+	return result;
+}
