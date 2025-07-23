@@ -32,30 +32,33 @@ EnemyBullet::~EnemyBullet() {
 }
 
 void EnemyBullet::Update(Camera* camera) {
+	// ワールド行列
 	worldMatrix_ = MakeAffineMatrix(worldTransform_.scale, worldTransform_.rotate, worldTransform_.translate);
 
+	// プレイヤー座標との差分健さん
 	Vector3 toPlayer = player_->GetWorldPosition() - GetWorldPosition();
 
+	// それぞれの正規化
 	toPlayer = Normalize(toPlayer);
 	velocity_ = Normalize(velocity_);
 
+	// 速度の球線形補間
 	velocity_ = Slerp(velocity_, toPlayer, 5.0f / 60.0f) * 1.0f;
 
+	// 角度計算
 	worldTransform_.rotate.y = std::atan2f(velocity_.x, velocity_.z);
-
 	float velocityXZ = std::sqrtf(velocity_.x * velocity_.x + velocity_.z * velocity_.z);
-
 	worldTransform_.rotate.x = std::atan2(velocity_.y, velocityXZ);
-
-	worldMatrix_ = MakeIdentity4x4();
 
 	// 一定時間でデス
 	if (--deathTimer_ <= 0) {
 		isDead_ = true;
 	}
 
+	// 速度を適応
 	worldTransform_.translate += velocity_;
 
+	// モデルの更新
 	model_->Update(worldTransform_, camera, false);
 }
 
