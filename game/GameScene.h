@@ -4,6 +4,7 @@
 #include"player/Player.h"
 #include"enemy/Enemy.h"
 #include"utility/Collider.h"
+#include"utility/Skydome.h"
 
 #include"manager/CollisionManager.h"
 
@@ -20,6 +21,10 @@ private:
 	// 敵
 	Model* enemyModel_ = nullptr;
 	Enemy* enemy_ = nullptr;
+
+	// 天球
+	Model* skydomeModel_ = nullptr;
+	Skydome* skydome_ = nullptr;
 
 	// 衝突マネージャー
 	CollisionManager* collisionManager_ = nullptr;

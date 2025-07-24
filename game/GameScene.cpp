@@ -20,6 +20,10 @@ void GameScene::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 	enemy_->Initialize(enemyModel_, enemyStartPosition);
 	enemy_->SetPlayer(player_);
 
+	// 天球
+	skydomeModel_ = new Model();
+	skydomeModel_->LoadModel("")
+
 	// 衝突マネージャー
 	collisionManager_ = new CollisionManager;
 	collisionManager_->Initialize(player_, enemy_);

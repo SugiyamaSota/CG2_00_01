@@ -103,6 +103,9 @@
     <Filter Include="AL3\manager">
       <UniqueIdentifier>{336a3ec5-e3f0-4240-876d-0fc4e520dd22}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AL3\汎用ファイル\skydome">
+      <UniqueIdentifier>{44430aad-67ce-4b4f-9347-47b2ba75f538}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="externals\imgui\imgui.cpp">
@@ -200,6 +203,9 @@
     </ClCompile>
     <ClCompile Include="game\manager\CollisionManager.cpp">
       <Filter>AL3\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="game\utility\Skydome.cpp">
+      <Filter>AL3\汎用ファイル\skydome</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -310,6 +316,9 @@
     </ClInclude>
     <ClInclude Include="game\manager\CollisionManager.h">
       <Filter>AL3\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="game\utility\Skydome.h">
+      <Filter>AL3\汎用ファイル\skydome</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
