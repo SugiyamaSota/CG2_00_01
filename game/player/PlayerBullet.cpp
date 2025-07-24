@@ -15,6 +15,9 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 
 	worldMatrix_ = MakeIdentity4x4();
 
+	SetCollisionAttibute(kCollisionAttibutePlayer);
+	SetCollisionMask(kCollisionAttibuteEnemy);
+
 }
 
 PlayerBullet::~PlayerBullet() {

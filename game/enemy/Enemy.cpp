@@ -14,6 +14,9 @@ void Enemy::Initialize(Model* model, const Vector3& startPosition) {
 
 	timedCalls_.push_back(
 		new TimedCall(std::bind(&Enemy::FireAndReset, this), kFireInterval));
+
+	SetCollisionAttibute(kCollisionAttibuteEnemy);
+	SetCollisionMask(kCollisionAttibutePlayer);
 }
 
 Enemy::~Enemy() {

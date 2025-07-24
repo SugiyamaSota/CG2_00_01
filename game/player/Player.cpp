@@ -12,6 +12,9 @@ void Player::Initialize(Model* model) {
 	worldTransform_ = InitializeWorldTransform();
 
 	worldMatrix_ = MakeIdentity4x4();
+
+	SetCollisionAttibute(kCollisionAttibutePlayer);
+	SetCollisionMask(kCollisionAttibuteEnemy);
 }
 
 Player::~Player() {

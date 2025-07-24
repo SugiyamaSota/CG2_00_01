@@ -299,6 +299,9 @@
     <ClInclude Include="game\utility\Collider.h">
       <Filter>AL3\汎用ファイル\collider</Filter>
     </ClInclude>
+    <ClInclude Include="game\utility\CollisionConfig.h">
+      <Filter>AL3\汎用ファイル\collider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt">

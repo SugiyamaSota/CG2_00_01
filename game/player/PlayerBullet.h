@@ -27,6 +27,8 @@ private:
 
 	const float kRadius = 2.0f;
 
+
+
 public:
 	/// <summary>
 	/// 初期化

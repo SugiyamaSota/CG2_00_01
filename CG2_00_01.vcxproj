@@ -163,6 +163,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="game\player\Player.h" />
     <ClInclude Include="game\player\PlayerBullet.h" />
     <ClInclude Include="game\utility\Collider.h" />
+    <ClInclude Include="game\utility\CollisionConfig.h" />
     <ClInclude Include="game\utility\TimedCall.h" />
   </ItemGroup>
   <ItemGroup>

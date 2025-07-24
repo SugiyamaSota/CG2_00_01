@@ -25,6 +25,9 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector
 
 	player_ = &player;
 
+	SetCollisionAttibute(kCollisionAttibuteEnemy);
+	SetCollisionMask(kCollisionAttibutePlayer);
+
 }
 
 EnemyBullet::~EnemyBullet() {
