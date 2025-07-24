@@ -83,6 +83,7 @@ StyleCopReport.xml
 !resources/models/multiMesh/multiMesh.obj
 !resources/models/plane/plane.obj
 !resources/models/monkey/monkey.obj
+!resources/models/debugSkydome/debugSkydome.obj
 !resources/
 *.iobj
 *.pch

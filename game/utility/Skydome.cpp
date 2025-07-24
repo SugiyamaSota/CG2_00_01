@@ -3,7 +3,7 @@
 /// 初期化
 /// </summary>
 void Skydome::Initialize(Model* model, Camera* camera) {
-	worldTransform_.Initialize();
+	worldTransform_ = InitializeWorldTransform();
 	camera_ = camera;
 	model_ = model;
 }
@@ -12,12 +12,12 @@ void Skydome::Initialize(Model* model, Camera* camera) {
 /// 更新
 /// </summary>
 void Skydome::Update() {
-
+	model_->Update(worldTransform_, camera_, false);
 }
 
 /// <summary>
 /// 描画
 /// </summary>
 void Skydome::Draw() {
-	model_->Draw(worldTransform_, *camera_);
+	model_->Draw();
 }

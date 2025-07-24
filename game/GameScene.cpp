@@ -22,7 +22,9 @@ void GameScene::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 
 	// 天球
 	skydomeModel_ = new Model();
-	skydomeModel_->LoadModel("")
+	skydomeModel_->LoadModel("debugSkydome");
+	skydome_ = new Skydome();
+	skydome_->Initialize(skydomeModel_, camera_);
 
 	// 衝突マネージャー
 	collisionManager_ = new CollisionManager;
@@ -30,12 +32,14 @@ void GameScene::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 }
 
 GameScene::~GameScene() {
+	delete collisionManager_;
+	delete skydome_;
+	delete skydomeModel_;
 	delete enemy_;
 	delete enemyModel_;
 	delete player_;
 	delete playerModel_;
 	delete camera_;
-	delete collisionManager_;
 }
 
 void GameScene::Update() {
@@ -59,6 +63,9 @@ void GameScene::Update() {
 
 	// 敵
 	enemy_->Update(camera_);
+
+	// 天球
+	skydome_->Update();
 }
 
 void GameScene::Draw() {
@@ -67,4 +74,7 @@ void GameScene::Draw() {
 
 	// 敵
 	enemy_->Draw();
+
+	// 天球
+	skydome_->Draw();
 }
