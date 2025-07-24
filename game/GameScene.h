@@ -5,6 +5,8 @@
 #include"enemy/Enemy.h"
 #include"utility/Collider.h"
 
+#include"manager/CollisionManager.h"
+
 class GameScene {
 private:
 	// カメラ
@@ -19,7 +21,8 @@ private:
 	Model* enemyModel_ = nullptr;
 	Enemy* enemy_ = nullptr;
 
-	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
+	// 衝突マネージャー
+	CollisionManager* collisionManager_ = nullptr;
 
 public:
 	/// <summary>
@@ -42,8 +45,4 @@ public:
 	/// </summary>
 	void Draw();
 
-	/// <summary>
-	/// 衝突判定と応答
-	/// </summary>
-	void CheckAllCollisions();
 };
