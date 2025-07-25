@@ -21,8 +21,6 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector
 
 	worldTransform_.rotate.x = std::atan2(velocity_.y, velocityXZ);
 
-	worldMatrix_ = MakeIdentity4x4();
-
 	player_ = &player;
 
 	SetCollisionAttibute(kCollisionAttibuteEnemy);
@@ -36,7 +34,11 @@ EnemyBullet::~EnemyBullet() {
 
 void EnemyBullet::Update(Camera* camera) {
 	// ワールド行列
-	worldMatrix_ = MakeAffineMatrix(worldTransform_.scale, worldTransform_.rotate, worldTransform_.translate);
+	worldTransform_.worldMatrix = MakeAffineMatrix(worldTransform_.scale, worldTransform_.rotate, worldTransform_.translate);
+	if (worldTransform_.parent) {
+		worldTransform_.parent->worldMatrix = MakeAffineMatrix(worldTransform_.parent->scale, worldTransform_.parent->rotate, worldTransform_.parent->translate);
+		worldTransform_.worldMatrix = Multiply(worldTransform_.worldMatrix, worldTransform_.parent->worldMatrix);
+	}
 
 	// プレイヤー座標との差分健さん
 	Vector3 toPlayer = player_->GetWorldPosition() - GetWorldPosition();
@@ -72,9 +74,9 @@ void EnemyBullet::Draw() {
 Vector3 EnemyBullet::GetWorldPosition() {
 	Vector3 worldPos;
 
-	worldPos.x = worldMatrix_.m[3][0];
-	worldPos.y = worldMatrix_.m[3][1];
-	worldPos.z = worldMatrix_.m[3][2];
+	worldPos.x = worldTransform_.worldMatrix.m[3][0];
+	worldPos.y = worldTransform_.worldMatrix.m[3][1];
+	worldPos.z = worldTransform_.worldMatrix.m[3][2];
 
 	return worldPos;
 }

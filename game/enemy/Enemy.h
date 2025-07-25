@@ -48,8 +48,6 @@ private:
 
 	Player* player_ = nullptr;
 
-	Matrix4x4 worldMatrix_;
-
 	const float kRadius = 2.0f;
 
 public:

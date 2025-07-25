@@ -7,19 +7,22 @@
 
 class Camera {
 private:
-	///// --- 変数 --- /////
+	///// --- 変数 ---
 	// 累積回転行列
 	Matrix4x4 matRot_;
 
 	// ローカル座標
 	Vector3 translation_;
 
-	const Vector3 scale_{ 1,1,1 };
+	// ワールド行列
+	Matrix4x4 worldMatrix_;
 
 	// ビュー行列
 	Matrix4x4 viewMatrix_;
+
 	// 射影行列
 	Matrix4x4 projectionMatrix_;
+
 	// ビュープロジェクション行列
 	Matrix4x4 viewProjectionMatrix_;
 
@@ -27,7 +30,6 @@ private:
 	const float multiSpeed_ = 0.01f; 
 
 	// ターゲット関連
-	bool isTargeting_;       // フラグ
 	Vector3 targetPosition_; // 注視する対象座標 (球面座標の中心)
 
 	// 球面座標系に使う変数
@@ -35,7 +37,7 @@ private:
 	float theta_;
 	float phi_;
 
-	///// --- 関数 --- /////
+	///// --- 関数 ---
 	// 移動処理
 	void Move();
 
@@ -47,14 +49,14 @@ private:
 
 	// 対象を見つめる処理
 	Matrix4x4 MakeLookAtMatrix(const Vector3& eye, const Vector3& target, const Vector3& up);
-
-	// ターゲットするかどうかのチェック関数
-	void Check() { isTargeting_ = false; }
 public:
+
+	// カメラタイプ
 	enum class CameraType {
 		kNormal,
 		kDebug,
 	};
+
 	///// --- 関数 --- /////
 	/// <summary>
 	/// 初期化
@@ -62,22 +64,18 @@ public:
 	void Initialize(uint32_t clientWidth, uint32_t clientHeight);
 
 	/// <summary>
-	/// 更新処理
+	/// 更新
 	/// </summary>
-	/// <param name="isDebug">デバッグカメラフラグ</param>
+	/// <param name="type">カメラタイプ</param>
 	void Update(CameraType type);
 
-	/// <summary>
-	/// 注視する対象の設定
-	/// </summary>
-	/// <param name="targetPosition">注視する座標</param>
-	void SetTarget(Vector3 targetPosition);
-
-	///// --- ゲッター関数 --- /////
+	///// --- ゲッター関数 ---
 	Matrix4x4 GetViewMatrix()const { return viewMatrix_; }
 	Matrix4x4 GetViewProjectionMatrix()const { return viewProjectionMatrix_; }
 
-	///// --- セッター関数 --- /////
+	///// --- セッター関数 ---
 	void ResetPosition();
 	void ResetRotation();
+	void SetViewMatrix(Matrix4x4 matrix) { viewMatrix_ = matrix; }
+
 };

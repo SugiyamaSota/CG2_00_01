@@ -189,9 +189,6 @@
     <ClCompile Include="game\player\Player.cpp">
       <Filter>AL3\プレイヤー関連\player</Filter>
     </ClCompile>
-    <ClCompile Include="game\player\PlayerBullet.cpp">
-      <Filter>AL3\プレイヤー関連\playerBullet</Filter>
-    </ClCompile>
     <ClCompile Include="game\enemy\EnemyBullet.cpp">
       <Filter>AL3\敵関連\enemyBullet</Filter>
     </ClCompile>
@@ -206,6 +203,12 @@
     </ClCompile>
     <ClCompile Include="game\utility\Skydome.cpp">
       <Filter>AL3\汎用ファイル\skydome</Filter>
+    </ClCompile>
+    <ClCompile Include="game\utility\RailCameraController.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="game\player\PlayerBullet.cpp">
+      <Filter>AL3\プレイヤー関連\playerBullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -319,6 +322,9 @@
     </ClInclude>
     <ClInclude Include="game\utility\Skydome.h">
       <Filter>AL3\汎用ファイル\skydome</Filter>
+    </ClInclude>
+    <ClInclude Include="game\utility\RailCameraController.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

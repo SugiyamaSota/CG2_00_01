@@ -6,11 +6,17 @@ void GameScene::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 	camera_->Initialize(clientWidth, clientHeight);
 	cameraType_ = Camera::CameraType::kNormal;
 
+	//
+	railCameraController_ = new RailCameraController();
+	railCameraController_->Initialize({ 0,0,-50 }, 0.0f);
+
 	// プレイヤー
 	playerModel_ = new Model();
 	playerModel_->LoadModel("monkey");
 	player_ = new Player();
-	player_->Initialize(playerModel_);
+	Vector3 playerPosition = { 0,0,50 };
+	player_->Initialize(playerModel_,playerPosition);
+	player_->SetParent(&railCameraController_->GetWorldTransform());
 
 	// 敵
 	enemyModel_ = new Model();
@@ -56,6 +62,8 @@ void GameScene::Update() {
 #endif
 	collisionManager_->Update();
 
+	railCameraController_->Update();
+	camera_->SetViewMatrix(railCameraController_->GetViewMatrix());
 	camera_->Update(cameraType_);
 
 	// プレイヤー

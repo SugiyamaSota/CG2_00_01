@@ -8,13 +8,16 @@ float DegToRad(float deg) {
 }
 
 void Camera::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
+	translation_ = { 0,0,-50 };
+	matRot_ = MakeIdentity4x4();
 	radius_ = 50.0f;
 	theta_ = DegToRad(180.0f);
 	phi_ = DegToRad(90.0f);
 	targetPosition_ = { 0,0,0 };
-	isTargeting_ = true;
 
-	viewMatrix_ = MakeIdentity4x4();
+	Matrix4x4 cameraWorldMatrix = Multiply(matRot_, MakeTranslateMatrix(translation_));
+	viewMatrix_ = Inverse(cameraWorldMatrix);
+
 	projectionMatrix_ = MakePerspectiveFovMatrix(0.45f, float(clientWidth) / float(clientHeight), 0.1f, 1000.0f);
 }
 
@@ -29,12 +32,10 @@ void Camera::Update(CameraType type) {
 	case CameraType::kDebug:
 		Move();
 		Rotate();
+		CalculateCameraPositionAndRotation();
+		viewMatrix_ = MakeLookAtMatrix(translation_, targetPosition_, { 0, 1, 0 });
 		break;
 	}
-
-	CalculateCameraPositionAndRotation();
-
-	viewMatrix_ = MakeLookAtMatrix(translation_, targetPosition_, { 0, 1, 0 });
 
 	viewProjectionMatrix_ = Multiply(viewMatrix_, projectionMatrix_);
 }
@@ -146,8 +147,4 @@ Matrix4x4 Camera::MakeLookAtMatrix(const Vector3& eye, const Vector3& target, co
 	result.m[3][3] = 1.0f;
 
 	return result;
-}
-
-void Camera::SetTarget(Vector3 targetPosition) {
-	targetPosition_ = targetPosition; isTargeting_ = true;
 }

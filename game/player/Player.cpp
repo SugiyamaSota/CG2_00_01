@@ -2,7 +2,7 @@
 #include<cassert>
 #include<algorithm>
 
-void Player::Initialize(Model* model) {
+void Player::Initialize(Model* model, Vector3 position) {
 	// モデル
 	assert(model);
 	model_ = new Model();
@@ -10,8 +10,7 @@ void Player::Initialize(Model* model) {
 
 	// ワールド変換
 	worldTransform_ = InitializeWorldTransform();
-
-	worldMatrix_ = MakeIdentity4x4();
+	worldTransform_.translate = position;
 
 	SetCollisionAttibute(kCollisionAttibutePlayer);
 	SetCollisionMask(kCollisionAttibuteEnemy);
@@ -49,7 +48,11 @@ void Player::Update(Camera* camera) {
 		bullet->Update(camera);
 	}
 
-	worldMatrix_ = MakeAffineMatrix(worldTransform_.scale, worldTransform_.rotate, worldTransform_.translate);
+	worldTransform_.worldMatrix = MakeAffineMatrix(worldTransform_.scale, worldTransform_.rotate, worldTransform_.translate);
+	if (worldTransform_.parent) {
+		worldTransform_.parent->worldMatrix = MakeAffineMatrix(worldTransform_.parent->scale, worldTransform_.parent->rotate, worldTransform_.parent->translate);
+		worldTransform_.worldMatrix = Multiply(worldTransform_.worldMatrix, worldTransform_.parent->worldMatrix);
+	}
 
 	model_->Update(worldTransform_, camera, false);
 }
@@ -115,7 +118,7 @@ void Player::Attack() {
 
 		
 
-		velocity = TransformNormal(velocity,worldMatrix_);
+		velocity = TransformNormal(velocity,worldTransform_.worldMatrix);
 
 		Model* newModel = new Model();
 		newModel->LoadModel("cube");
@@ -123,7 +126,8 @@ void Player::Attack() {
 		bulletModel_.push_back(newModel);
 
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(newModel, worldTransform_.translate, velocity);
+
+		newBullet->Initialize(newModel, GetWorldPosition(), velocity);
 
 		// 弾を登録する
 		bullets_.push_back(newBullet);
@@ -143,9 +147,9 @@ void Player::Draw() {
 Vector3 Player::GetWorldPosition() {
 	Vector3 worldPos;
 
-	worldPos.x = worldMatrix_.m[3][0];
-	worldPos.y = worldMatrix_.m[3][1];
-	worldPos.z = worldMatrix_.m[3][2];
+	worldPos.x = worldTransform_.worldMatrix.m[3][0];
+	worldPos.y = worldTransform_.worldMatrix.m[3][1];
+	worldPos.z = worldTransform_.worldMatrix.m[3][2];
 
 	return worldPos;
 }

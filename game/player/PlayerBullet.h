@@ -11,8 +11,6 @@ private:
 	// ワールド変換
 	WorldTransform worldTransform_;
 
-	Matrix4x4 worldMatrix_;
-
 	// 速度
 	Vector3 velocity_;
 

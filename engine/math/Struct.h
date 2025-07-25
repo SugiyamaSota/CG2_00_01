@@ -283,5 +283,8 @@ struct WorldTransform {
 	Vector3 scale;
 	Vector3 rotate;
 	Vector3 translate;
+    WorldTransform* parent;
+    Matrix4x4 worldMatrix;
 };
+
 

@@ -56,7 +56,8 @@ void Model::Initialize(WorldTransform worldTransform) {
 void Model::Update(WorldTransform worldTransform, Camera* camera, bool enableLighting) {
 	materialData_->enableLighting = enableLighting;
 	transform_ = worldTransform;
-	wvpData_->World = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
+
+	wvpData_->World = transform_.worldMatrix;
 	Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData_->World, camera->GetViewProjectionMatrix());
 	wvpData_->WVP = worldViewProjectionMatrix;
 }

@@ -6,8 +6,6 @@ void Enemy::Initialize(Model* model, const Vector3& startPosition) {
 	worldTransform_ = InitializeWorldTransform();
 	worldTransform_.translate = startPosition;
 
-	worldMatrix_ = MakeIdentity4x4();
-
 	// 初期状態を設定
 	state_ = new EnemyStateApproach(); // 初期状態
 	fireFunction_ = std::bind(&Enemy::Fire, this);
@@ -35,6 +33,12 @@ Enemy::~Enemy() {
 void Enemy::Update(Camera* camera) {
 	if (state_) {
 		state_->Update(this); // 現在の状態のUpdateメソッドを呼び出す
+	}
+
+	worldTransform_.worldMatrix = MakeAffineMatrix(worldTransform_.scale, worldTransform_.rotate, worldTransform_.translate);
+	if (worldTransform_.parent) {
+		worldTransform_.parent->worldMatrix = MakeAffineMatrix(worldTransform_.parent->scale, worldTransform_.parent->rotate, worldTransform_.parent->translate);
+		worldTransform_.worldMatrix = Multiply(worldTransform_.worldMatrix, worldTransform_.parent->worldMatrix);
 	}
 
 	model_->Update(worldTransform_, camera, false);
@@ -93,8 +97,6 @@ void Enemy::ChangeState(BaseEnemyState* newState) {
 void Enemy::Fire() {
 	const float kBulletSpeed = 0.5f;
 
-	worldMatrix_ = MakeAffineMatrix(worldTransform_.scale, worldTransform_.rotate, worldTransform_.translate);
-
 	Vector3 playerWorldPosition = player_->GetWorldPosition();
 	Vector3 enemyWorldPosition = GetWorldPosition();
 
@@ -145,9 +147,9 @@ void Enemy::FireAndReset() {
 Vector3 Enemy::GetWorldPosition() {
 	Vector3 worldPos;
 
-	worldPos.x = worldMatrix_.m[3][0];
-	worldPos.y = worldMatrix_.m[3][1];
-	worldPos.z = worldMatrix_.m[3][2];
+	worldPos.x = worldTransform_.worldMatrix.m[3][0];
+	worldPos.y = worldTransform_.worldMatrix.m[3][1];
+	worldPos.z = worldTransform_.worldMatrix.m[3][2];
 
 	return worldPos;
 }

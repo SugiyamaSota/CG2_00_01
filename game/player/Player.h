@@ -13,8 +13,6 @@ private:
 	// ワールド変換
 	WorldTransform worldTransform_{};
 
-	Matrix4x4 worldMatrix_;
-
 	// 弾
 	std::list<PlayerBullet*> bullets_;
 	std::list<Model*> bulletModel_;
@@ -40,7 +38,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model);
+	void Initialize(Model* model, Vector3 position);
 
 	/// <summary>
 	/// デストラクタ
@@ -68,6 +66,7 @@ public:
 
 	float GetRadius()const { return kRadius; }
 
+	void SetParent(WorldTransform* parent) { worldTransform_.parent = parent; }
 
 };
 

@@ -13,8 +13,6 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 
 	velocity_ = velocity;
 
-	worldMatrix_ = MakeIdentity4x4();
-
 	SetCollisionAttibute(kCollisionAttibutePlayer);
 	SetCollisionMask(kCollisionAttibuteEnemy);
 
@@ -32,7 +30,11 @@ void PlayerBullet::Update(Camera* camera) {
 
 	worldTransform_.translate += velocity_;
 
-	worldMatrix_ = MakeAffineMatrix(worldTransform_.scale, worldTransform_.rotate, worldTransform_.translate);
+	worldTransform_.worldMatrix = MakeAffineMatrix(worldTransform_.scale, worldTransform_.rotate, worldTransform_.translate);
+	if (worldTransform_.parent) {
+		worldTransform_.parent->worldMatrix = MakeAffineMatrix(worldTransform_.parent->scale, worldTransform_.parent->rotate, worldTransform_.parent->translate);
+		worldTransform_.worldMatrix = Multiply(worldTransform_.worldMatrix, worldTransform_.parent->worldMatrix);
+	}
 
 	model_->Update(worldTransform_, camera, false);
 }
@@ -49,9 +51,9 @@ void PlayerBullet::OnCollision() {
 Vector3 PlayerBullet::GetWorldPosition() {
 	Vector3 worldPos;
 
-	worldPos.x = worldMatrix_.m[3][0];
-	worldPos.y = worldMatrix_.m[3][1];
-	worldPos.z = worldMatrix_.m[3][2];
+	worldPos.x = worldTransform_.worldMatrix.m[3][0];
+	worldPos.y = worldTransform_.worldMatrix.m[3][1];
+	worldPos.z = worldTransform_.worldMatrix.m[3][2];
 
 	return worldPos;
 }

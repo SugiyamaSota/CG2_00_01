@@ -5,14 +5,17 @@
 #include"enemy/Enemy.h"
 #include"utility/Collider.h"
 #include"utility/Skydome.h"
-
 #include"manager/CollisionManager.h"
+#include"utility/RailCameraController.h"
 
 class GameScene {
 private:
 	// カメラ
 	Camera* camera_ = nullptr;
 	Camera::CameraType cameraType_;
+
+	// カメラコントローラー
+	RailCameraController* railCameraController_ = nullptr;
 
 	// プレイヤー
 	Model* playerModel_ = nullptr;
