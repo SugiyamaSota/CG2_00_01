@@ -35,6 +35,9 @@ void GameScene::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 	// 衝突マネージャー
 	collisionManager_ = new CollisionManager;
 	collisionManager_->Initialize(player_, enemy_);
+
+	// ベジェ曲線が複数の線分で構成されるため、十分な頂点数を確保
+	lineRenderer.Initialize(4096); // 例: 1024個の頂点（512線分）*4 = 4096
 }
 
 GameScene::~GameScene() {
@@ -74,6 +77,10 @@ void GameScene::Update() {
 
 	// 天球
 	skydome_->Update();
+
+	lineRenderer.Clear();
+
+	lineRenderer.AddBezierPath(bezierPathPoints, 30, Color::Green, *camera_);
 }
 
 void GameScene::Draw() {
@@ -84,5 +91,7 @@ void GameScene::Draw() {
 	enemy_->Draw();
 
 	// 天球
-	//skydome_->Draw();
+	skydome_->Draw();
+
+	lineRenderer.Draw();
 }

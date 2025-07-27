@@ -32,6 +32,21 @@ private:
 	// 衝突マネージャー
 	CollisionManager* collisionManager_ = nullptr;
 
+	// Lineクラスのインスタンス化と初期化
+	Line lineRenderer;
+	
+
+	// ベジェ曲線パスの制御点を定義
+	std::vector<Vector3> bezierPathPoints = {
+		{ 0.0f, 0.0f, 0.0f },   // p0
+		{ 15.0f, 15.0f, 0.0f }, // p2
+		{ 10.0f, 15.0f, 0.0f }, // p3 (最初の曲線の終点、次の曲線の始点)
+		{ 20.0f, 15.0f, 0.0f }, // p4
+		{ 20.0f, 0.0f, 0.0f },  // p5
+		{ 30.0f, 0.0f, 0.0f }   // p6
+	};
+
+
 public:
 	/// <summary>
 	/// 初期化
