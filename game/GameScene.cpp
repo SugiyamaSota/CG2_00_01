@@ -84,5 +84,5 @@ void GameScene::Draw() {
 	enemy_->Draw();
 
 	// 天球
-	skydome_->Draw();
+	//skydome_->Draw();
 }

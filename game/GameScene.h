@@ -53,4 +53,6 @@ public:
 	/// </summary>
 	void Draw();
 
+	Camera* GetCamera() { return camera_; }
+
 };

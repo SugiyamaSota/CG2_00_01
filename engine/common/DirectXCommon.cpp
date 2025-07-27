@@ -160,12 +160,18 @@ void DirectXCommon::Initialize() {
 	CreateFence();
 
 	// PSOクラスを使用
-	pso.Initialize(
+	pso_ = new PSO();
+	pso_->Initialize(
 		device_.Get(),
 		// logStream, // LogStreamをPSOに渡す場合
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
 		DXGI_FORMAT_D24_UNORM_S8_UINT
 	);
+
+	pso_->CreateLinePSO(device_.Get(),
+		// logStream, // LogStreamをPSOに渡す場合
+		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+		DXGI_FORMAT_D24_UNORM_S8_UINT);
 
 	CreateDepth();
 	CreateLight();
@@ -186,6 +192,11 @@ void DirectXCommon::Initialize() {
 
 
 DirectXCommon::~DirectXCommon() {
+	if (pso_) {
+		delete pso_;
+		pso_ = nullptr;
+	}
+
 	if (fenceEvent_ != nullptr) {
 		CloseHandle(fenceEvent_);
 		fenceEvent_ = nullptr;
@@ -201,8 +212,8 @@ void DirectXCommon::NewFeame() {
 	//描画先のRTVとDSVを設定
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 	commandList_->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, &dsvHandle);
-	commandList_->SetGraphicsRootSignature(pso.GetRootSignature());
-	commandList_->SetPipelineState(pso.GetPipelineState());//PSOを設定 
+	commandList_->SetGraphicsRootSignature(pso_->GetRootSignature());
+	commandList_->SetPipelineState(pso_->GetPipelineState());//PSOを設定 
 
 	//TransitionBarrierの設定
 	//今回のバリアはTransition

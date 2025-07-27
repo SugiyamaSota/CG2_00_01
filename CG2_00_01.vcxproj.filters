@@ -106,6 +106,12 @@
     <Filter Include="AL3\汎用ファイル\skydome">
       <UniqueIdentifier>{44430aad-67ce-4b4f-9347-47b2ba75f538}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AL3\汎用ファイル\railCameraController">
+      <UniqueIdentifier>{9f720464-668a-4bea-bcb4-39dfa0b2a8e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\line">
+      <UniqueIdentifier>{caaa5c91-0b93-43f7-8024-6dbb3923ec58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="externals\imgui\imgui.cpp">
@@ -177,9 +183,6 @@
     <ClCompile Include="engine\color\Color.cpp">
       <Filter>engine\color</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="game\GameScene.cpp">
       <Filter>AL3\gameScene</Filter>
     </ClCompile>
@@ -204,11 +207,17 @@
     <ClCompile Include="game\utility\Skydome.cpp">
       <Filter>AL3\汎用ファイル\skydome</Filter>
     </ClCompile>
-    <ClCompile Include="game\utility\RailCameraController.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="game\player\PlayerBullet.cpp">
       <Filter>AL3\プレイヤー関連\playerBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="game\utility\RailCameraController.cpp">
+      <Filter>AL3\汎用ファイル\railCameraController</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\line\Line.cpp">
+      <Filter>engine\line</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -324,7 +333,10 @@
       <Filter>AL3\汎用ファイル\skydome</Filter>
     </ClInclude>
     <ClInclude Include="game\utility\RailCameraController.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>AL3\汎用ファイル\railCameraController</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\line\Line.h">
+      <Filter>engine\line</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -338,5 +350,7 @@
   <ItemGroup>
     <FxCompile Include="engine\shander\Object3d.PS.hlsl" />
     <FxCompile Include="engine\shander\Object3d.VS.hlsl" />
+    <FxCompile Include="Line.VS.hlsl" />
+    <FxCompile Include="Line.PS.hlsl" />
   </ItemGroup>
 </Project>

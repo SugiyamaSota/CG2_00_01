@@ -75,9 +75,7 @@ public:
 	// 光
 	ID3D12Resource* GetDirectionalLightResource() { return directionalLightResource_.Get(); }
 
-	// PSO
-	PSO pso;
-
+	PSO* GetPSO() { return pso_; }
 
 private:
 	// プライベートコンストラクタ
@@ -131,6 +129,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc_ = {};
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc_ = {};
+
+
+	// PSO
+	PSO* pso_ = nullptr;
 
 	// 光
 	struct Vector4 {
