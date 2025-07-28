@@ -25,15 +25,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	Camera* camera = new Camera();
 	camera->Initialize(kClientWidth, kClientHeight);
 
+	int modelNum = 2;
 
-	WorldTransform worldTransform = InitializeWorldTransform();
-	Model* model = new Model(true, "axis");
-	model->LoadModel("axis");
-	model->Initialize(worldTransform);
+	std::vector<std::string> modelNames = {
+		"bunny",
+		"multiMaterial",
+		"multiMesh",
+	};
+	std::vector<WorldTransform> worldTransforms;
+	std::vector < Model*> models;
+
+	for (int i = 0; i < modelNum; i++) {
+		worldTransforms.push_back(InitializeWorldTransform()); // 要素を追加
+
+		Model* newModel = new Model(); // モデルをnewで生成
+		newModel->LoadModel(modelNames[i]); // ファイル名を使ってロード
+
+		models.push_back(newModel); // モデルポインタをvectorに追加
+	}
 
 	// Gridクラスのインスタンスを生成し、初期化
 	Grid* grid = new Grid();
-	grid->Initialize(); // グリッドの初期化 (デフォルトのサイズと分割数)
+	grid->Initialize();
 
 	WorldTransform skydomeWorldTransform = InitializeWorldTransform();
 	Model* skydome = new Model();
@@ -55,11 +68,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 			camera->Update(Camera::CameraType::kDebug);
 
-
-			model->Update(worldTransform, camera, false, { 1,1,1,1 });
+			for (int i = 0; i < modelNum; i++) {
+				models[i]->Update(worldTransforms[i], camera, {1,1,1,1});
+			}
 
 			// グリッドとデバッグ用天球の更新
-			skydome->Update(skydomeWorldTransform, camera, false, { 0.05f,0.05f,0.05f,1.0f });
+			skydome->Update(skydomeWorldTransform, camera, { 0.05f,0.05f,0.05f,1.0f });
 			grid->Update(camera);
 
 
@@ -70,7 +84,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			///
 			/// 描画処理ここから
 			///
-			model->Draw();
+
+			for (int i = 0; i < modelNum; i++) {
+				models[i]->Draw();
+			}
 
 			// グリッドとデバッグ用天球の描画
 			skydome->Draw();
@@ -87,7 +104,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	/////  解放処理 /////
 	delete skydome;
 	delete grid;
-	delete model;
+	for (int i = 0; i < modelNum; i++) {
+		delete models[i];
+	}
 	delete camera;
 	Finalize();
 	return 0;
