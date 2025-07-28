@@ -123,12 +123,12 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 	return result;
 }
 
-WorldTransform InitializeWorldTransform() {
+WorldTransform InitializeWorldTransform(Vector3 scale, Vector3 rotate, Vector3 translate) {
 	WorldTransform result;
 	result = {
-		{1,1,1},
-		{0,0,0},
-		{0,0,0},
+		scale,
+		rotate,
+		translate,
 	};
 	return result;
 }

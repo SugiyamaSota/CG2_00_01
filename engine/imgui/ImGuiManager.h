@@ -10,6 +10,9 @@
 #include <strsafe.h>
 #include <wrl/client.h>
 
+#include<string>
+#include<vector>
+
 // ImGui関連の外部ライブラリヘッダー
 #include "../../externals/imgui/imgui.h"
 #include "../../externals/imgui/imgui_impl_dx12.h"
@@ -42,9 +45,19 @@ public:
 	static void DestroyInstance();
 
 	/// <summary>
-	/// モデルのデバッグGUI
+	/// モデルのデバッグGUI (個々のモデルのプロパティを描画するヘルパー関数として再利用)
 	/// </summary>
-	void DebugGUIForModel(Model& model);
+	void DrawModelPropertiesUI(Model& model, const std::string& label);
+
+	/// <summary>
+	/// モデルをImGuiのデバッグ対象として登録する
+	/// </summary>
+	void RegisterModel(Model* model, const std::string& name);
+
+	/// <summary>
+	/// 全てのモデルのデバッグGUIを統合して描画
+	/// </summary>
+	void DrawCombinedModelDebugUI(int& selectedIndex);
 
 private:
 	// コンストラクタとデストラクタをprivateにする
@@ -57,4 +70,8 @@ private:
 
 	// 静的メンバ変数の追加
 	static ImGuiManager* sInstance;
+
+	// 登録されたモデルとその名前を登録するリスト
+	std::vector<Model*> registeredModels_;
+	std::vector<std::string> registeredModelNames_;
 };

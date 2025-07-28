@@ -1,5 +1,5 @@
 #pragma once
-
+#include"Struct.h"
 
 ///// 前方宣言 /////
 struct Vector3;
@@ -61,4 +61,4 @@ Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float botto
 Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
 
 // ワールドトランスフォームの初期化
-WorldTransform InitializeWorldTransform();
+WorldTransform InitializeWorldTransform(Vector3 scale = { 1,1,1 }, Vector3 rotate = { 0,0,0 }, Vector3 translate = { 0,0,0 });

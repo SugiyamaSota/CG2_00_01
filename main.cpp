@@ -22,27 +22,48 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	D3DResourceLeakChecker leakChecker_;
 	Initialize(hInstance, kClientWidth, kClientHeight);
 
+	// カメラ
 	Camera* camera = new Camera();
 	camera->Initialize(kClientWidth, kClientHeight);
 
-	int modelNum = 2;
+	// 選択中のモデルインデックス
+	int selectedModelIndex = 0;
 
+	// モデル数
+	int modelNum = 6;
+
+	// モデル名
 	std::vector<std::string> modelNames = {
-		"bunny",
+		"monkey",
+		"axis",
 		"multiMaterial",
 		"multiMesh",
+		"bunny",
+		"teapot",
 	};
+
+	// モデルワールドトランスフォーム
 	std::vector<WorldTransform> worldTransforms;
+
+	// モデル
 	std::vector < Model*> models;
 
+	//モデルそれぞれの初期化
 	for (int i = 0; i < modelNum; i++) {
-		worldTransforms.push_back(InitializeWorldTransform()); // 要素を追加
+		worldTransforms.push_back(InitializeWorldTransform());
 
-		Model* newModel = new Model(); // モデルをnewで生成
-		newModel->LoadModel(modelNames[i]); // ファイル名を使ってロード
+		Model * newModel = new Model();
+		newModel->LoadModel(modelNames[i]);
+		newModel->Initialize(worldTransforms[i],{1,1,1,1});
 
-		models.push_back(newModel); // モデルポインタをvectorに追加
+		models.push_back(newModel);
+
+		ImGuiManager::GetInstance()->RegisterModel(models[i], modelNames[i]);
 	}
+
+	WorldTransform spriteWorldTransform = InitializeWorldTransform();
+	Sprite* sprite = new Sprite();
+	sprite->Initialize(spriteWorldTransform, "uvChecker.png");
 
 	// Gridクラスのインスタンスを生成し、初期化
 	Grid* grid = new Grid();
@@ -51,7 +72,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	WorldTransform skydomeWorldTransform = InitializeWorldTransform();
 	Model* skydome = new Model();
 	skydome->LoadModel("debugSkydome");
-	skydome->Initialize(skydomeWorldTransform);
+	skydome->Initialize(skydomeWorldTransform,{ 0.05f,0.05f,0.05f,1.0f });
 
 	//ウィンドウの×ボタンが押されるまでループ
 	MSG msg{};
@@ -68,12 +89,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 			camera->Update(Camera::CameraType::kDebug);
 
+			ImGuiManager::GetInstance()->DrawCombinedModelDebugUI(selectedModelIndex);
+
 			for (int i = 0; i < modelNum; i++) {
-				models[i]->Update(worldTransforms[i], camera, {1,1,1,1});
+				models[i]->Update(camera); // cameraとcolorは適宜調整
 			}
 
+			sprite->Update(spriteWorldTransform, Color::White);
+
 			// グリッドとデバッグ用天球の更新
-			skydome->Update(skydomeWorldTransform, camera, { 0.05f,0.05f,0.05f,1.0f });
+			skydome->Update(camera);
 			grid->Update(camera);
 
 
@@ -85,9 +110,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			/// 描画処理ここから
 			///
 
-			for (int i = 0; i < modelNum; i++) {
-				models[i]->Draw();
+			if (selectedModelIndex >= 0 && selectedModelIndex < modelNum) {
+				models[selectedModelIndex]->Draw(); // 選択されたモデルのみ描画
 			}
+
+			sprite->Draw();
 
 			// グリッドとデバッグ用天球の描画
 			skydome->Draw();
@@ -104,6 +131,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	/////  解放処理 /////
 	delete skydome;
 	delete grid;
+	delete sprite;
 	for (int i = 0; i < modelNum; i++) {
 		delete models[i];
 	}

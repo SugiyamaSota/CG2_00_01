@@ -17,9 +17,9 @@ public:
 
 	void LoadModel(const std::string& fileName);
 
-	void Initialize(WorldTransform worldTransform);
+	void Initialize(WorldTransform worldTransform, Vector4 color);
 
-	void Update(WorldTransform worldTransform, Camera* camera, Vector4 color);
+	void Update(Camera* camera);
 
 	void Draw(); // 引数をintに変更
 

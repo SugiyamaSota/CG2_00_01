@@ -50,13 +50,12 @@ void Model::LoadModel(const std::string& fileName) {
 	TextureManager::GetInstance()->ReleaseIntermediateResources();
 }
 
-void Model::Initialize(WorldTransform worldTransform) {
+void Model::Initialize(WorldTransform worldTransform, Vector4 color) {
 	transform_ = worldTransform;
+	materialData_->color = color;
 }
 
-void Model::Update(WorldTransform worldTransform, Camera* camera, Vector4 color) {
-	materialData_->color = color;
-
+void Model::Update(Camera* camera) {
 	wvpData_->World = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 	viewMatrix_ = Inverse(wvpData_->World);
 	if (camera == nullptr) {
