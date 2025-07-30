@@ -47,8 +47,6 @@ private:
 	// 球面座標からカメラのワールド座標と回転行列を計算
 	void CalculateCameraPositionAndRotation();
 
-	// 対象を見つめる処理
-	Matrix4x4 MakeLookAtMatrix(const Vector3& eye, const Vector3& target, const Vector3& up);
 public:
 
 	// カメラタイプ
@@ -68,6 +66,10 @@ public:
 	/// </summary>
 	/// <param name="type">カメラタイプ</param>
 	void Update(CameraType type);
+
+
+	// 対象を見つめる処理
+	Matrix4x4 MakeLookAtMatrix(const Vector3& eye, const Vector3& target, const Vector3& up);
 
 	///// --- ゲッター関数 ---
 	Matrix4x4 GetViewMatrix()const { return viewMatrix_; }

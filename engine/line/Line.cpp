@@ -1,8 +1,6 @@
-
 #include "Line.h"
 #include <cassert>
-#include"../bonjin/BonjinEngine.h" 
-
+#include"../bonjin/BonjinEngine.h"
 
 Line::Line() {
 }
@@ -110,8 +108,6 @@ void Line::AddBezierCurve(
     }
 
     Vector3 prevPoint = p0;
-    uint32_t initialVertexCount = currentVertexCount_; // この曲線の開始頂点インデックスを記録
-
     // 最初の点
     vertexData_[currentVertexCount_++] = { {p0.x, p0.y, p0.z, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };
 
@@ -119,11 +115,7 @@ void Line::AddBezierCurve(
         float t = static_cast<float>(i) / segments;
 
         // 3次ベジェ曲線の計算式
-        Vector3 currentPoint = (
-            Multiply(float(std::pow(1.0f - t, 3.0f)), p0) +
-            Multiply(float(3.0f * std::pow(1.0f - t, 2.0f) * t), p1) +
-            Multiply(float(3.0f * (1.0f - t) * std::pow(t, 2.0f)), p2) +
-            Multiply(float(std::pow(t, 3.0f)), p3));
+        Vector3 currentPoint = CalculateCubicBezierPoint(p0, p1, p2, p3, t);
 
         // 線分を追加
         vertexData_[currentVertexCount_] = { {currentPoint.x, currentPoint.y, currentPoint.z, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };
@@ -179,8 +171,137 @@ void Line::AddBezierPath(const std::vector<Vector3>& pathPoints, int segmentsPer
 
         AddBezierCurve(b0, b1, b2, b3, segmentsPerCurve, color, camera);
     }
-    // remainingCount が 0 または 1 の場合は何もしない（描画可能な線分がないため）
 }
+
+Vector3 Line::CalculateCubicBezierPoint(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t) {
+    float invT = 1.0f - t;
+    float invT2 = invT * invT;
+    float t2 = t * t;
+    return
+        Multiply(invT2 * invT, p0) +
+        Multiply(3.0f * invT2 * t, p1) +
+        Multiply(3.0f * invT * t2, p2) +
+        Multiply(t2 * t, p3);
+}
+
+Vector3 Line::CalculateQuadraticBezierPoint(const Vector3& p0, const Vector3& p1, const Vector3& p2, float t) {
+    float invT = 1.0f - t;
+    return
+        Multiply(invT * invT, p0) +
+        Multiply(2.0f * invT * t, p1) +
+        Multiply(t * t, p2);
+}
+
+Vector3 Line::CalculateBezierPoint(const std::vector<Vector3>& pathPoints, float t) {
+    if (pathPoints.empty()) {
+        return { 0, 0, 0 };
+    }
+    if (t < 0.0f) t = 0.0f;
+    if (t > 1.0f) t = 1.0f;
+
+    int totalLogicalSegments = 0;
+    size_t i = 0;
+    // フルな3次ベジェ曲線のセグメント数をカウント
+    for (; i + 3 < pathPoints.size(); i += 3) {
+        totalLogicalSegments++;
+    }
+    // 残りの点が2点または3点の場合、それも1つの論理セグメントとしてカウント
+    size_t remainingCount = pathPoints.size() - i;
+    if (remainingCount == 2 || remainingCount == 3) {
+        totalLogicalSegments++;
+    }
+
+    if (totalLogicalSegments == 0) {
+        return pathPoints[0]; // 単一の点しかない場合はその点を返す
+    }
+
+    // tをパス全体のパラメータから現在のセグメントのローカルパラメータに変換
+    float segmentT = t * totalLogicalSegments;
+    int currentSegmentIndex = static_cast<int>(segmentT);
+    float localT_normalized = segmentT - currentSegmentIndex;
+
+    // 最後のセグメントにクランプ
+    if (currentSegmentIndex >= totalLogicalSegments) {
+        currentSegmentIndex = totalLogicalSegments - 1;
+        localT_normalized = 1.0f;
+    }
+
+    size_t current_point_idx = 0;
+    int segments_processed = 0;
+
+    // 正しいセグメントの制御点を見つけて計算
+    for (current_point_idx = 0; current_point_idx + 3 < pathPoints.size(); current_point_idx += 3) {
+        if (segments_processed == currentSegmentIndex) {
+            return CalculateCubicBezierPoint(pathPoints[current_point_idx], pathPoints[current_point_idx + 1], pathPoints[current_point_idx + 2], pathPoints[current_point_idx + 3], localT_normalized);
+        }
+        segments_processed++;
+    }
+
+    // 残りのセグメント（2次ベジェ曲線または直線）を処理
+    if (segments_processed == currentSegmentIndex) {
+        size_t last_points_start_idx = current_point_idx;
+        size_t last_remaining_count = pathPoints.size() - last_points_start_idx;
+
+        if (last_remaining_count == 2) {
+            // 直線セグメント
+            return Add(Multiply(1.0f - localT_normalized, pathPoints[last_points_start_idx]), Multiply(localT_normalized, pathPoints[last_points_start_idx + 1]));
+        } else if (last_remaining_count == 3) {
+            // 2次ベジェ曲線セグメント
+            return CalculateQuadraticBezierPoint(pathPoints[last_points_start_idx], pathPoints[last_points_start_idx + 1], pathPoints[last_points_start_idx + 2], localT_normalized);
+        }
+    }
+
+    return { 0,0,0 }; // ここに到達することはないはず
+}
+
+float Line::GetBezierPathLength(const std::vector<Vector3>& pathPoints, int segmentsPerCurve) {
+    if (pathPoints.empty()) {
+        return 0.0f;
+    }
+
+    float totalLength = 0.0f;
+
+    size_t i = 0;
+    // フルな3次ベジェ曲線を処理
+    for (; i + 3 < pathPoints.size(); i += 3) {
+        const Vector3& p0 = pathPoints[i];
+        const Vector3& p1 = pathPoints[i + 1];
+        const Vector3& p2 = pathPoints[i + 2];
+        const Vector3& p3 = pathPoints[i + 3];
+
+        Vector3 prevPoint = p0;
+        for (int j = 1; j <= segmentsPerCurve; ++j) {
+            float t = static_cast<float>(j) / segmentsPerCurve;
+            Vector3 currentPoint = CalculateCubicBezierPoint(p0, p1, p2, p3, t);
+            totalLength += Length(Subtract(currentPoint, prevPoint));
+            prevPoint = currentPoint;
+        }
+    }
+
+    // 残りの点を処理
+    size_t remainingCount = pathPoints.size() - i;
+
+    if (remainingCount == 2) {
+        // 2点残っている場合 (P_i, P_{i+1}) -> 直線として
+        totalLength += Length(Subtract(pathPoints[i + 1], pathPoints[i]));
+    } else if (remainingCount == 3) {
+        // 3点残っている場合 (P_i, P_{i+1}, P_{i+2}) -> 2次ベジェ曲線として
+        const Vector3& p0 = pathPoints[i];
+        const Vector3& p1 = pathPoints[i + 1];
+        const Vector3& p2 = pathPoints[i + 2];
+
+        Vector3 prevPoint = p0;
+        for (int j = 1; j <= segmentsPerCurve; ++j) {
+            float t = static_cast<float>(j) / segmentsPerCurve;
+            Vector3 currentPoint = CalculateQuadraticBezierPoint(p0, p1, p2, t);
+            totalLength += Length(Subtract(currentPoint, prevPoint));
+            prevPoint = currentPoint;
+        }
+    }
+
+    return totalLength;
+}
+
 void Line::Clear() {
     currentVertexCount_ = 0;
     currentIndexCount_ = 0;

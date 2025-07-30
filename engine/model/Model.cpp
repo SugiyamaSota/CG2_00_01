@@ -58,6 +58,11 @@ void Model::Update(WorldTransform worldTransform, Camera* camera, bool enableLig
 	transform_ = worldTransform;
 
 	wvpData_->World = transform_.worldMatrix;
+
+	if (worldTransform.parent) {
+		worldTransform.worldMatrix = Multiply(worldTransform.worldMatrix,worldTransform.parent->worldMatrix);
+	}
+
 	Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData_->World, camera->GetViewProjectionMatrix());
 	wvpData_->WVP = worldViewProjectionMatrix;
 }

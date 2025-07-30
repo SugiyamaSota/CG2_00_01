@@ -8,6 +8,7 @@
 #include"manager/CollisionManager.h"
 #include"utility/RailCameraController.h"
 #include <list> // Include list for enemy bullets and enemies
+#include<sstream>
 
 class GameScene {
 private:
@@ -44,13 +45,18 @@ private:
 
 	// ベジェ曲線パスの制御点を定義
 	std::vector<Vector3> bezierPathPoints = {
-		{ 0.0f, 0.0f, 0.0f },   // p0
-		{ 15.0f, 15.0f, 0.0f }, // p2
-		{ 10.0f, 15.0f, 0.0f }, // p3 (最初の曲線の終点、次の曲線の始点)
-		{ 20.0f, 15.0f, 0.0f }, // p4
-		{ 20.0f, 0.0f, 0.0f },  // p5
-		{ 30.0f, 0.0f, 0.0f }   // p6
+		{ 0.0f, 0.0f, 10.0f },
+		{ 0.0f, 1.0f, 20.0f },
+		{ 0.0f, 2.0f, 30.0f },
+		{ 0.0f, 3.0f, 30.0f },
+		{ 10.0f, 4.0f, 30.0f },
+		{ 20.0f, 5.0f, 20.0f },
+		{ 30.0f, 5.0f, 20.0f },
+		{ 40.0f, 5.0f, 10.0f },
 	};
+
+
+	std::stringstream enemyPopCommands;
 
 	/// <summary>
 	/// 敵を生成し、初期化してリストに追加する
@@ -58,6 +64,19 @@ private:
 	/// <param name="position">敵の初期位置</param>
 	/// <param name="modelPath">敵に使用するモデルのパス</param>
 	void SpawnEnemy(const Vector3& position, const std::string& modelPath);
+
+	void LoadEnemyPopData();
+
+	void UpdateEnemyPopCommands();
+
+	bool isWaiting_ = false;
+	int waitTimer_ = 0;
+
+	// ベジェ曲線関連の変数 (RailCameraControllerに移動するためコメントアウトまたは削除)
+	// float bezierT_ = 0.0f; // ベジェ曲線上の現在のパラメータ (0.0 から 1.0)
+	// float bezierSpeed_ = 0.005f; // カメラが曲線上を移動する速度
+	// float lookAheadDistance_ = 5.0f; // カメラが曲線のどれだけ先を見るか
+
 
 public:
 	/// <summary>

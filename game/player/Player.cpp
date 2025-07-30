@@ -54,6 +54,8 @@ void Player::Update(Camera* camera) {
 		worldTransform_.worldMatrix = Multiply(worldTransform_.worldMatrix, worldTransform_.parent->worldMatrix);
 	}
 
+	worldTransform_.rotate *= -1;
+
 	model_->Update(worldTransform_, camera, false);
 }
 
