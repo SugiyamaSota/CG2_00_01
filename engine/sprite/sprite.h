@@ -19,12 +19,14 @@ public:
     /// </summary>
     /// <param name="worldTransform">ワールド変換</param>
     /// <param name="color">色</param>
-    void Update(WorldTransform worldTransform, Color color);
+    void Update(Vector2 position, Color color);
 
     /// <summary>
     /// スプライトの描画
     /// </summary>
     void Draw();
+
+    void SetPosition(Vector2 position);
 
 private:
     // 頂点リソース

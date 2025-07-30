@@ -73,6 +73,7 @@ public:
 
 	///// --- ゲッター関数 ---
 	Matrix4x4 GetViewMatrix()const { return viewMatrix_; }
+	Matrix4x4 GetProjectionMatrix()const { return projectionMatrix_; }
 	Matrix4x4 GetViewProjectionMatrix()const { return viewProjectionMatrix_; }
 
 	///// --- セッター関数 ---

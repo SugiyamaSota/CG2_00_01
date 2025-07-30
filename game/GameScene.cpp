@@ -147,10 +147,17 @@ void GameScene::Draw() {
 		bullet->Draw();
 	}
 
+
+
 	// 天球
 	skydome_->Draw();
 
+
+
+	player_->DrawUI();
+
 	lineRenderer.Draw();
+
 }
 
 void GameScene::AddEnemyBullet(EnemyBullet* bullet, Model* model) {

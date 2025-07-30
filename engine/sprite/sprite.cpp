@@ -38,7 +38,7 @@ void Sprite::Initialize(WorldTransform worldTransform, const std::string& textur
 
 	// 頂点データの定義 (正方形)
    //左下
-	vertexData_[0].position = { 0.0f,360.0f,0.0f,1.0f };
+	vertexData_[0].position = { 0.0f,64.0f,0.0f,1.0f };
 	vertexData_[0].texcoord = { 0.0f,1.0f };
 	vertexData_[0].normal = { 0.0f,0.0f,1.0f };
 	//左上
@@ -46,11 +46,11 @@ void Sprite::Initialize(WorldTransform worldTransform, const std::string& textur
 	vertexData_[1].texcoord = { 0.0f,0.0f };
 	vertexData_[1].normal = { 0.0f,0.0f,1.0f };
 	//右下
-	vertexData_[2].position = { 640.0f,360.0f,0.0f,1.0f };
+	vertexData_[2].position = { 64.0f,64.0f,0.0f,1.0f };
 	vertexData_[2].texcoord = { 1.0f,1.0f };
 	vertexData_[2].normal = { 0.0f,0.0f,1.0f };
 	//右上
-	vertexData_[3].position = { 640.0f,0.0f,0.0f,1.0f };
+	vertexData_[3].position = { 64.0f,0.0f,0.0f,1.0f };
 	vertexData_[3].texcoord = { 1.0f,0.0f };
 	vertexData_[3].normal = { 0.0f,0.0f,1.0f };
 
@@ -86,26 +86,26 @@ void Sprite::Initialize(WorldTransform worldTransform, const std::string& textur
 	textureHandle_ = TextureManager::GetInstance()->LoadTexture("resources/textures/" + textureFilePath);
 }
 
-void Sprite::Update(WorldTransform worldTransform, Color color) {
-	transform_ = worldTransform;
+void Sprite::Update(Vector2 position, Color color) {
+	// 引数で受け取った2D座標を直接 transform_.translate に設定
+	transform_.translate.x = position.x;
+	transform_.translate.y = position.y;
+	transform_.translate.z = 0.0f; // 2DなのでZは0か適当な固定値
+
+	// スケールや回転はそのまま維持される (必要であれば引数に追加)
 
 	// ワールド行列の計算
+	// transform_ は既に更新されているので、これを使用
 	wvpData_->World = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 
 	// WVP 行列の計算
+	// Spriteのコンストラクタで設定された正射影行列 (viewProjectionMatrix_) を使用
 	Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData_->World, viewProjectionMatrix_);
 	wvpData_->WVP = worldViewProjectionMatrix;
 
 	// マテリアルの更新
-	materialData_->color = ToVector4(color); // enum Color を Vector4 に変換して設定
-
-	// UV 変換行列の更新
-	Matrix4x4 uvTransformMatrix = MakeScaleMatrix(transform_.scale); // スプライトのスケールをUV変換に適用
-	uvTransformMatrix = Multiply(uvTransformMatrix, MakeRotateZMatrix(transform_.rotate.z)); // Z軸回転をUV変換に適用
-	uvTransformMatrix = Multiply(uvTransformMatrix, MakeTranslateMatrix({ transform_.translate.x, transform_.translate.y, 0.0f })); // 平行移動をUV変換に適用
-	materialData_->uvTransform = uvTransformMatrix;
+	materialData_->color = ToVector4(color);
 }
-
 void Sprite::Draw() {
 	// インデックスバッファビューの設定
 	DirectXCommon::GetInstance()->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
@@ -123,4 +123,11 @@ void Sprite::Draw() {
 
 	// 描画コマンド
 	DirectXCommon::GetInstance()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0); // 6つのインデックス (2つの三角形) を描画
+}
+
+void Sprite::SetPosition(Vector2 position) {
+	transform_.translate.x = position.x;
+	transform_.translate.y = position.y;
+	// Z座標は2Dスプライトでは通常0か、描画順序のための固定値を使用します。
+	// transform_.translate.z = 0.0f; // 必要であればZを固定
 }

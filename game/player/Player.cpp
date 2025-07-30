@@ -14,6 +14,12 @@ void Player::Initialize(Model* model, Vector3 position) {
 
 	SetCollisionAttibute(kCollisionAttibutePlayer);
 	SetCollisionMask(kCollisionAttibuteEnemy);
+
+	//レティクル
+	reticleWorldTransform_ = InitializeWorldTransform();
+	reticleWorldTransform_.parent = &worldTransform_;
+	reticleModel_ = new Model;
+	reticleModel_->LoadModel("cube");
 }
 
 Player::~Player() {
@@ -23,6 +29,8 @@ Player::~Player() {
 	for (Model* model : bulletModel_) {
 		delete model;
 	}
+	delete sprite2DReticle_;
+	delete reticleModel_;
 }
 
 void Player::Update(Camera* camera) {
@@ -54,9 +62,20 @@ void Player::Update(Camera* camera) {
 		worldTransform_.worldMatrix = Multiply(worldTransform_.worldMatrix, worldTransform_.parent->worldMatrix);
 	}
 
-	worldTransform_.rotate *= -1;
-
 	model_->Update(worldTransform_, camera, false);
+
+
+	const float kDistancePlayerTo3DReticle = 50.0f;
+	Vector3 offset = { 0,0,1 };
+	offset = TransformNormal(offset, worldTransform_.worldMatrix);
+	offset = Normalize(offset) * kDistancePlayerTo3DReticle;
+	reticleWorldTransform_.translate = worldTransform_.translate + offset;
+	reticleWorldTransform_.worldMatrix = MakeAffineMatrix(worldTransform_.scale, worldTransform_.rotate, worldTransform_.translate);
+	if (reticleWorldTransform_.parent) {
+		reticleWorldTransform_.parent->worldMatrix = MakeAffineMatrix(reticleWorldTransform_.parent->scale, reticleWorldTransform_.parent->rotate, reticleWorldTransform_.parent->translate);
+		reticleWorldTransform_.worldMatrix = Multiply(reticleWorldTransform_.worldMatrix, reticleWorldTransform_.parent->worldMatrix);
+	}
+	reticleModel_->Update(reticleWorldTransform_, camera, false);
 }
 
 void Player::Move() {
@@ -116,7 +135,8 @@ void Player::Attack() {
 	if (Input::GetInstance()->IsTrigger(DIK_J)) {
 		// 弾の速度
 		const float kBulletSpeed = 1.0f;
-		Vector3 velocity = { 0,0,kBulletSpeed };
+		Vector3 velocity = GetReticleWorldPosition() - GetWorldPosition();
+		velocity = Normalize(velocity) * kBulletSpeed;
 
 		
 
@@ -146,12 +166,26 @@ void Player::Draw() {
 	model_->Draw();
 }
 
+void Player::DrawUI() {
+	reticleModel_->Draw();
+}
+
 Vector3 Player::GetWorldPosition() {
 	Vector3 worldPos;
 
 	worldPos.x = worldTransform_.worldMatrix.m[3][0];
 	worldPos.y = worldTransform_.worldMatrix.m[3][1];
 	worldPos.z = worldTransform_.worldMatrix.m[3][2];
+
+	return worldPos;
+}
+
+Vector3 Player::GetReticleWorldPosition() {
+	Vector3 worldPos;
+
+	worldPos.x = reticleWorldTransform_.worldMatrix.m[3][0];
+	worldPos.y = reticleWorldTransform_.worldMatrix.m[3][1];
+	worldPos.z = reticleWorldTransform_.worldMatrix.m[3][2];
 
 	return worldPos;
 }

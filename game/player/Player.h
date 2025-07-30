@@ -17,6 +17,10 @@ private:
 	std::list<PlayerBullet*> bullets_;
 	std::list<Model*> bulletModel_;
 
+	WorldTransform reticleWorldTransform_;
+	Model* reticleModel_ = nullptr;
+	Sprite* sprite2DReticle_ = nullptr;
+
 	const float kRadius = 2.0f;
 
 	/// <summary>
@@ -55,7 +59,11 @@ public:
 	/// </summary>
 	void Draw();
 
+	void DrawUI();
+
 	Vector3 GetWorldPosition()override;
+
+	Vector3 GetReticleWorldPosition();
 
 	/// <summary>
 	/// 衝突を検知したら呼び出される
