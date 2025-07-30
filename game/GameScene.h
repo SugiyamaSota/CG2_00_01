@@ -7,6 +7,7 @@
 #include"utility/Skydome.h"
 #include"manager/CollisionManager.h"
 #include"utility/RailCameraController.h"
+#include <list> // Include list for enemy bullets and enemies
 
 class GameScene {
 private:
@@ -21,9 +22,14 @@ private:
 	Model* playerModel_ = nullptr;
 	Player* player_ = nullptr;
 
-	// 敵
-	Model* enemyModel_ = nullptr;
-	Enemy* enemy_ = nullptr;
+	// 敵 (複数対応)
+	// Model* enemyModel_ = nullptr; // <-- この行は削除
+	std::list<Enemy*> enemies_; // Enemyポインタのリスト
+	std::list<Model*> enemyModels_; // 各敵のモデルを管理するためのリストを追加
+
+	// 敵弾リスト
+	std::list<EnemyBullet*> enemyBullets_;
+	std::list<Model*> enemyBulletModels_; // To manage the models created for bullets
 
 	// 天球
 	Model* skydomeModel_ = nullptr;
@@ -34,7 +40,7 @@ private:
 
 	// Lineクラスのインスタンス化と初期化
 	Line lineRenderer;
-	
+
 
 	// ベジェ曲線パスの制御点を定義
 	std::vector<Vector3> bezierPathPoints = {
@@ -46,6 +52,12 @@ private:
 		{ 30.0f, 0.0f, 0.0f }   // p6
 	};
 
+	/// <summary>
+	/// 敵を生成し、初期化してリストに追加する
+	/// </summary>
+	/// <param name="position">敵の初期位置</param>
+	/// <param name="modelPath">敵に使用するモデルのパス</param>
+	void SpawnEnemy(const Vector3& position, const std::string& modelPath);
 
 public:
 	/// <summary>
@@ -70,4 +82,6 @@ public:
 
 	Camera* GetCamera() { return camera_; }
 
+	// Method to add enemy bullets from Enemy class
+	void AddEnemyBullet(EnemyBullet* bullet, Model* model);
 };

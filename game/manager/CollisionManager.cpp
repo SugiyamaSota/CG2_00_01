@@ -1,4 +1,6 @@
 #include "CollisionManager.h"
+#include "../player/PlayerBullet.h" 
+#include "../enemy/EnemyBullet.h"   
 
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
 	// フィルター
@@ -21,26 +23,30 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 	}
 }
 
-void CollisionManager::Initialize(Player* player,Enemy*enemy) {
+// Initializeの実装
+void CollisionManager::Initialize(Player* player, std::list<Enemy*>* enemies) {
 	player_ = player;
-	enemy_ = enemy;
-
+	enemies_ = enemies;
 }
 
-void CollisionManager::Update() {
+// Updateの実装
+void CollisionManager::Update(const std::list<EnemyBullet*>& enemyBullets, const std::list<PlayerBullet*>& playerBullets, const std::list<Enemy*>& enemies) {
 	colliders_.clear();
 
 	colliders_.push_back(player_);
-	colliders_.push_back(enemy_);
 
-	const std::list<PlayerBullet*>playerBullets = player_->GetBullets();
-	const std::list<EnemyBullet*>enemyBullets = enemy_->GetBullets();
+	// すべての敵を追加
+	for (Enemy* enemy : enemies) { // 引数で受け取った enemies を使用
+		colliders_.push_back(enemy);
+	}
 
-	for (PlayerBullet* bullet : playerBullets) {
+	// プレイヤーの弾丸を追加
+	for (PlayerBullet* bullet : playerBullets) { // 引数で受け取った playerBullets を使用
 		colliders_.push_back(bullet);
 	}
 
-	for (EnemyBullet* bullet : enemyBullets) {
+	// 敵の弾丸を追加
+	for (EnemyBullet* bullet : enemyBullets) { // 引数で受け取った enemyBullets を使用
 		colliders_.push_back(bullet);
 	}
 

@@ -8,6 +8,7 @@
 
 class Player;
 class Enemy;
+class GameScene; // GameSceneの前方宣言を追加
 
 class BaseEnemyState {
 public:
@@ -39,14 +40,15 @@ private:
 
 	BaseEnemyState* state_ = nullptr; // 現在のEnemyの状態
 
-	std::list<EnemyBullet*> bullets_;
-	std::list<Model*> bulletModel_;
+	// Removed: std::list<EnemyBullet*> bullets_;
+	// Removed: std::list<Model*> bulletModel_;
 
 	std::function<void()> fireFunction_;
 
 	std::list<TimedCall*>timedCalls_;
 
 	Player* player_ = nullptr;
+	GameScene* gameScene_ = nullptr; // 新しい弾丸についてGameSceneに通知するためのポインタ
 
 	const float kRadius = 2.0f;
 
@@ -87,6 +89,7 @@ public:
 	void FireAndReset();
 
 	void SetPlayer(Player* player) { player_ = player; }
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; } // GameSceneのセッター
 
 	Vector3 GetWorldPosition()override;
 
@@ -95,7 +98,7 @@ public:
 	/// </summary>
 	void OnCollision()override;
 
-	const std::list<EnemyBullet*>& GetBullets()const { return bullets_; }
+	// Removed: const std::list<EnemyBullet*>& GetBullets()const { return bullets_; }
 
 	float GetRadius()const { return kRadius; }
 };

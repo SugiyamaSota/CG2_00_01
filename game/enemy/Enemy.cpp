@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include"../player/Player.h"
+#include"../GameScene.h" // GameSceneヘッダーを含める
 
 void Enemy::Initialize(Model* model, const Vector3& startPosition) {
 	model_ = model;
@@ -18,13 +19,7 @@ void Enemy::Initialize(Model* model, const Vector3& startPosition) {
 }
 
 Enemy::~Enemy() {
-	delete state_; // 現在の状態オブジェクトを削除
-	for (EnemyBullet* bullet : bullets_) {
-		delete bullet;
-	}
-	for (Model* model : bulletModel_) {
-		delete model;
-	}
+	delete state_;
 	for (TimedCall* timedCall : timedCalls_) {
 		delete timedCall;
 	}
@@ -55,27 +50,10 @@ void Enemy::Update(Camera* camera) {
 		timedCall->Update();
 	}
 
-
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Update(camera);
-	}
-
 }
 
 void Enemy::Draw() {
 	model_->Draw();
-
-	bullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-		});
-
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Draw();
-	}
 }
 
 void Enemy::ChangeState(BaseEnemyState* newState) {
@@ -114,12 +92,16 @@ void Enemy::Fire() {
 	Model* newModel = new Model();
 	newModel->LoadModel("cube");
 
-	bulletModel_.push_back(newModel);
+	// Removed: bulletModel_.push_back(newModel); // Model ownership transferred to GameScene
 
 	EnemyBullet* newBullet = new EnemyBullet();
-	newBullet->Initialize(newModel, worldTransform_.translate, velocity,*player_);
+	newBullet->Initialize(newModel, worldTransform_.translate, velocity, *player_);
 
-	bullets_.push_back(newBullet);
+	// GameSceneに弾丸を追加するよう通知
+	if (gameScene_) {
+		gameScene_->AddEnemyBullet(newBullet, newModel);
+	}
+	// Removed: bullets_.push_back(newBullet);
 }
 
 void EnemyStateApproach::Update(Enemy* enemy) {

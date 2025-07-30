@@ -3,28 +3,25 @@
 #include"../utility/Collider.h"
 #include"../player/Player.h"
 #include"../enemy/Enemy.h"
+#include <list> 
 
-class CollisionManager{
+class EnemyBullet;
+class PlayerBullet; // PlayerBullet の前方宣言を追加
+
+class CollisionManager {
 private:
-	// コライダーリスト
 	std::list<Collider*>colliders_;
 
-	// 対象
 	Player* player_;
-	Enemy* enemy_;
+	std::list<Enemy*>* enemies_ = nullptr; // Enemyポインタのリストのポインタ
 
 	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
 
 public:
-	/// <summary>
-	///  初期化
-	/// </summary>
-	void Initialize(Player* player, Enemy* enemy);
+	// Initializeの引数: Player*とstd::list<Enemy*>*
+	void Initialize(Player* player, std::list<Enemy*>* enemies);
 
-	/// <summary>
-	/// 更新
-	/// </summary>
-	void Update();
+	// Updateの引数: 敵弾リスト、プレイヤー弾リスト、敵リスト
+	void Update(const std::list<EnemyBullet*>& enemyBullets, const std::list<PlayerBullet*>& playerBullets, const std::list<Enemy*>& enemies);
 
 };
-
