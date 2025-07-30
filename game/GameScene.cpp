@@ -211,17 +211,22 @@ void GameScene::UpdateEnemyPopCommands() {
 		}
 		//
 		if (word.find("POP") == 0) {
-			//
+			// x座標
 			getline(line_stream, word, ',');
 			float x = (float)std::atof(word.c_str());
-			//
+			// y座標
 			getline(line_stream, word, ',');
 			float y = (float)std::atof(word.c_str());
-			//
+			// z座標
 			getline(line_stream, word, ',');
 			float z = (float)std::atof(word.c_str());
 
-			SpawnEnemy(Vector3(x, y, z), "axis");
+			// 
+			getline(line_stream, word);
+			std::string modelName = word;
+			
+
+			SpawnEnemy(Vector3(x, y, z), modelName);
 		} else if (word.find("WAIT") == 0) {
 			getline(line_stream, word, ',');
 
