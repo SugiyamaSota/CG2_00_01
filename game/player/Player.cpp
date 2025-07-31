@@ -202,9 +202,11 @@ void Player::Draw() {
 	// プレイヤー
 	model_->Draw();
 
-	reticleModel_->Draw();
+	if (lockOn_->GetTarget() == nullptr) {
+		reticleModel_->Draw();
 
-	sprite2DReticle_->Draw();
+		sprite2DReticle_->Draw();
+	}
 }
 
 Vector3 Player::GetWorldPosition() {

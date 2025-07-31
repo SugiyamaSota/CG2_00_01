@@ -62,5 +62,7 @@ void LockOn::Update(Player* player, std::list<Enemy*>& enemies, const Camera& ca
 }
 
 void LockOn::Draw() {
-	lockOnSprite_->Draw();
+	if (GetTarget() != nullptr) {
+		lockOnSprite_->Draw();
+	}
 }
