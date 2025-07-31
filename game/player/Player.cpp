@@ -14,6 +14,16 @@ void Player::Initialize(Model* model, Vector3 position) {
 
 	SetCollisionAttibute(kCollisionAttibutePlayer);
 	SetCollisionMask(kCollisionAttibuteEnemy);
+
+	// レティクル　
+	worldTransform3DReticle_ = InitializeWorldTransform();
+	reticleModel_ = new Model;
+	reticleModel_->LoadModel("cube");
+	reticleModel_->Initialize(worldTransform3DReticle_);
+
+	sprite2DReticle_ = new Sprite;
+	Vector3 spritePosition = { 640,320,0 };
+	sprite2DReticle_->Initialize(spritePosition, Color::White, { 0.5f,0.5f,0.0f }, { 128.0f,128.0f }, "reticle.png");
 }
 
 Player::~Player() {
@@ -23,6 +33,8 @@ Player::~Player() {
 	for (Model* model : bulletModel_) {
 		delete model;
 	}
+	delete reticleModel_;
+	delete sprite2DReticle_;
 }
 
 void Player::Update(Camera* camera) {
@@ -54,9 +66,42 @@ void Player::Update(Camera* camera) {
 		worldTransform_.worldMatrix = Multiply(worldTransform_.worldMatrix, worldTransform_.parent->worldMatrix);
 	}
 
-	worldTransform_.rotate *= -1;
-
 	model_->Update(worldTransform_, camera, false);
+
+	// 3Dレティクル
+	{
+		// 自機からレティクルの距離
+		const float kDistancePlayerTo3DReticle = 50.0f;
+		// オフセット
+		Vector3 offset = { 0,0,1.0f };
+
+		offset = TransformNormal(offset, worldTransform_.worldMatrix);
+		// 正規化
+		offset = Normalize(offset) * kDistancePlayerTo3DReticle;
+		//
+		worldTransform3DReticle_.translate = GetWorldPosition() + offset;
+		worldTransform3DReticle_.worldMatrix = MakeAffineMatrix(worldTransform3DReticle_.scale, worldTransform3DReticle_.rotate, worldTransform3DReticle_.translate);
+		if (worldTransform3DReticle_.parent) {
+			worldTransform3DReticle_.parent->worldMatrix = MakeAffineMatrix(worldTransform3DReticle_.parent->scale, worldTransform3DReticle_.parent->rotate, worldTransform3DReticle_.parent->translate);
+			worldTransform3DReticle_.worldMatrix = Multiply(worldTransform3DReticle_.worldMatrix, worldTransform3DReticle_.parent->worldMatrix);
+		}
+		reticleModel_->Update(worldTransform3DReticle_, camera, false);
+	}
+
+	// 2Dレティクル
+	{
+		Vector3 positionReticle = GetReticleWorldPosition();
+
+		// ビューポート
+		Matrix4x4 viewportMat = MakeViewportMatrix(0, 0, 1280, 720, 0, 1);
+
+		Matrix4x4 viewProjectionViewportMat = camera->GetViewProjectionMatrix() * viewportMat;
+		//
+		positionReticle = Transform(positionReticle, viewProjectionViewportMat);
+
+		sprite2DReticle_->Update(positionReticle, Color::White);
+	}
+
 }
 
 void Player::Move() {
@@ -116,11 +161,9 @@ void Player::Attack() {
 	if (Input::GetInstance()->IsTrigger(DIK_J)) {
 		// 弾の速度
 		const float kBulletSpeed = 1.0f;
-		Vector3 velocity = { 0,0,kBulletSpeed };
 
-		
-
-		velocity = TransformNormal(velocity,worldTransform_.worldMatrix);
+		Vector3 velocity = GetReticleWorldPosition() - GetWorldPosition();
+		velocity = Normalize(velocity) * kBulletSpeed;
 
 		Model* newModel = new Model();
 		newModel->LoadModel("cube");
@@ -144,6 +187,10 @@ void Player::Draw() {
 
 	// プレイヤー
 	model_->Draw();
+
+	reticleModel_->Draw();
+
+	sprite2DReticle_->Draw();
 }
 
 Vector3 Player::GetWorldPosition() {
@@ -152,6 +199,16 @@ Vector3 Player::GetWorldPosition() {
 	worldPos.x = worldTransform_.worldMatrix.m[3][0];
 	worldPos.y = worldTransform_.worldMatrix.m[3][1];
 	worldPos.z = worldTransform_.worldMatrix.m[3][2];
+
+	return worldPos;
+}
+
+Vector3 Player::GetReticleWorldPosition() {
+	Vector3 worldPos;
+
+	worldPos.x = worldTransform3DReticle_.worldMatrix.m[3][0];
+	worldPos.y = worldTransform3DReticle_.worldMatrix.m[3][1];
+	worldPos.z = worldTransform3DReticle_.worldMatrix.m[3][2];
 
 	return worldPos;
 }

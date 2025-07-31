@@ -19,6 +19,11 @@ private:
 
 	const float kRadius = 2.0f;
 
+	// レティクル
+	WorldTransform worldTransform3DReticle_;
+	Model* reticleModel_ = nullptr;
+	Sprite* sprite2DReticle_ = nullptr;
+
 	/// <summary>
 	/// 移動処理
 	/// </summary>
@@ -56,6 +61,8 @@ public:
 	void Draw();
 
 	Vector3 GetWorldPosition()override;
+
+	Vector3 GetReticleWorldPosition();
 
 	/// <summary>
 	/// 衝突を検知したら呼び出される

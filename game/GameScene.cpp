@@ -134,8 +134,6 @@ void GameScene::Update() {
 }
 
 void GameScene::Draw() {
-	// プレイヤー
-	player_->Draw();
 
 	// 敵リストの描画
 	for (Enemy* enemy : enemies_) {
@@ -149,6 +147,10 @@ void GameScene::Draw() {
 
 	// 天球
 	skydome_->Draw();
+
+
+	// プレイヤー
+	player_->Draw();
 
 	lineRenderer.Draw();
 }

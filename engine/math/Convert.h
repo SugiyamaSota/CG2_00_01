@@ -65,3 +65,5 @@ WorldTransform InitializeWorldTransform();
 
 // 
 Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
+
+Vector3 Transform(const Vector3& v, const Matrix4x4& m);

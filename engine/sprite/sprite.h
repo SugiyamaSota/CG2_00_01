@@ -12,14 +12,14 @@ public:
     /// </summary>
     /// <param name="worldTransform">ワールド変換</param>
     /// <param name="textureFilePath">テクスチャファイルのパス</param>
-    void Initialize(WorldTransform worldTransform, const std::string& textureFilePath);
+    void Initialize(Vector3 position, Color color, Vector3 anchor, Vector2 size, const std::string& textureFilePath);
 
     /// <summary>
     /// スプライトの更新
     /// </summary>
     /// <param name="worldTransform">ワールド変換</param>
     /// <param name="color">色</param>
-    void Update(WorldTransform worldTransform, Color color);
+    void Update(Vector3 spritePosition, Color color);
 
     /// <summary>
     /// スプライトの描画
