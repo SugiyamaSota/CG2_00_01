@@ -118,6 +118,9 @@
     <Filter Include="AL3\プレイヤー関連\hormingBullet">
       <UniqueIdentifier>{9eb66843-c4a7-45be-ab7b-9dcb105e1f69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AL3\汎用ファイル\ground">
+      <UniqueIdentifier>{d685c335-dc02-4dc8-a058-0679c339ccbb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="externals\imgui\imgui.cpp">
@@ -230,6 +233,9 @@
     </ClCompile>
     <ClCompile Include="game\player\Player.cpp">
       <Filter>AL3\プレイヤー関連\player</Filter>
+    </ClCompile>
+    <ClCompile Include="game\utility\Ground.cpp">
+      <Filter>AL3\汎用ファイル\ground</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -355,6 +361,9 @@
     </ClInclude>
     <ClInclude Include="game\player\PlayerHormingBullet.h">
       <Filter>AL3\プレイヤー関連\hormingBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="game\utility\Ground.h">
+      <Filter>AL3\汎用ファイル\ground</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

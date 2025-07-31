@@ -1,8 +1,8 @@
-#include "Skydome.h"
+#include "Ground.h"
 /// <summary>
 /// 初期化
 /// </summary>
-void Skydome::Initialize(Model* model, Camera* camera) {
+void Ground::Initialize(Model* model, Camera* camera) {
 	worldTransform_ = InitializeWorldTransform();
 	camera_ = camera;
 	model_ = model;
@@ -11,14 +11,14 @@ void Skydome::Initialize(Model* model, Camera* camera) {
 /// <summary>
 /// 更新
 /// </summary>
-void Skydome::Update() {
+void Ground::Update() {
 	model_->Update(worldTransform_, camera_, false);
-	
+
 }
 
 /// <summary>
 /// 描画
 /// </summary>
-void Skydome::Draw() {
+void Ground::Draw() {
 	model_->Draw();
 }

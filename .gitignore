@@ -84,6 +84,10 @@ StyleCopReport.xml
 !resources/models/plane/plane.obj
 !resources/models/monkey/monkey.obj
 !resources/models/debugSkydome/debugSkydome.obj
+!resources/models/player/player.obj
+!resources/models/enemy/enemy.obj
+!resources/models/field/field.obj
+!resources/models/skydome/skydome.obj
 !resources/
 *.iobj
 *.pch

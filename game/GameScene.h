@@ -10,6 +10,7 @@
 #include <list> // Include list for enemy bullets and enemies
 #include<sstream>
 #include"utility/LockOn.h"
+#include"utility/Ground.h"
 
 class GameScene {
 private:
@@ -36,6 +37,10 @@ private:
 	// 天球
 	Model* skydomeModel_ = nullptr;
 	Skydome* skydome_ = nullptr;
+
+	// 地面
+	Model* groundModel_ = nullptr;
+	Ground* ground_ = nullptr;
 
 	// 衝突マネージャー
 	CollisionManager* collisionManager_ = nullptr;

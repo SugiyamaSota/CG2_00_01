@@ -4,10 +4,6 @@
 #include <algorithm> // std::sort, std::find などに必要
 
 void LockOn::Initialize() {
-    // lockOnWorldTransform_ = InitializeWorldTransform(); // 各スプライトで持つなら不要
-    // lockOnSprite_ = new Sprite; // リストで管理するので不要
-    // lockOnSprite_->Initialize({ 0,0,0 }, Color::White, { 0.5f,0.5f ,0.0f }, { 128,128 }, "uvChecker.png");
-    // ここでは初期スプライトの生成は行わず、Updateで動的に生成する
 }
 
 LockOn::~LockOn() {
@@ -79,7 +75,7 @@ void LockOn::Update(Player* player, std::list<Enemy*>& enemies, const Camera& ca
         // 新しいスプライトを生成して初期化
         Sprite* newSprite = new Sprite;
         // lockOnSprite_と同じ画像をロード
-        newSprite->Initialize({ 0,0,0 }, Color::White, { 0.5f,0.5f ,0.0f }, { 128,128 }, "uvChecker.png");
+        newSprite->Initialize({ 0,0,0 }, Color::White, { 0.5f,0.5f ,0.0f }, { 128,128 }, "horming.png");
         lockOnSprites_.push_back(newSprite);
     }
 

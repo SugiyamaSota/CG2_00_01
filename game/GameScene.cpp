@@ -16,7 +16,7 @@ void GameScene::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 
 	// プレイヤー
 	playerModel_ = new Model();
-	playerModel_->LoadModel("monkey");
+	playerModel_->LoadModel("player");
 	player_ = new Player();
 	Vector3 playerPosition = { 0,0,50 };
 	player_->Initialize(playerModel_, playerPosition);
@@ -24,9 +24,15 @@ void GameScene::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 
 	// 天球
 	skydomeModel_ = new Model();
-	skydomeModel_->LoadModel("debugSkydome");
+	skydomeModel_->LoadModel("skydome");
 	skydome_ = new Skydome();
 	skydome_->Initialize(skydomeModel_, camera_);
+
+	// 天球
+	groundModel_ = new Model();
+	groundModel_->LoadModel("field");
+	ground_ = new Ground();
+	ground_->Initialize(groundModel_, camera_);
 
 	// 衝突マネージャー
 	collisionManager_ = new CollisionManager;
@@ -68,6 +74,8 @@ GameScene::~GameScene() {
 	enemyModels_.clear();
 
 	delete collisionManager_;
+	delete ground_;
+	delete groundModel_;
 	delete skydome_;
 	delete skydomeModel_;
 	delete player_;
@@ -131,6 +139,9 @@ void GameScene::Update() {
 	// 天球
 	skydome_->Update();
 
+	// 地面
+	ground_->Update();
+
 	lineRenderer.Clear();
 
 	// ベジェ曲線パスの描画
@@ -156,6 +167,8 @@ void GameScene::Draw() {
 	// 天球
 	skydome_->Draw();
 
+	// 地面
+	ground_->Draw();
 
 	// プレイヤー
 	player_->Draw();

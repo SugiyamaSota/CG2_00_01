@@ -292,9 +292,11 @@ void Player::Draw() {
 	// プレイヤー
 	model_->Draw();
 
-	reticleModel_->Draw();
 
 	sprite2DReticle_->Draw();
+
+	reticleModel_->Draw();
+
 }
 
 Vector3 Player::GetWorldPosition() {

@@ -1,6 +1,6 @@
-POP,6,8,120,axis
+POP,6,8,120,enemy
 WAIT,120,,
-POP,-6,5,150,monkey
+POP,-6,5,150,enemy
 WAIT,120,,
-POP,-23,-8,180,axis
+POP,-23,-8,180,enemy
 WAIT,120,,
