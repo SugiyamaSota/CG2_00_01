@@ -1,6 +1,7 @@
 #include "PlayerBullet.h"
 
-void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
+// スケール引数を追加
+void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity, const Vector3& scale) { //
 	// モデル
 	assert(model);
 	model_ = model;
@@ -9,9 +10,16 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 
 	// ワールド変換
 	worldTransform_ = InitializeWorldTransform();
+	worldTransform_.scale = scale; // 引数で受け取ったスケールを設定
 	worldTransform_.translate = position;
 
 	velocity_ = velocity;
+
+	worldTransform_.rotate.y = std::atan2f(velocity_.x, velocity_.z);
+
+	float velocityXZ = std::sqrtf(velocity_.x * velocity_.x + velocity_.z * velocity_.z);
+
+	worldTransform_.rotate.x = std::atan2(velocity_.y, velocityXZ);
 
 	SetCollisionAttibute(kCollisionAttibutePlayer);
 	SetCollisionMask(kCollisionAttibuteEnemy);

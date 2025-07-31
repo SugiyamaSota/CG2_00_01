@@ -74,3 +74,5 @@ Vector3 Project(
 	const Matrix4x4& viewProjection);
 
 float Distance(Vector2 v1, Vector2 v2);
+
+float LengthSq(const Vector3& v);

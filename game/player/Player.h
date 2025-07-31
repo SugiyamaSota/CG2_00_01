@@ -6,6 +6,7 @@
 #include"../utility/Collider.h"
 
 #include"../utility/LockOn.h"
+#include"PlayerHormingBullet.h" // PlayerHormingBullet の宣言が必要なので追加
 
 class Player : public Collider {
 private:
@@ -18,6 +19,10 @@ private:
 	// 弾
 	std::list<PlayerBullet*> bullets_;
 	std::list<Model*> bulletModel_;
+
+	// ホーミング弾用のリストとモデルリストを追加
+	std::list<PlayerHormingBullet*> hormingBullets_; // ここを追加
+	std::list<Model*> hormingBulletModel_;          // ここを追加
 
 	const float kRadius = 2.0f;
 
@@ -78,6 +83,8 @@ public:
 	void OnCollision()override;
 
 	const std::list<PlayerBullet*>& GetBullets()const { return bullets_; }
+	// ホーミング弾のゲッターも追加
+	const std::list<PlayerHormingBullet*>& GetHormingBullets()const { return hormingBullets_; } // ここを追加
 
 	float GetRadius()const { return kRadius; }
 
@@ -86,4 +93,3 @@ public:
 	void SetLockOn(LockOn* lockOn) { lockOn_ = lockOn; }
 
 };
-

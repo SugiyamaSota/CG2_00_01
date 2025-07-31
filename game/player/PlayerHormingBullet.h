@@ -2,8 +2,9 @@
 #include"../../engine/bonjin/BonjinEngine.h"
 
 #include"../utility/Collider.h"
+#include"../enemy/Enemy.h" // Enemy クラスの定義が必要なため追加
 
-class PlayerBullet : public Collider {
+class PlayerHormingBullet : public Collider {
 private:
 	// モデル
 	Model* model_ = nullptr;
@@ -13,6 +14,9 @@ private:
 
 	// 速度
 	Vector3 velocity_;
+
+	// ホーミング対象
+	Enemy* target_ = nullptr; // ホーミング対象の敵を追加
 
 	// 寿命
 	static const int32_t kLifeTime = 60 * 5;
@@ -31,13 +35,13 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	// スケール引数を追加
-	void Initialize(Model* model, const Vector3& position, const Vector3& velocity, const Vector3& scale); //
+	// スケールとターゲット引数を追加
+	void Initialize(Model* model, const Vector3& position, const Vector3& velocity, const Vector3& scale, Enemy* target); //
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~PlayerBullet();
+	~PlayerHormingBullet();
 
 	/// <summary>
 	/// 更新処理

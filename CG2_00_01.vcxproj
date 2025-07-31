@@ -133,6 +133,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\math\Matrix.cpp" />
     <ClCompile Include="engine\math\vector.cpp" />
     <ClCompile Include="engine\sprite\sprite.cpp" />
+    <ClCompile Include="game\player\PlayerHormingBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\manager\CollisionManager.h" />
@@ -175,6 +176,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="game\utility\Skydome.h" />
     <ClInclude Include="game\utility\TimedCall.h" />
     <ClInclude Include="engine\line\Line.h" />
+    <ClInclude Include="game\player\PlayerHormingBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

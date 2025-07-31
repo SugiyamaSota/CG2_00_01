@@ -52,6 +52,8 @@ private:
 
 	const float kRadius = 2.0f;
 
+	bool isDead_ = false;
+
 public:
 	static const int kFireInterval = 60;
 
@@ -101,4 +103,6 @@ public:
 	// Removed: const std::list<EnemyBullet*>& GetBullets()const { return bullets_; }
 
 	float GetRadius()const { return kRadius; }
+
+	bool IsDead()const { return isDead_; }
 };

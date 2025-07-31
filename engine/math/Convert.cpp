@@ -184,3 +184,7 @@ float Distance(Vector2 v1, Vector2 v2) {
 	// float型なので sqrtf を使うのが一般的
 	return sqrtf(dx * dx + dy * dy);
 }
+
+float LengthSq(const Vector3& v) {
+	return v.x * v.x + v.y * v.y + v.z * v.z;
+}

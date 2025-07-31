@@ -1,6 +1,7 @@
 #include "CollisionManager.h"
 #include "../player/PlayerBullet.h" 
-#include "../enemy/EnemyBullet.h"   
+#include "../enemy/EnemyBullet.h"  
+#include"../player/PlayerHormingBullet.h"
 
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
 	// フィルター
@@ -30,7 +31,7 @@ void CollisionManager::Initialize(Player* player, std::list<Enemy*>* enemies) {
 }
 
 // Updateの実装
-void CollisionManager::Update(const std::list<EnemyBullet*>& enemyBullets, const std::list<PlayerBullet*>& playerBullets, const std::list<Enemy*>& enemies) {
+void CollisionManager::Update(const std::list<EnemyBullet*>& enemyBullets, const std::list<PlayerBullet*>& playerBullets, const std::list<PlayerHormingBullet*>& playerHormingBullets, const std::list<Enemy*>& enemies) {
 	colliders_.clear();
 
 	colliders_.push_back(player_);
@@ -42,6 +43,10 @@ void CollisionManager::Update(const std::list<EnemyBullet*>& enemyBullets, const
 
 	// プレイヤーの弾丸を追加
 	for (PlayerBullet* bullet : playerBullets) { // 引数で受け取った playerBullets を使用
+		colliders_.push_back(bullet);
+	}
+
+	for (PlayerHormingBullet* bullet : playerHormingBullets) {
 		colliders_.push_back(bullet);
 	}
 

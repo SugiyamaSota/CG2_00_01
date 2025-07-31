@@ -20,7 +20,7 @@ void GameScene::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 	player_ = new Player();
 	Vector3 playerPosition = { 0,0,50 };
 	player_->Initialize(playerModel_, playerPosition);
-	player_->SetParent(&railCameraController_->GetWorldTransform()); // RailCameraControllerのWorldTransformを親に設定
+	//player_->SetParent(&railCameraController_->GetWorldTransform()); // RailCameraControllerのWorldTransformを親に設定
 
 	// 天球
 	skydomeModel_ = new Model();
@@ -91,13 +91,13 @@ void GameScene::Update() {
 	}
 #endif
 	// Update Collision Manager with enemy bullets and enemies
-	collisionManager_->Update(enemyBullets_, player_->GetBullets(), enemies_); // 敵のリストも渡す
+	collisionManager_->Update(enemyBullets_, player_->GetBullets(),player_->GetHormingBullets(), enemies_); // 敵のリストも渡す
 
 
 	// RailCameraController を更新
-	railCameraController_->Update(&lineRenderer);
+	//railCameraController_->Update(&lineRenderer);
 	// RailCameraController から更新されたビュー行列をカメラに設定
-	camera_->SetViewMatrix(railCameraController_->GetViewMatrix());
+	//camera_->SetViewMatrix(railCameraController_->GetViewMatrix());
 	camera_->Update(cameraType_); // Debugカメラとの切り替えは必要に応じて残す
 
 
@@ -107,7 +107,7 @@ void GameScene::Update() {
 	// 敵リストの更新
 	enemies_.remove_if([](Enemy* enemy) {
 		// 必要に応じて敵が削除される条件を追加
-		// 例: if (enemy->IsDead()) { delete enemy; return true; }
+		if (enemy->IsDead()) { delete enemy; return true; }
 		return false; // 今回は常にfalseで削除しない
 		});
 

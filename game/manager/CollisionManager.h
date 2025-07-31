@@ -7,6 +7,7 @@
 
 class EnemyBullet;
 class PlayerBullet; // PlayerBullet の前方宣言を追加
+class PlayerHormingBullets;
 
 class CollisionManager {
 private:
@@ -22,6 +23,6 @@ public:
 	void Initialize(Player* player, std::list<Enemy*>* enemies);
 
 	// Updateの引数: 敵弾リスト、プレイヤー弾リスト、敵リスト
-	void Update(const std::list<EnemyBullet*>& enemyBullets, const std::list<PlayerBullet*>& playerBullets, const std::list<Enemy*>& enemies);
+	void Update(const std::list<EnemyBullet*>& enemyBullets, const std::list<PlayerBullet*>& playerBullets, const std::list<PlayerHormingBullet*>& playerHormingBullets, const std::list<Enemy*>& enemies);
 
 };

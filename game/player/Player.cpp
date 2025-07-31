@@ -1,8 +1,10 @@
 #include "Player.h"
 #include<cassert>
 #include<algorithm>
+#include<cfloat> // FLT_MAX のために必要
 
 #include"../enemy/Enemy.h"
+#include"PlayerHormingBullet.h" // PlayerHormingBullet の定義が必要
 
 void Player::Initialize(Model* model, Vector3 position) {
 	// モデル
@@ -35,6 +37,13 @@ Player::~Player() {
 	for (Model* model : bulletModel_) {
 		delete model;
 	}
+	// ホーミング弾の解放処理も追加
+	for (PlayerHormingBullet* bullet : hormingBullets_) {
+		delete bullet;
+	}
+	for (Model* model : hormingBulletModel_) {
+		delete model;
+	}
 	delete reticleModel_;
 	delete sprite2DReticle_;
 }
@@ -58,7 +67,21 @@ void Player::Update(Camera* camera) {
 		return false;
 		});
 
+	// デスフラグが立ったホーミング弾を削除
+	hormingBullets_.remove_if([](PlayerHormingBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+		});
+
 	for (PlayerBullet* bullet : bullets_) {
+		bullet->Update(camera);
+	}
+
+	// ホーミング弾の更新処理も追加
+	for (PlayerHormingBullet* bullet : hormingBullets_) {
 		bullet->Update(camera);
 	}
 
@@ -163,50 +186,77 @@ void Player::Attack() {
 	if (Input::GetInstance()->IsTrigger(DIK_J)) {
 		// 弾の速度
 		const float kBulletSpeed = 1.0f;
+		// 弾のスケール
+		Vector3 bulletScale = { 0.25f, 0.25f, 1.5f }; // スケールを定義
 
-		Vector3 velocity = {};
+		Vector3 bulletSpawnPosition = GetWorldPosition(); // 弾の生成位置
 
-		if (lockOn_->GetTarget()!=nullptr) {
-			Enemy* target = lockOn_->GetTarget();
+		// ロックオン対象がいるか、かつlockOn_がnullptrではないかを確認
+		if (lockOn_ != nullptr && !lockOn_->GetTargets().empty()) {
+			// 複数のロックオンターゲットにそれぞれ1発ずつホーミング弾を発射する
+			const std::list<Enemy*>& targets = lockOn_->GetTargets();
 
-			velocity = target->GetWorldPosition() - GetWorldPosition();
-			velocity = Normalize(velocity) * kBulletSpeed;
+			for (Enemy* target : targets) {
+				// ターゲットが有効かつ死んでいないかを確認
+				if (target != nullptr) {
+					Vector3 velocity = target->GetWorldPosition() - GetWorldPosition();
+					velocity = Normalize(velocity) * kBulletSpeed;
+
+					// ホーミング弾の場合、プレイヤーの少し前から出すなど、生成位置を調整することも可能です
+					Vector3 forwardOffset = { 0, 0, 1.0f };
+					forwardOffset = TransformNormal(forwardOffset, worldTransform_.worldMatrix);
+					// 弾ごとに少しずらして発射することも可能（例: bulletSpawnPosition + Normalize(forwardOffset) * 2.0f + Vector3{0.1f * i, 0, 0};）
+					// 今回はシンプルに同じ位置から発射
+					Vector3 currentBulletSpawnPosition = bulletSpawnPosition + Normalize(forwardOffset) * 2.0f;
+
+					Model* newModel = new Model();
+					newModel->LoadModel("cube"); // ホーミング弾用のモデルロード
+					hormingBulletModel_.push_back(newModel);
+
+					PlayerHormingBullet* newBullet = new PlayerHormingBullet();
+					newBullet->Initialize(newModel, currentBulletSpawnPosition, velocity, bulletScale, target); // 各ターゲットを渡す
+					hormingBullets_.push_back(newBullet);
+				}
+			}
 		} else {
-			velocity = GetReticleWorldPosition() - GetWorldPosition();
-			velocity = Normalize(velocity) * kBulletSpeed;
+			// ロックオンしていない場合は、プレイヤーの進行方向に弾を出す
+			Vector3 playerForward = { 0, 0, 1.0f };
+			playerForward = TransformNormal(playerForward, worldTransform_.worldMatrix);
+			Vector3 velocity = Normalize(playerForward) * kBulletSpeed;
+
+			Model* newModel = new Model();
+			newModel->LoadModel("cube");
+
+			bulletModel_.push_back(newModel);
+
+			PlayerBullet* newBullet = new PlayerBullet();
+
+			// PlayerBullet::Initialize にもスケール引数が必要になります
+			newBullet->Initialize(newModel, bulletSpawnPosition, velocity, bulletScale); // スケールを渡す
+
+			// 弾を登録する
+			bullets_.push_back(newBullet);
 		}
-
-	
-		
-
-		Model* newModel = new Model();
-		newModel->LoadModel("cube");
-
-		bulletModel_.push_back(newModel);
-
-		PlayerBullet* newBullet = new PlayerBullet();
-
-		newBullet->Initialize(newModel, GetWorldPosition(), velocity);
-
-		// 弾を登録する
-		bullets_.push_back(newBullet);
 	}
 }
+
 
 void Player::Draw() {
 	// 弾
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw();
 	}
+	// ホーミング弾の描画処理も追加
+	for (PlayerHormingBullet* bullet : hormingBullets_) {
+		bullet->Draw();
+	}
 
 	// プレイヤー
 	model_->Draw();
 
-	if (lockOn_->GetTarget() == nullptr) {
-		reticleModel_->Draw();
+	reticleModel_->Draw();
 
-		sprite2DReticle_->Draw();
-	}
+	sprite2DReticle_->Draw();
 }
 
 Vector3 Player::GetWorldPosition() {
@@ -239,4 +289,3 @@ Vector2 Player::GetReticlePosition() {
 void Player::OnCollision() {
 	// 何も起きない
 }
-

@@ -92,8 +92,7 @@ void Enemy::Fire() {
 	Model* newModel = new Model();
 	newModel->LoadModel("cube");
 
-	// Removed: bulletModel_.push_back(newModel); // Model ownership transferred to GameScene
-
+	
 	EnemyBullet* newBullet = new EnemyBullet();
 	newBullet->Initialize(newModel, worldTransform_.translate, velocity, *player_);
 
@@ -116,7 +115,7 @@ void EnemyStateApproach::Update(Enemy* enemy) {
 // EnemyStateLeave クラスのUpdateメソッドの実装
 void EnemyStateLeave::Update(Enemy* enemy) {
 	// 速度を加算
-	enemy->MoveLeave();
+	//enemy->MoveLeave();
 }
 
 void Enemy::FireAndReset() {
@@ -137,5 +136,6 @@ Vector3 Enemy::GetWorldPosition() {
 }
 
 void Enemy::OnCollision() {
-	// 何も起きない
+	// 
+	isDead_ = true;
 }
