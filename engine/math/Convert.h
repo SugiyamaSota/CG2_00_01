@@ -2,6 +2,7 @@
 
 
 ///// 前方宣言 /////
+struct Vector2;
 struct Vector3;
 struct Matrix4x4;
 struct WorldTransform;
@@ -67,3 +68,9 @@ WorldTransform InitializeWorldTransform();
 Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 
 Vector3 Transform(const Vector3& v, const Matrix4x4& m);
+
+Vector3 Project(
+	const Vector3 worldPosition, float viewportX, float viewportY, float viewportWidth, float viewportHeight,
+	const Matrix4x4& viewProjection);
+
+float Distance(Vector2 v1, Vector2 v2);

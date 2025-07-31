@@ -35,10 +35,16 @@ void GameScene::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 	// ベジェ曲線が複数の線分で構成されるため、十分な頂点数を確保
 	lineRenderer.Initialize(4096);
 
+	// ロックオン
+	lockOn_ = new LockOn;
+	lockOn_->Initialize();
+
+	// csv読み込み
 	LoadEnemyPopData();
 }
 
 GameScene::~GameScene() {
+	delete lockOn_;
 	// 敵の弾丸とモデルのクリーンアップ
 	for (EnemyBullet* bullet : enemyBullets_) {
 		delete bullet;
@@ -64,12 +70,10 @@ GameScene::~GameScene() {
 	delete collisionManager_;
 	delete skydome_;
 	delete skydomeModel_;
-	// delete enemyModel_; // <-- この行は削除
-	// delete enemy_; // <-- この行は削除 (敵がリストになったため)
 	delete player_;
 	delete playerModel_;
 	delete camera_;
-	delete railCameraController_; // railCameraController_ のdeleteを追加
+	delete railCameraController_;
 }
 
 void GameScene::Update() {
@@ -131,6 +135,10 @@ void GameScene::Update() {
 
 	// ベジェ曲線パスの描画
 	lineRenderer.AddBezierPath(bezierPathPoints, 30, Color::Green, *camera_);
+
+	lockOn_->Update(player_,enemies_,*camera_);
+
+	player_->SetLockOn(lockOn_);
 }
 
 void GameScene::Draw() {
@@ -151,6 +159,8 @@ void GameScene::Draw() {
 
 	// プレイヤー
 	player_->Draw();
+
+	lockOn_->Draw();
 
 	lineRenderer.Draw();
 }

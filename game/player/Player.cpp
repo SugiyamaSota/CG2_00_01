@@ -2,6 +2,8 @@
 #include<cassert>
 #include<algorithm>
 
+#include"../enemy/Enemy.h"
+
 void Player::Initialize(Model* model, Vector3 position) {
 	// モデル
 	assert(model);
@@ -90,16 +92,16 @@ void Player::Update(Camera* camera) {
 
 	// 2Dレティクル
 	{
-		Vector3 positionReticle = GetReticleWorldPosition();
+		positionReticle_ = GetReticleWorldPosition();
 
 		// ビューポート
 		Matrix4x4 viewportMat = MakeViewportMatrix(0, 0, 1280, 720, 0, 1);
 
 		Matrix4x4 viewProjectionViewportMat = camera->GetViewProjectionMatrix() * viewportMat;
 		//
-		positionReticle = Transform(positionReticle, viewProjectionViewportMat);
+		positionReticle_ = Transform(positionReticle_, viewProjectionViewportMat);
 
-		sprite2DReticle_->Update(positionReticle, Color::White);
+		sprite2DReticle_->Update(positionReticle_, Color::White);
 	}
 
 }
@@ -162,8 +164,20 @@ void Player::Attack() {
 		// 弾の速度
 		const float kBulletSpeed = 1.0f;
 
-		Vector3 velocity = GetReticleWorldPosition() - GetWorldPosition();
-		velocity = Normalize(velocity) * kBulletSpeed;
+		Vector3 velocity = {};
+
+		if (lockOn_->GetTarget()!=nullptr) {
+			Enemy* target = lockOn_->GetTarget();
+
+			velocity = target->GetWorldPosition() - GetWorldPosition();
+			velocity = Normalize(velocity) * kBulletSpeed;
+		} else {
+			velocity = GetReticleWorldPosition() - GetWorldPosition();
+			velocity = Normalize(velocity) * kBulletSpeed;
+		}
+
+	
+		
 
 		Model* newModel = new Model();
 		newModel->LoadModel("cube");
@@ -213,6 +227,14 @@ Vector3 Player::GetReticleWorldPosition() {
 	return worldPos;
 }
 
+Vector2 Player::GetReticlePosition() {
+	Vector2 result;
+	result.x = positionReticle_.x;
+	result.y = positionReticle_.y;
+	return result;
+}
+
 void Player::OnCollision() {
 	// 何も起きない
 }
+

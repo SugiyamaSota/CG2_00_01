@@ -159,3 +159,28 @@ Vector3 Transform(const Vector3& v, const Matrix4x4& m) {
 
 	return result;
 }
+
+Vector3 Project(
+	const Vector3 worldPosition, float viewportX, float viewportY, float viewportWidth, float viewportHeight,
+	const Matrix4x4& viewProjection) {
+	Vector3 result = {};
+	// ビューポート
+	Matrix4x4 viewportMat = MakeViewportMatrix(viewportX, viewportY, viewportWidth, viewportHeight, 0, 1);
+
+	Matrix4x4 viewProjectionViewportMat = viewProjection * viewportMat;
+	//
+	result = Transform(worldPosition, viewProjectionViewportMat);
+
+	return result;
+}
+
+float Distance(Vector2 v1, Vector2 v2) {
+	// x座標の差
+	float dx = v2.x - v1.x;
+	// y座標の差
+	float dy = v2.y - v1.y;
+
+	// ユークリッド距離の計算: sqrt((dx*dx) + (dy*dy))
+	// float型なので sqrtf を使うのが一般的
+	return sqrtf(dx * dx + dy * dy);
+}

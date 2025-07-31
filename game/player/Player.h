@@ -5,6 +5,8 @@
 #include"PlayerBullet.h"
 #include"../utility/Collider.h"
 
+#include"../utility/LockOn.h"
+
 class Player : public Collider {
 private:
 	// モデル
@@ -23,6 +25,10 @@ private:
 	WorldTransform worldTransform3DReticle_;
 	Model* reticleModel_ = nullptr;
 	Sprite* sprite2DReticle_ = nullptr;
+	Vector3 positionReticle_;
+
+	// ロックオン
+	LockOn* lockOn_ = nullptr;
 
 	/// <summary>
 	/// 移動処理
@@ -64,6 +70,8 @@ public:
 
 	Vector3 GetReticleWorldPosition();
 
+	Vector2 GetReticlePosition();
+
 	/// <summary>
 	/// 衝突を検知したら呼び出される
 	/// </summary>
@@ -74,6 +82,8 @@ public:
 	float GetRadius()const { return kRadius; }
 
 	void SetParent(WorldTransform* parent) { worldTransform_.parent = parent; }
+
+	void SetLockOn(LockOn* lockOn) { lockOn_ = lockOn; }
 
 };
 

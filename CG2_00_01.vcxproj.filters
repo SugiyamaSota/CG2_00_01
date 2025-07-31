@@ -112,6 +112,9 @@
     <Filter Include="engine\line">
       <UniqueIdentifier>{caaa5c91-0b93-43f7-8024-6dbb3923ec58}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AL3\汎用ファイル\lockOn">
+      <UniqueIdentifier>{f9dc9d5a-3433-4de4-9d7a-e4c6b3c03652}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="externals\imgui\imgui.cpp">
@@ -218,6 +221,9 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="game\utility\LockOn.cpp">
+      <Filter>AL3\汎用ファイル\lockOn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -337,6 +343,9 @@
     </ClInclude>
     <ClInclude Include="engine\line\Line.h">
       <Filter>engine\line</Filter>
+    </ClInclude>
+    <ClInclude Include="game\utility\LockOn.h">
+      <Filter>AL3\汎用ファイル\lockOn</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

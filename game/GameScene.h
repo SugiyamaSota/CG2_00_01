@@ -9,6 +9,7 @@
 #include"utility/RailCameraController.h"
 #include <list> // Include list for enemy bullets and enemies
 #include<sstream>
+#include"utility/LockOn.h"
 
 class GameScene {
 private:
@@ -72,10 +73,8 @@ private:
 	bool isWaiting_ = false;
 	int waitTimer_ = 0;
 
-	// ベジェ曲線関連の変数 (RailCameraControllerに移動するためコメントアウトまたは削除)
-	// float bezierT_ = 0.0f; // ベジェ曲線上の現在のパラメータ (0.0 から 1.0)
-	// float bezierSpeed_ = 0.005f; // カメラが曲線上を移動する速度
-	// float lookAheadDistance_ = 5.0f; // カメラが曲線のどれだけ先を見るか
+	// ロックオン
+	LockOn* lockOn_ = nullptr;
 
 
 public:

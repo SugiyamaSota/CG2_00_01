@@ -123,6 +123,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="game\player\Player.cpp" />
     <ClCompile Include="game\player\PlayerBullet.cpp" />
     <ClCompile Include="game\utility\Collider.cpp" />
+    <ClCompile Include="game\utility\LockOn.cpp" />
     <ClCompile Include="game\utility\RailCameraController.cpp" />
     <ClCompile Include="game\utility\Skydome.cpp" />
     <ClCompile Include="game\utility\TimedCall.cpp" />
@@ -169,6 +170,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="game\player\PlayerBullet.h" />
     <ClInclude Include="game\utility\Collider.h" />
     <ClInclude Include="game\utility\CollisionConfig.h" />
+    <ClInclude Include="game\utility\LockOn.h" />
     <ClInclude Include="game\utility\RailCameraController.h" />
     <ClInclude Include="game\utility\Skydome.h" />
     <ClInclude Include="game\utility\TimedCall.h" />

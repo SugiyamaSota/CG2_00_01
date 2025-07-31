@@ -115,11 +115,6 @@ void Sprite::Update(Vector3 spritePosition, Color color) {
 	// マテリアルの更新
 	materialData_->color = ToVector4(color); // enum Color を Vector4 に変換して設定
 
-	//// UV 変換行列の更新
-	//Matrix4x4 uvTransformMatrix = MakeScaleMatrix(transform_.scale); // スプライトのスケールをUV変換に適用
-	//uvTransformMatrix = Multiply(uvTransformMatrix, MakeRotateZMatrix(transform_.rotate.z)); // Z軸回転をUV変換に適用
-	//uvTransformMatrix = Multiply(uvTransformMatrix, MakeTranslateMatrix({ transform_.translate.x, transform_.translate.y, 0.0f })); // 平行移動をUV変換に適用
-	//materialData_->uvTransform = uvTransformMatrix;
 }
 
 void Sprite::Draw() {
