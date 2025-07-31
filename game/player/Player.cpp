@@ -93,21 +93,64 @@ void Player::Update(Camera* camera) {
 
 	model_->Update(worldTransform_, camera, false);
 
-	// 3Dレティクル
 	{
-		// 自機からレティクルの距離
-		const float kDistancePlayerTo3DReticle = 50.0f;
-		// オフセット
-		Vector3 offset = { 0,0,1.0f };
+		POINT mousePosition;
+		GetCursorPos(&mousePosition);
+		ScreenToClient(DirectXCommon::GetInstance()->GetHWND(), &mousePosition);
 
-		offset = TransformNormal(offset, worldTransform_.worldMatrix);
-		// 正規化
-		offset = Normalize(offset) * kDistancePlayerTo3DReticle;
-		//
-		worldTransform3DReticle_.translate = GetWorldPosition() + offset;
-		worldTransform3DReticle_.worldMatrix = MakeAffineMatrix(worldTransform3DReticle_.scale, worldTransform3DReticle_.rotate, worldTransform3DReticle_.translate);
+		// positionReticle_ はマウスのクライアント座標として保持
+		positionReticle_.x = static_cast<float>(mousePosition.x);
+		positionReticle_.y = static_cast<float>(mousePosition.y);
+
+		// 1. マウスのスクリーン座標を正規化デバイス座標 (NDC) に変換
+		// ここでビューポートのサイズ (width, height) を正確に使用します
+		float viewportWidth = 1280.0f; // あなたのビューポートの幅
+		float viewportHeight = 720.0f; // あなたのビューポートの高さ
+
+		Vector3 ndcPosNear = Vector3(
+			((positionReticle_.x / viewportWidth) * 2.0f) - 1.0f,
+			(((viewportHeight - positionReticle_.y) / viewportHeight) * 2.0f) - 1.0f, // Y軸は多くの場合反転します
+			0.0f // Near plane (Z=0 in NDC for DirectX)
+		);
+
+		Vector3 ndcPosFar = Vector3(
+			((positionReticle_.x / viewportWidth) * 2.0f) - 1.0f,
+			(((viewportHeight - positionReticle_.y) / viewportHeight) * 2.0f) - 1.0f,
+			1.0f // Far plane (Z=1 in NDC for DirectX)
+		);
+
+		// 2. 正規化デバイス座標からワールド座標へ変換
+		// ビュープロジェクション行列の逆行列を使用します
+		// GetViewProjectionMatrix() は ViewMatrix * ProjectionMatrix のはずです
+		Matrix4x4 viewProjectionMatrix = camera->GetViewProjectionMatrix();
+		Matrix4x4 inversedViewProjectionMatrix = Inverse(viewProjectionMatrix);
+
+		Vector3 worldPosNear = Transform(ndcPosNear, inversedViewProjectionMatrix);
+		Vector3 worldPosFar = Transform(ndcPosFar, inversedViewProjectionMatrix);
+
+		// 3. レイの方向を計算
+		Vector3 mouseDirection = Normalize(worldPosFar - worldPosNear);
+
+		// 4. マウスから延ばしたレイ上の3Dレティクルの位置を決定
+		const float kDistanceTestObject = 150.0f; // カメラからレティクルまでの距離
+
+		worldTransform3DReticle_.translate = worldPosNear + mouseDirection * kDistanceTestObject;
+
+		// ワールド行列の更新 (スケールと回転は既存の値を使用)
+		worldTransform3DReticle_.worldMatrix = MakeAffineMatrix(
+			worldTransform3DReticle_.scale,
+			worldTransform3DReticle_.rotate,
+			worldTransform3DReticle_.translate
+		);
+
+		// 親のワールド行列が設定されている場合
 		if (worldTransform3DReticle_.parent) {
-			worldTransform3DReticle_.parent->worldMatrix = MakeAffineMatrix(worldTransform3DReticle_.parent->scale, worldTransform3DReticle_.parent->rotate, worldTransform3DReticle_.parent->translate);
+			// 親のワールド行列を更新し、子に適用
+			worldTransform3DReticle_.parent->worldMatrix = MakeAffineMatrix(
+				worldTransform3DReticle_.parent->scale,
+				worldTransform3DReticle_.parent->rotate,
+				worldTransform3DReticle_.parent->translate
+			);
 			worldTransform3DReticle_.worldMatrix = Multiply(worldTransform3DReticle_.worldMatrix, worldTransform3DReticle_.parent->worldMatrix);
 		}
 		reticleModel_->Update(worldTransform3DReticle_, camera, false);
@@ -115,15 +158,6 @@ void Player::Update(Camera* camera) {
 
 	// 2Dレティクル
 	{
-		positionReticle_ = GetReticleWorldPosition();
-
-		// ビューポート
-		Matrix4x4 viewportMat = MakeViewportMatrix(0, 0, 1280, 720, 0, 1);
-
-		Matrix4x4 viewProjectionViewportMat = camera->GetViewProjectionMatrix() * viewportMat;
-		//
-		positionReticle_ = Transform(positionReticle_, viewProjectionViewportMat);
-
 		sprite2DReticle_->Update(positionReticle_, Color::White);
 	}
 
@@ -220,9 +254,13 @@ void Player::Attack() {
 			}
 		} else {
 			// ロックオンしていない場合は、プレイヤーの進行方向に弾を出す
-			Vector3 playerForward = { 0, 0, 1.0f };
-			playerForward = TransformNormal(playerForward, worldTransform_.worldMatrix);
-			Vector3 velocity = Normalize(playerForward) * kBulletSpeed;
+			const float kBulletSpeed = 1.0f;
+			Vector3 velocity = GetReticleWorldPosition() - GetWorldPosition();
+			velocity = Normalize(velocity) * kBulletSpeed;
+
+
+
+			velocity = TransformNormal(velocity, worldTransform_.worldMatrix);
 
 			Model* newModel = new Model();
 			newModel->LoadModel("cube");

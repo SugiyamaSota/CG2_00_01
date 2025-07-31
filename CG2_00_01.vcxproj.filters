@@ -195,9 +195,6 @@
     <ClCompile Include="game\utility\TimedCall.cpp">
       <Filter>AL3\汎用ファイル\timedCall</Filter>
     </ClCompile>
-    <ClCompile Include="game\player\Player.cpp">
-      <Filter>AL3\プレイヤー関連\player</Filter>
-    </ClCompile>
     <ClCompile Include="game\enemy\EnemyBullet.cpp">
       <Filter>AL3\敵関連\enemyBullet</Filter>
     </ClCompile>
@@ -230,6 +227,9 @@
     </ClCompile>
     <ClCompile Include="game\player\PlayerHormingBullet.cpp">
       <Filter>AL3\プレイヤー関連\hormingBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="game\player\Player.cpp">
+      <Filter>AL3\プレイヤー関連\player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
