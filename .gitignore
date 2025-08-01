@@ -79,10 +79,12 @@ StyleCopReport.xml
 !resources/models/axis/axis.obj
 !resources/models/bunny/bunny.obj
 !resources/models/cube/cube.obj
+!resources/models/debugSkydome/debugSkydome.obj
 !resources/models/multiMaterial/multiMaterial.obj
 !resources/models/multiMesh/multiMesh.obj
 !resources/models/plane/plane.obj
-!resources/models/skydome/skydome.obj
+!resources/models/suzanne/suzanne.obj
+!resources/models/teapot/teapot.obj
 *.iobj
 *.pch
 *.pdb

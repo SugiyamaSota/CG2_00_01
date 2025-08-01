@@ -5,6 +5,7 @@
 struct Vector3;
 struct Matrix4x4;
 struct WorldTransform;
+struct Material;
 
 /// <summary>
 /// 平行移動行列
@@ -62,3 +63,6 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 
 // ワールドトランスフォームの初期化
 WorldTransform InitializeWorldTransform();
+
+// マテリアルの初期化
+Material InitializeMaterial();

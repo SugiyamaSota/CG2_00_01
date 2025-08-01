@@ -50,6 +50,8 @@ struct WorldTransform {
 	Vector3 scale;
 	Vector3 rotate;
 	Vector3 translate;
+	Matrix4x4 worldMat;
+	WorldTransform* parent;
 };
 
 //平面

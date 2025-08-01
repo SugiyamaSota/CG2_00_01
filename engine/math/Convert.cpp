@@ -132,3 +132,11 @@ WorldTransform InitializeWorldTransform() {
 	};
 	return result;
 }
+
+Material InitializeMaterial() {
+	Material result;
+	result.color = { 1,1,1,1 };
+	result.enableLighting = false;
+	result.uvTransform = MakeIdentity4x4();
+	return result;
+}

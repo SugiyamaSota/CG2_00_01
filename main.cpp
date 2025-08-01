@@ -25,20 +25,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	Camera* camera = new Camera();
 	camera->Initialize(kClientWidth, kClientHeight);
 
-
+	// モデル
 	WorldTransform worldTransform = InitializeWorldTransform();
-	Model* model = new Model(true, "axis");
-	model->LoadModel("axis");
-	model->Initialize(worldTransform);
+	Model* model = new Model();
+	model->LoadModel("suzanne");
 
-	// Gridクラスのインスタンスを生成し、初期化
+	// グリッド
 	Grid* grid = new Grid();
 	grid->Initialize(); // グリッドの初期化 (デフォルトのサイズと分割数)
 
+	// 天球
 	WorldTransform skydomeWorldTransform = InitializeWorldTransform();
 	Model* skydome = new Model();
 	skydome->LoadModel("debugSkydome");
-	skydome->Initialize(skydomeWorldTransform);
 
 	//ウィンドウの×ボタンが押されるまでループ
 	MSG msg{};
@@ -55,11 +54,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 			camera->Update(Camera::CameraType::kDebug);
 
+			model->Update(worldTransform, camera);
 
-			model->Update(worldTransform, camera, false, { 1,1,1,1 });
-
-			// グリッドとデバッグ用天球の更新
-			skydome->Update(skydomeWorldTransform, camera, false, { 0.05f,0.05f,0.05f,1.0f });
+			// グリッドとデバッグ用天球
+			skydome->Update(skydomeWorldTransform, camera);
 			grid->Update(camera);
 
 
@@ -72,7 +70,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			///
 			model->Draw();
 
-			// グリッドとデバッグ用天球の描画
+			// グリッドとデバッグ用天球
 			skydome->Draw();
 			grid->Draw();
 

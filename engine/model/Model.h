@@ -9,15 +9,17 @@ class Camera;
 
 class Model {
 public:
-	Model(bool debugEnabled = false, const std::string& modelName = "");
+	Model();
 
 	void LoadModel(const std::string& fileName);
 
-	void Initialize(WorldTransform worldTransform);
+	void Update(WorldTransform worldTransform, Camera* camera);
 
-	void Update(WorldTransform worldTransform, Camera* camera, bool enableLighting, Vector4 color);
+	void Draw();
 
-	void Draw(); // 引数をintに変更
+	// その他ヘルパー関数
+	void SetEnableLighting(bool enableLighting) { materialData_->enableLighting = enableLighting; }
+	void SetColor(Vector4 color) { materialData_->color = color; }
 
 private:
 	ModelData modelData_;//構造体
@@ -44,14 +46,9 @@ private:
 
 	int textureHandle_ = 0;
 
-	bool debugEnabled_;
-	std::string modelName_;
-
 	//mtlファイルの読み込み
 	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
 	//objファイルの読み込み
 	ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
-
-	void DrawImGui();
 };
