@@ -159,10 +159,10 @@ void DirectXCommon::Initialize() {
 	CreateSwapChain();
 	CreateFence();
 
-	pso = new PSO();
+	pso = new PSOManager();
 
 	// PSOクラスを使用
-	pso->Initialize(
+	pso->InitializeDefaultPSO(
 		device_.Get(),
 		// logStream, // LogStreamをPSOに渡す場合
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
@@ -208,8 +208,8 @@ void DirectXCommon::NewFeame() {
 	//描画先のRTVとDSVを設定
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 	commandList_->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, &dsvHandle);
-	commandList_->SetGraphicsRootSignature(pso->GetRootSignature());
-	commandList_->SetPipelineState(pso->GetPipelineState());//PSOを設定 
+	commandList_->SetGraphicsRootSignature(pso->GetDefaultRootSignature());
+	commandList_->SetPipelineState(pso->GetDefaultPipelineState());//PSOを設定 
 
 	//TransitionBarrierの設定
 	//今回のバリアはTransition

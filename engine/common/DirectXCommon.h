@@ -8,7 +8,7 @@
 #include<vector>
 
 #include"../imgui/ImGuiManager.h"
-#include"../pso/PSO.h"
+#include"../pso/PSOManager.h"
 #include"../math/Struct.h"
 
 class DirectXCommon {
@@ -76,8 +76,7 @@ public:
 	ID3D12Resource* GetDirectionalLightResource() { return directionalLightResource_.Get(); }
 
 	// PSO
-	PSO* pso = nullptr;
-	PSO* GetPSO()const { return pso; }
+	PSOManager* GetPSO()const { return pso; }
 
 
 private:
@@ -132,6 +131,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc_ = {};
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc_ = {};
+
+	// PSO
+	PSOManager* pso = nullptr;
 
 	// 光
 	struct Vector4 {

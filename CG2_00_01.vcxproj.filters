@@ -76,6 +76,15 @@
     <Filter Include="engine\draw\line">
       <UniqueIdentifier>{6a943e0f-3c78-43b0-b014-72ce0f37b151}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\pso\graphicsPipelineStateBuilder">
+      <UniqueIdentifier>{0dcd3888-fea4-4a74-ba24-aa32f97e33de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\pso\rootSignatureBuilder">
+      <UniqueIdentifier>{be4636dc-2402-439f-9f69-ab50809e0840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\pso\ShaderCompiler">
+      <UniqueIdentifier>{0d9ef477-636c-43b2-818b-5546b848f682}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -120,9 +129,6 @@
     <ClCompile Include="engine\texture\TextureManager.cpp">
       <Filter>engine\texture</Filter>
     </ClCompile>
-    <ClCompile Include="engine\pso\PSO.cpp">
-      <Filter>engine\pso</Filter>
-    </ClCompile>
     <ClCompile Include="engine\audio\AudioPlayer.cpp">
       <Filter>engine\audio</Filter>
     </ClCompile>
@@ -152,6 +158,18 @@
     </ClCompile>
     <ClCompile Include="engine\draw\Grid.cpp">
       <Filter>engine\draw\grid</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\pso\PSOManager.cpp">
+      <Filter>engine\pso</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\pso\graphicsPipelineStateBuilder\GraphicsPipelineStateBuilder.cpp">
+      <Filter>engine\pso\graphicsPipelineStateBuilder</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\pso\rootSignatureBuilder\RootSignatureBuilder.cpp">
+      <Filter>engine\pso\rootSignatureBuilder</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\pso\shaderCompiler\ShaderCompiler.cpp">
+      <Filter>engine\pso\ShaderCompiler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -200,9 +218,6 @@
     <ClInclude Include="engine\texture\TextureManager.h">
       <Filter>engine\texture</Filter>
     </ClInclude>
-    <ClInclude Include="engine\pso\PSO.h">
-      <Filter>engine\pso</Filter>
-    </ClInclude>
     <ClInclude Include="engine\audio\AudioPlayer.h">
       <Filter>engine\audio</Filter>
     </ClInclude>
@@ -238,6 +253,18 @@
     </ClInclude>
     <ClInclude Include="engine\draw\Grid.h">
       <Filter>engine\draw\grid</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\pso\PSOManager.h">
+      <Filter>engine\pso</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\pso\graphicsPipelineStateBuilder\GraphicsPipelineStateBuilder.h">
+      <Filter>engine\pso\graphicsPipelineStateBuilder</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\pso\rootSignatureBuilder\RootSignatureBuilder.h">
+      <Filter>engine\pso\rootSignatureBuilder</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\pso\shaderCompiler\ShaderCompiler.h">
+      <Filter>engine\pso\ShaderCompiler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

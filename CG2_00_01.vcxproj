@@ -105,7 +105,10 @@
     <ClCompile Include="engine\imgui\ImGuiManager.cpp" />
     <ClCompile Include="engine\input\Input.cpp" />
     <ClCompile Include="engine\model\Model.cpp" />
-    <ClCompile Include="engine\pso\PSO.cpp" />
+    <ClCompile Include="engine\pso\graphicsPipelineStateBuilder\GraphicsPipelineStateBuilder.cpp" />
+    <ClCompile Include="engine\pso\PSOManager.cpp" />
+    <ClCompile Include="engine\pso\rootSignatureBuilder\RootSignatureBuilder.cpp" />
+    <ClCompile Include="engine\pso\shaderCompiler\ShaderCompiler.cpp" />
     <ClCompile Include="engine\texture\TextureManager.cpp" />
     <ClCompile Include="externals\Audio\xaudio_player_mf.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
@@ -132,7 +135,10 @@
     <ClInclude Include="engine\imgui\ImGuiManager.h" />
     <ClInclude Include="engine\input\Input.h" />
     <ClInclude Include="engine\model\Model.h" />
-    <ClInclude Include="engine\pso\PSO.h" />
+    <ClInclude Include="engine\pso\graphicsPipelineStateBuilder\GraphicsPipelineStateBuilder.h" />
+    <ClInclude Include="engine\pso\PSOManager.h" />
+    <ClInclude Include="engine\pso\rootSignatureBuilder\RootSignatureBuilder.h" />
+    <ClInclude Include="engine\pso\shaderCompiler\ShaderCompiler.h" />
     <ClInclude Include="engine\texture\TextureManager.h" />
     <ClInclude Include="externals\Audio\common.h" />
     <ClInclude Include="externals\Audio\xaudio_player_core.h" />

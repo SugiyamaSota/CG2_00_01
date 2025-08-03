@@ -54,12 +54,15 @@ void Model::Update(WorldTransform worldTransform, Camera* camera) {
 	// ワールドトランスフォーム
 	transform_ = worldTransform;
 	wvpData_->World = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-	viewMatrix_ = Inverse(wvpData_->World);
 	Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData_->World, camera->GetViewProjectionMatrix());
 	wvpData_->WVP = worldViewProjectionMatrix;
 }
 
 void Model::Draw() {
+	// PSOの設定
+	DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootSignature(DirectXCommon::GetInstance()->GetPSO()->GetDefaultRootSignature());
+	DirectXCommon::GetInstance()->GetCommandList()->SetPipelineState(DirectXCommon::GetInstance()->GetPSO()->GetDefaultPipelineState());//PSOを設定 
+
 	//モデルの描画
 	DirectXCommon::GetInstance()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);//VBVを設定
 	//形状を設定。PSOに設定しているものとは別。同じものを設定るすると考える

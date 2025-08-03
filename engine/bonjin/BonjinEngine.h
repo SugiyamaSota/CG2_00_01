@@ -10,7 +10,7 @@
 #include"../math/Matrix.h"
 #include"../math/Convert.h"
 #include"../model/Model.h"
-#include"../pso/PSO.h"
+#include"../pso/PSOManager.h"
 #include"../texture/TextureManager.h"
 #include"../sprite/sprite.h"
 #include"../color/Color.h"
