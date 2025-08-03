@@ -118,6 +118,11 @@
     <ClCompile Include="externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="game\field\Skydome.cpp" />
+    <ClCompile Include="game\mapchip\MapChipField.cpp" />
+    <ClCompile Include="game\player\anchor.cpp" />
+    <ClCompile Include="game\player\Player.cpp" />
+    <ClCompile Include="game\scene\GameScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\Convert.cpp" />
     <ClCompile Include="engine\math\Matrix.cpp" />
@@ -156,6 +161,12 @@
     <ClInclude Include="engine\math\Struct.h" />
     <ClInclude Include="engine\math\vector.h" />
     <ClInclude Include="engine\sprite\sprite.h" />
+    <ClInclude Include="game\field\Skydome.h" />
+    <ClInclude Include="game\mapchip\MapChipField.h" />
+    <ClInclude Include="game\player\anchor.h" />
+    <ClInclude Include="game\player\Player.h" />
+    <ClInclude Include="game\scene\GameScene.h" />
+    <ClInclude Include="struct.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

@@ -1,16 +1,8 @@
 #include"engine/bonjin/BonjinEngine.h"
 
+#include"game/scene/GameScene.h"
+
 using namespace BonjinEngine;
-
-// グリッド描画用の頂点構造体
-struct GridVertex {
-	Vector4 position;
-};
-
-// ワールドビュープロジェクション行列用の定数バッファ
-struct GridTransformationMatrix {
-	Matrix4x4 worldviewProjection;
-};
 
 //クライアント領域のサイズ
 const int32_t kClientWidth = 1280;
@@ -22,22 +14,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	D3DResourceLeakChecker leakChecker_;
 	Initialize(hInstance, kClientWidth, kClientHeight);
 
-	Camera* camera = new Camera();
-	camera->Initialize(kClientWidth, kClientHeight);
-
-	// モデル
-	WorldTransform worldTransform = InitializeWorldTransform();
-	Model* model = new Model();
-	model->LoadModel("suzanne");
-
-	// グリッド
-	Grid* grid = new Grid();
-	grid->Initialize(); // グリッドの初期化 (デフォルトのサイズと分割数)
-
-	// 天球
-	WorldTransform skydomeWorldTransform = InitializeWorldTransform();
-	Model* skydome = new Model();
-	skydome->LoadModel("debugSkydome");
+	GameScene* gameScene = new GameScene();
+	gameScene->Initialize();
 
 	//ウィンドウの×ボタンが押されるまでループ
 	MSG msg{};
@@ -52,14 +30,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			/// 更新処理ここから
 			///
 
-			camera->Update(Camera::CameraType::kDebug);
-
-			model->Update(worldTransform, camera);
-
-			// グリッドとデバッグ用天球
-			skydome->Update(skydomeWorldTransform, camera);
-			grid->Update(camera);
-
+			gameScene->Update();
 
 			///
 			/// 更新処理ここまで
@@ -68,12 +39,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			///
 			/// 描画処理ここから
 			///
-			model->Draw();
-
-			// グリッドとデバッグ用天球
-			skydome->Draw();
-			grid->Draw();
-
+			
+			gameScene->Draw();
 
 			///
 			/// 描画処理ここまで
@@ -83,10 +50,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	}
 
 	/////  解放処理 /////
-	delete skydome;
-	delete grid;
-	delete model;
-	delete camera;
+	delete gameScene;
 	Finalize();
 	return 0;
 }

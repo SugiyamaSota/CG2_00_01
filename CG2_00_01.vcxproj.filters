@@ -85,6 +85,9 @@
     <Filter Include="engine\pso\ShaderCompiler">
       <UniqueIdentifier>{0d9ef477-636c-43b2-818b-5546b848f682}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game">
+      <UniqueIdentifier>{763b8775-cd39-4b27-82cf-ad8991771078}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -170,6 +173,21 @@
     </ClCompile>
     <ClCompile Include="engine\pso\shaderCompiler\ShaderCompiler.cpp">
       <Filter>engine\pso\ShaderCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="game\scene\GameScene.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="game\player\Player.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="game\mapchip\MapChipField.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="game\field\Skydome.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="game\player\anchor.cpp">
+      <Filter>game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -265,6 +283,24 @@
     </ClInclude>
     <ClInclude Include="engine\pso\shaderCompiler\ShaderCompiler.h">
       <Filter>engine\pso\ShaderCompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="game\scene\GameScene.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="game\player\Player.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="game\mapchip\MapChipField.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="game\field\Skydome.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="game\player\anchor.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
