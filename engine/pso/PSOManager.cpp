@@ -59,9 +59,9 @@ void PSOManager::InitializeDefaultPSO(
     defaultRootSignature_ = rootSigBuilder.Build(device);
 
     // シェーダーをコンパイル
-    Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = shaderCompiler_.CompileShader(L"engine/shader/Object3d.VS.hlsl", L"vs_6_0");
+    Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = shaderCompiler_.CompileShader(L"resources/shader/Object3d.VS.hlsl", L"vs_6_0");
     assert(vertexShaderBlob != nullptr);
-    Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = shaderCompiler_.CompileShader(L"engine/shader/Object3d.PS.hlsl", L"ps_6_0");
+    Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = shaderCompiler_.CompileShader(L"resources/shader/Object3d.PS.hlsl", L"ps_6_0");
     assert(pixelShaderBlob != nullptr);
 
     // InputLayout
@@ -139,9 +139,9 @@ void PSOManager::InitializeLinePSO(
     lineRootSignature_ = lineRootSigBuilder.Build(device);
 
     // シェーダーをコンパイル
-    Microsoft::WRL::ComPtr<IDxcBlob> lineVertexShaderBlob = shaderCompiler_.CompileShader(L"engine/shader/Grid.VS.hlsl", L"vs_6_0");
+    Microsoft::WRL::ComPtr<IDxcBlob> lineVertexShaderBlob = shaderCompiler_.CompileShader(L"resources/shader/Grid.VS.hlsl", L"vs_6_0");
     assert(lineVertexShaderBlob != nullptr);
-    Microsoft::WRL::ComPtr<IDxcBlob> linePixelShaderBlob = shaderCompiler_.CompileShader(L"engine/shader/Grid.PS.hlsl", L"ps_6_0");
+    Microsoft::WRL::ComPtr<IDxcBlob> linePixelShaderBlob = shaderCompiler_.CompileShader(L"resources/shader/Grid.PS.hlsl", L"ps_6_0");
     assert(linePixelShaderBlob != nullptr);
 
     // InputLayout
