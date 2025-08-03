@@ -1,36 +1,80 @@
 #include "anchor.h"
+#include <array>
+#include<numbers>
 
-Anchor::Anchor(const Vector2& position, const Vector2& velocity)
-    : position_(position), velocity_(velocity) {
-    model_ = new Model();
-    model_->LoadModel("cube");
-    worldTransform_ = InitializeWorldTransform();
-    worldTransform_.translate = { position.x,position.y,0 };
+// コンストラクタを修正
+Anchor::Anchor(const Vector3& position, const Vector3& velocity, MapChipField* mapChipField)
+	: position_(position), velocity_(velocity), mapChipField_(mapChipField) {
+	model_ = new Model();
+	model_->LoadModel("anchor");
+	model_->SetColor({ 0, 255, 255, 1 });
+	worldTransform_ = InitializeWorldTransform();
+	worldTransform_.scale = { 0.5f,0.5f,0.5f };
+	if (velocity_.x != 0.0f || velocity_.y != 0.0f) {
+		float angle = atan2f(velocity_.y, velocity_.x) + std::numbers::pi_v<float> / 2.0f;
+
+		// worldTransform_のZ軸回転に適用
+		worldTransform_.rotate.z = angle;
+	}
+	worldTransform_.translate = position;
+	isStandBy = false;
 }
 
-void Anchor::Update(Camera* camera) {
-    position_.x += velocity_.x;
-    position_.y += velocity_.y;
+Anchor::~Anchor() {
+	delete model_;
+}
 
-    worldTransform_.translate = { position_.x,position_.y,0 };
+void Anchor::Update(Camera& camera) {
+	if (isCollisionMap()) {
+		model_->Update(worldTransform_, &camera);
+		return;
+	}
 
-    model_->Update(worldTransform_, camera);
+	// 速度を反映させて位置を更新
+	worldTransform_.translate = Add(worldTransform_.translate, velocity_);
+
+	model_->Update(worldTransform_, &camera);
 }
 
 void Anchor::Draw() const {
-    model_->Draw();
+	model_->Draw();
 }
 
-// Player.h の CollisionMapInfo を使って衝突判定を行う
-bool Anchor::isCollisionMap(const CollisionMapInfo& info) {
-    // 簡略化のために、中心点のタイルをチェックする例
-    // 実際のマップ情報に合わせて tileSize や mapData を取得
-    // ここでは仮にマップ情報が CollisionMapInfo 経由で取得できると想定
-    const int tileSize = 32; // 仮の値
-    // const int** mapData = ...; // 仮にマップデータ
+// プレイヤーと同様の当たり判定ロジックを実装
+bool Anchor::isCollisionMap() {
+	if (mapChipField_ == nullptr) {
+		return false;
+	}
 
-    int tileX = static_cast<int>(position_.x / tileSize);
-    int tileY = static_cast<int>(position_.y / tileSize);
+	// 次のフレームの移動後の座標を計算
+	Vector3 nextPosition = Add(worldTransform_.translate, velocity_);
 
-    return false;
+	// 4つの角の座標の取得
+	std::array<Vector3, kNumCorner> corners;
+	for (uint32_t i = 0; i < kNumCorner; ++i) {
+		corners[i] = CornerPosition(nextPosition, static_cast<Corner>(i));
+	}
+
+	// 各角がブロックと衝突しているかチェック
+	for (const auto& corner : corners) {
+		MapChipField::IndexSet indexSet = mapChipField_->GetMapChipIndexSetByPosition(corner);
+		MapChipType mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+		if (mapChipType == MapChipType::kBlock) {
+			isStandBy = true;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+// プレイヤーと同様の角の座標取得メソッド
+Vector3 Anchor::CornerPosition(const Vector3& center, Corner corner) {
+	Vector3 offsetTable[kNumCorner] = {
+		{+kWidth / 2.0f, -kHeight / 2.0f, 0.0f},
+		{-kWidth / 2.0f, -kHeight / 2.0f, 0.0f},
+		{+kWidth / 2.0f, +kHeight / 2.0f, 0.0f},
+		{-kWidth / 2.0f, +kHeight / 2.0f, 0.0f},
+	};
+	return Add(center, offsetTable[static_cast<uint32_t>(corner)]);
 }

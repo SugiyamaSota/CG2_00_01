@@ -12,8 +12,7 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成と初期化
 	model_ = new Model();
-	model_->LoadModel("cube");
-	model_->SetColor({ 1,0,0,1 });
+	model_->LoadModel("player");
 	player_ = new Player();
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(2, 1);
 	player_->Initialize(model_, &camera_, playerPosition);
@@ -53,24 +52,10 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Update() {
-	// カメラの更新
-	// このあたりの処理はカメラクラスで一括で管理してもいいかも
-	if (Input::GetInstance()->IsTrigger(DIK_SPACE)) {
-		if (isDebugCamera) {
-			isDebugCamera = false;
-			camera_.ResetPosition();
-			camera_.ResetRotation();
-		} else {
-			isDebugCamera = true;
-			camera_.ResetPosition();
-			camera_.ResetRotation();
-		}
-	}
-	if (!isDebugCamera) {
-		//camera_.SetCameraTranslate(player_->GetPosition());
-	}
-	camera_.Update(Camera::CameraType::kDebug);
+	
+	camera_.Update(Camera::CameraType::kNormal);
 
+	camera_.SetTarget(player_->GetPosition());
 
 	// 自キャラの更新
 	player_->Update();

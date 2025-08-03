@@ -18,6 +18,8 @@ void Player::Initialize(Model* model, Camera* camera, const Vector3& position) {
 	camera_ = camera;
 
 	onGround_ = false;
+
+	isTeleported_ = false;
 }
 
 void Player::Move() {
@@ -25,10 +27,10 @@ void Player::Move() {
 	// //接地状態
 	if (onGround_) {
 		// 左右移動操作
-		if (Input::GetInstance()->IsPress(DIK_RIGHT) || Input::GetInstance()->IsPress(DIK_LEFT)) {
+		if (Input::GetInstance()->IsPress(DIK_D) || Input::GetInstance()->IsPress(DIK_A)) {
 			// 左右加速
 			Vector3 acceleration = {};
-			if (Input::GetInstance()->IsPress(DIK_RIGHT)) {
+			if (Input::GetInstance()->IsPress(DIK_D)) {
 				if (velocity_.x < 0.0f) {
 
 					// 速度と逆方向に入力中は急ブレーキ
@@ -40,7 +42,7 @@ void Player::Move() {
 					turnFirstRotationY_ = worldTransform_.rotate.y;
 					turnTimer_ = kTimeTurn;
 				}
-			} else if (Input::GetInstance()->IsPress(DIK_LEFT)) {
+			} else if (Input::GetInstance()->IsPress(DIK_A)) {
 				if (velocity_.x > 0.0f) {
 
 					// 速度と逆方向に入力中は急ブレーキ
@@ -62,7 +64,7 @@ void Player::Move() {
 			// 非入力時は移動減衰をかける
 			velocity_.x *= (1.0f - kAttenuation);
 		}
-		if (Input::GetInstance()->IsPress(DIK_UP)) {
+		if (Input::GetInstance()->IsPress(DIK_SPACE)) {
 			velocity_ = Add(velocity_, Vector3(0, kJumpAcceleration, 0));
 		}
 	} else {
@@ -74,10 +76,11 @@ void Player::Move() {
 
 // 移動量を加味した衝突判定
 void Player::isCollisionMap(CollisionMapInfo& info) {
-	isCollisionMapTop(info);
-	isCollisionMapBottom(info);
 	isCollisionMapLeft(info);
 	isCollisionMapRight(info);
+	isCollisionMapTop(info);
+	isCollisionMapBottom(info);
+
 }
 
 // 天井の衝突判定
@@ -189,14 +192,14 @@ void Player::isCollisionMapRight(CollisionMapInfo& info) {
 	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightTop]);
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 	mapChipTypeNext = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex + 1, indexSet.yIndex);
-	if (mapChipType == MapChipType::kBlock && mapChipTypeNext != MapChipType::kBlock) {
+	if (mapChipType == MapChipType::kBlock) {
 		hit = true;
 	}
 	// 右下
 	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom]);
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 	mapChipTypeNext = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex + 1, indexSet.yIndex);
-	if (mapChipType == MapChipType::kBlock && mapChipTypeNext != MapChipType::kBlock) {
+	if (mapChipType == MapChipType::kBlock) {
 		hit = true;
 	}
 
@@ -211,7 +214,7 @@ void Player::isCollisionMapRight(CollisionMapInfo& info) {
 		if (indexSetNow.xIndex != indexSet.xIndex) {
 			MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 			// 修正: プレイヤーの底面が地面の上端に乗るように
-			info.movement_.x = std::max(0.0f, rect.left - worldTransform_.translate.x - kWidth);
+			info.movement_.x = std::max(0.0f, rect.right - worldTransform_.translate.x - kWidth);
 			info.isHitWall_ = true;
 		}
 	}
@@ -239,14 +242,14 @@ void Player::isCollisionMapLeft(CollisionMapInfo& info) {
 	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftTop]);
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 	mapChipTypeNext = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex - 1, indexSet.yIndex);
-	if (mapChipType == MapChipType::kBlock && mapChipTypeNext != MapChipType::kBlock) {
+	if (mapChipType == MapChipType::kBlock) {
 		hit = true;
 	}
 	// 左下
 	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom]);
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 	mapChipTypeNext = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex - 1, indexSet.yIndex);
-	if (mapChipType == MapChipType::kBlock && mapChipTypeNext != MapChipType::kBlock) {
+	if (mapChipType == MapChipType::kBlock) {
 		hit = true;
 	}
 
@@ -261,7 +264,7 @@ void Player::isCollisionMapLeft(CollisionMapInfo& info) {
 		if (indexSetNow.xIndex != indexSet.xIndex) {
 			MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 			// 修正: プレイヤーの底面が地面の上端に乗るように
-			float penetration = (worldTransform_.translate.x + info.movement_.x + kWidth / 2) - rect.left;
+			info.movement_.x = std::max(0.0f, rect.right - worldTransform_.translate.x + kWidth / 2);
 			info.isHitWall_ = true;
 		}
 	}
@@ -307,6 +310,7 @@ void Player::CheckLanding(const CollisionMapInfo& info) {
 		}
 	}
 }
+
 
 
 // 角の座標取得
@@ -384,6 +388,38 @@ void Player::Update() {
 	// アンカーの更新
 	CollisionMapInfo info; // マップの衝突情報
 	updateAnchor(info);
+
+	isTeleported_ = false;
+
+	if (Input::GetInstance()->IsTrigger(DIK_K)) {
+		// アンカーが存在し、isStandByがtrueの場合
+		if (anchor_ && anchor_->GetStandBy()) {
+			// アンカーの位置を取得
+			Vector3 anchorPos = anchor_->GetPosition();
+
+			// テレポート先の座標を決定
+			Vector3 teleportPosition = anchorPos;
+
+			// プレイヤーの移動方向を判定
+			if (anchor_->GetAngle()<2.0f) {
+				// プレイヤーがアンカーの左にいる場合、テレポート後は右向き
+				lrDirection_ = LRDirection::kRight;
+				// 壁にめり込まないように、アンカーの位置からプレイヤーの幅の半分だけ右にずらす
+				teleportPosition.x -= kWidth / 2.0f;
+			} else {
+				// プレイヤーがアンカーの右にいる場合、テレポート後は左向き
+				lrDirection_ = LRDirection::kLeft;
+				// 壁にめり込まないように、アンカーの位置からプレイヤーの幅の半分だけ左にずらす
+				teleportPosition.x += kWidth / 2.0f;
+			}
+
+			// プレイヤーを計算された座標にテレポート
+			worldTransform_.translate = teleportPosition;
+
+			// アンカーを消去
+			anchor_ = nullptr;
+		}
+	}
 }
 
 void Player::Draw() {
@@ -401,26 +437,20 @@ void Player::shootAnchor() {
 	}
 
 	// プレイヤーが向いている方向を考慮してアンカーを生成
-	Vector2 initialVelocity;
+	Vector3 initialVelocity;
 	if (lrDirection_ == LRDirection::kRight) {
-		initialVelocity = { 0.01f, 0.0f };
+		initialVelocity = { 0.3f, 0.0f,0.0f };
 	} else {
-		initialVelocity = { -0.01f, 0.0f };
+		initialVelocity = { -0.3f, 0.0f,0.0f };
 	}
 
-	Vector2 spawnPos = { worldTransform_.translate.x, worldTransform_.translate.y };
-	anchor_ = std::make_unique<Anchor>(spawnPos, initialVelocity);
+	Vector3 spawnPos = { worldTransform_.translate.x, worldTransform_.translate.y,0.0f };
+	anchor_ = std::make_unique<Anchor>(spawnPos, initialVelocity,mapChipField_);
 }
 
 void Player::updateAnchor(const CollisionMapInfo& info) {
 	if (anchor_ != nullptr) {
 		// アンカーを更新
-		anchor_->Update(camera_);
-
-		// アンカーとマップの当たり判定
-		if (anchor_->isCollisionMap(info)) {
-			// 衝突したらアンカーを削除
-			anchor_ = nullptr;
-		}
+		anchor_->Update(*camera_);
 	}
 }

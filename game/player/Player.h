@@ -29,8 +29,8 @@ private:
 	Vector3 velocity_ = {};
 
 	static inline const float kAcceleration = 0.010f;
-	static inline const float kAttenuation = 0.1f;
-	static inline const float kLimitRunSpeed = 5.0f;
+	static inline const float kAttenuation = 0.2f;
+	static inline const float kLimitRunSpeed = 0.2f;
 
 	enum class LRDirection {
 		kRight,
@@ -50,11 +50,11 @@ private:
 	bool onGround_ = true;
 
 	//重力加速度
-	static inline const float kGravityAcceleration = 0.0025f;
+	static inline const float kGravityAcceleration = 0.0098f;
 	//最大落下速度
 	static inline const float kLimitFallSpeed = 2.0f;
 	//ジャンプ初速
-	static inline const float kJumpAcceleration = 0.2f;
+	static inline const float kJumpAcceleration = 0.3f;
 
 	//マップチップフィールド
 	MapChipField* mapChipField_ = nullptr;
@@ -79,13 +79,15 @@ private:
 
 	void shootAnchor();
 	void updateAnchor(const CollisionMapInfo& info); // 単一アンカーを更新するメソッド
-	void drawAnchor() const; // 単一アンカーを描画するメソッド
-
+	
+	bool isTeleported_;
 public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	void Initialize(Model* model, Camera* camera, const Vector3& position);
+
+	//~Player();
 
 	/// <summary>
 	/// 移動処理

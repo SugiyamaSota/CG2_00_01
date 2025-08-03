@@ -87,4 +87,5 @@ public:
 	///// --- セッター関数 --- /////
 	void ResetPosition();
 	void ResetRotation();
+	void SetPosition(Vector3 position) { translation_ = position; }
 };
