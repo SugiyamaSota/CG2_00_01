@@ -75,10 +75,10 @@ void Player::Move() {
 
 // 移動量を加味した衝突判定
 void Player::isCollisionMap(CollisionMapInfo& info) {
-	isCollisionMapLeft(info);
-	isCollisionMapRight(info);
 	isCollisionMapTop(info);
 	isCollisionMapBottom(info);
+	isCollisionMapLeft(info);
+	isCollisionMapRight(info);
 
 }
 

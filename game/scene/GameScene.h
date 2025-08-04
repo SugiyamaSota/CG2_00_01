@@ -22,6 +22,9 @@ private:
 	static const uint32_t kNumBlockHorizontal = 25;
 	Model* blockModel_[kNumBlockVirtical][kNumBlockHorizontal] = { nullptr };
 	WorldTransform blockWorldTransform_[kNumBlockVirtical][kNumBlockHorizontal];
+
+	Model* goalModel_ = nullptr;
+	WorldTransform goalWorldTransform_;
 	
 	///// マップチップフィールド /////
 	MapChipField* mapChipField_;
