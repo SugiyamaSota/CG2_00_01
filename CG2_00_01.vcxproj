@@ -120,7 +120,7 @@
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
     <ClCompile Include="game\field\Skydome.cpp" />
     <ClCompile Include="game\mapchip\MapChipField.cpp" />
-    <ClCompile Include="game\player\anchor.cpp" />
+    <ClCompile Include="game\player\Anchor.cpp" />
     <ClCompile Include="game\player\Player.cpp" />
     <ClCompile Include="game\scene\GameScene.cpp" />
     <ClCompile Include="main.cpp" />
@@ -128,6 +128,7 @@
     <ClCompile Include="engine\math\Matrix.cpp" />
     <ClCompile Include="engine\math\vector.cpp" />
     <ClCompile Include="engine\sprite\sprite.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\color\Color.h" />
@@ -163,10 +164,11 @@
     <ClInclude Include="engine\sprite\sprite.h" />
     <ClInclude Include="game\field\Skydome.h" />
     <ClInclude Include="game\mapchip\MapChipField.h" />
-    <ClInclude Include="game\player\anchor.h" />
+    <ClInclude Include="game\others\Data.h" />
+    <ClInclude Include="game\player\Anchor.h" />
     <ClInclude Include="game\player\Player.h" />
     <ClInclude Include="game\scene\GameScene.h" />
-    <ClInclude Include="struct.h" />
+    <ClInclude Include="TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

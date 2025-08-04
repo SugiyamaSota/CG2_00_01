@@ -186,8 +186,11 @@
     <ClCompile Include="game\field\Skydome.cpp">
       <Filter>game</Filter>
     </ClCompile>
-    <ClCompile Include="game\player\anchor.cpp">
+    <ClCompile Include="game\player\Anchor.cpp">
       <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -296,10 +299,13 @@
     <ClInclude Include="game\field\Skydome.h">
       <Filter>game</Filter>
     </ClInclude>
-    <ClInclude Include="game\player\anchor.h">
+    <ClInclude Include="game\player\Anchor.h">
       <Filter>game</Filter>
     </ClInclude>
-    <ClInclude Include="struct.h">
+    <ClInclude Include="TitleScene.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="game\others\Data.h">
       <Filter>game</Filter>
     </ClInclude>
   </ItemGroup>
