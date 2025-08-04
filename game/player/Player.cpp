@@ -19,7 +19,6 @@ void Player::Initialize(Model* model, Camera* camera, const Vector3& position) {
 
 	onGround_ = false;
 
-	isTeleported_ = false;
 }
 
 void Player::Move() {
@@ -387,9 +386,11 @@ void Player::Update() {
 
 	// アンカーの更新
 	CollisionMapInfo info; // マップの衝突情報
-	updateAnchor(info);
 
-	isTeleported_ = false;
+	if (anchor_ != nullptr) {
+		// アンカーを更新
+		anchor_->Update(*camera_);
+	}
 
 	if (Input::GetInstance()->IsTrigger(DIK_K)) {
 		// アンカーが存在し、isStandByがtrueの場合
@@ -446,11 +447,4 @@ void Player::shootAnchor() {
 
 	Vector3 spawnPos = { worldTransform_.translate.x, worldTransform_.translate.y,0.0f };
 	anchor_ = std::make_unique<Anchor>(spawnPos, initialVelocity,mapChipField_);
-}
-
-void Player::updateAnchor(const CollisionMapInfo& info) {
-	if (anchor_ != nullptr) {
-		// アンカーを更新
-		anchor_->Update(*camera_);
-	}
 }
