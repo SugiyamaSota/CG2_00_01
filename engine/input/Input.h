@@ -23,22 +23,28 @@ private:
     DIMOUSESTATE2 mouseState_; // 現在のマウス状態
     DIMOUSESTATE2 prevMouseState_; // 1フレーム前のマウス状態
 
-public:
-    // シングルトンインスタンスを取得する静的メソッド
-    static Input* GetInstance();
+    // ゲームパッド入力
+    Microsoft::WRL::ComPtr<IDirectInputDevice8> gamepad_;
+    DIJOYSTATE2 gamepadState_;
+    DIJOYSTATE2 prevGamepadState_;
 
+public:
+    /// --- 入力クラス全般 ---
+    // シングルトンインスタンスを取得
+    static Input* GetInstance();
     // 初期化
     void Initialize(HINSTANCE hInstance, HWND hwnd);
-
     // 更新
     void Update();
 
+    /// --- キー入力 ---
     // キーが押されているか
     bool IsPress(int DIK_KEY);
 
     // キーがトリガー（押された瞬間）か
     bool IsTrigger(int DIK_KEY);
 
+    /// --- マウス入力 ---
     // マウスボタンが押されているか
     bool IsMousePress(int button); // button は DIMOFS_BUTTON0 など
 
@@ -53,5 +59,30 @@ public:
     // マウスのホイール移動量を取得
     long GetMouseWheel();
 
+    /// --- ゲームパッド入力 ---
+    // パッドのボタンが押されているか
+    bool IsPadPress(int button);
 
+    // パッドのボタンがトリガー（押された瞬間）か
+    bool IsPadTrigger(int button);
+
+    // パッドの左スティックのx軸を取得
+    long GetPadLStickX();
+
+    // パッドの左スティックのy軸を取得
+    long GetPadLStickY();
+
+    // パッドの右スティックのx軸を取得
+    long GetPadRStickX();
+
+    // パッドの右スティックのy軸を取得
+    long GetPadRStickY();
+
+    // パッドの十字キーの方向を取得 (DIK_*キーと同様の値を返す)
+    long GetPadPov();
+
+    // ゲームパッドが接続されているか
+    bool IsPadConnected();
+
+    static BOOL CALLBACK EnumGamePadCallback(const DIDEVICEINSTANCE* pdidInstance, VOID* pContext);
 };

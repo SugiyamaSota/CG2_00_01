@@ -56,6 +56,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 			model->Update(worldTransform, camera);
 
+			if(Input::GetInstance()->IsPadPress(0)) {
+				worldTransform.translate.x++;
+			}
+
 			// グリッドとデバッグ用天球
 			skydome->Update(skydomeWorldTransform, camera);
 			grid->Update(camera);
