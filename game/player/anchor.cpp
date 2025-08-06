@@ -25,7 +25,8 @@ Anchor::~Anchor() {
 }
 
 void Anchor::Update(Camera& camera) {
-	if (isCollisionMap()) {
+	isCollisionMap();
+	if (isStandBy==true) {
 		model_->Update(worldTransform_, &camera);
 		return;
 	}
@@ -77,4 +78,20 @@ Vector3 Anchor::CornerPosition(const Vector3& center, Corner corner) {
 		{-kWidth / 2.0f, +kHeight / 2.0f, 0.0f},
 	};
 	return Add(center, offsetTable[static_cast<uint32_t>(corner)]);
+}
+
+Vector3 Anchor::GetWorldPosition() {
+	return worldTransform_.translate;
+}
+
+AABB Anchor::GetAABB() {
+	AABB aabb;
+	Vector3 worldPos = GetWorldPosition();
+	aabb.min = { worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f };
+	aabb.max = { worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f };
+	return aabb;
+}
+
+void Anchor::OnCollision() {
+	isStandBy = true;
 }

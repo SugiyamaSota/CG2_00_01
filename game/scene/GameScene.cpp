@@ -1,10 +1,9 @@
 #include "GameScene.h"
-
+#include"../others/Collision.h"
 
 void GameScene::Initialize() {
 	// カメラの初期化
-	camera_.Initialize(1280,720);
-	camera_.Update(Camera::CameraType::kDebug);
+	camera_.Initialize(1280, 720);
 
 	// マップチップフィールド
 	mapChipField_ = new MapChipField;
@@ -18,6 +17,13 @@ void GameScene::Initialize() {
 	player_->Initialize(model_, &camera_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
 
+	///// 敵に関する初期化 /////
+	enemyModel_ = new Model();
+	enemyModel_->LoadModel("cube");
+	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6, 6);
+	enemy_ = new Enemy;
+	enemy_->Initialize(enemyModel_, &camera_, enemyPosition);
+
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
 			blockModel_[i][j] = new Model();
@@ -29,20 +35,6 @@ void GameScene::Initialize() {
 	}
 	GenerateBlocks();
 
-	// ゴール
-	goalModel_ = new Model;
-	goalModel_->LoadModel("goal");
-	goalWorldTransform_ = InitializeWorldTransform();
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kGoal) {
-				goalWorldTransform_.rotate = { 0,0,0 };
-				goalWorldTransform_.scale = { 1,1,1 };
-				goalWorldTransform_.translate = mapChipField_->GetMapChipPositionByIndex(j, i);
-			}
-		}
-	}
-
 	// 天球
 	skydomeModel_ = new Model();
 	skydomeModel_->LoadModel("debugSkydome");
@@ -51,9 +43,10 @@ void GameScene::Initialize() {
 }
 
 GameScene::~GameScene() {
-	delete goalModel_;
 	delete model_;
 	delete player_;
+	delete enemy_;
+	delete enemyModel_;
 	delete skydome_;
 	delete skydomeModel_;
 	delete mapChipField_;
@@ -67,14 +60,23 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Update() {
-	
-	camera_.Update(Camera::CameraType::kNormal);
+	// 当たり判定
+	CheckAllCollisions();
 
+	// カメラ
+	camera_.Update(Camera::CameraType::kNormal);
 	camera_.SetTarget(player_->GetPosition());
 
-	// 自キャラの更新
+	// 天球の更新
+	skydome_->Update();
+
+	// プレイヤー
 	player_->Update();
-	// ブロックの更新
+
+	// 敵
+	enemy_->Update();
+
+	// ブロック
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
 			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
@@ -82,17 +84,18 @@ void GameScene::Update() {
 			}
 		}
 	}
-
-
-	goalModel_->Update(goalWorldTransform_, &camera_);
-
-	// 天球の更新
-	skydome_->Update();
 }
 
 void GameScene::Draw() {
+
+	// 天球の描画
+	skydome_->Draw();
+
 	// 自キャラの描画
 	player_->Draw();
+
+	// 敵
+	enemy_->Draw();
 
 	// ブロックの描画
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
@@ -102,11 +105,6 @@ void GameScene::Draw() {
 			}
 		}
 	}
-
-	goalModel_->Draw();
-
-	// 天球の描画
-	skydome_->Draw();
 }
 
 void GameScene::GenerateBlocks() {
@@ -123,6 +121,28 @@ void GameScene::GenerateBlocks() {
 				blockWorldTransform_[i][j].scale = { 1,1,1 };
 				blockWorldTransform_[i][j].translate = mapChipField_->GetMapChipPositionByIndex(j, i);
 			}
+		}
+	}
+}
+
+void GameScene::CheckAllCollisions() {
+	// AABB変数の宣言
+	AABB player, enemy, anchor;
+
+	// AABBの取得
+	player = player_->GetAABB();
+	enemy = enemy_->GetAABB();
+
+	// プレイヤーと敵
+	if (IsCollision(player, enemy)) {
+		player_->OnCollision(enemy_);
+	}
+
+	// アンカーと敵
+	if (player_->HasAnchor()) {
+		anchor = player_->GetAnchor().GetAABB();
+		if (IsCollision(anchor, enemy)) {
+			player_->GetAnchor().OnCollision();
 		}
 	}
 }

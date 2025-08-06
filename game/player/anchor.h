@@ -36,6 +36,9 @@ public:
 
     const Vector3& GetPosition() const { return worldTransform_.translate; }
     float GetAngle() const { return worldTransform_.rotate.z; }
+    AABB GetAABB();
+    void OnCollision();
+
 private:
     // 座標
     Vector3 position_;
@@ -68,4 +71,7 @@ private:
     Vector3 CornerPosition(const Vector3& center, Corner corner);
 
     bool isStandBy;
+
+    Vector3 GetWorldPosition();
+
 };

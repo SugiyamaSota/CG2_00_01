@@ -1,13 +1,14 @@
 #pragma once
 #include "../../engine/bonjin/BonjinEngine.h"
-#include <cassert>
 
-#include"Anchor.h"
+#include <cassert>
 #include<memory>
 
+#include"Anchor.h"
 #include"../others/Data.h"
 
 class MapChipField;
+class Enemy;
 
 /// <summary>
 /// 自キャラ
@@ -23,25 +24,19 @@ private:
 	// 3Dモデル
 	Model* model_ = nullptr;
 
-	//移動
+	// 移動速度
 	Vector3 velocity_ = {};
-
-	//--- 移動速度 ---
 	static inline const float kAcceleration = 0.010f;
-	static inline const float kAttenuation = 0.2f;
+	static inline const float kAttenuation = 0.5f;
 	static inline const float kLimitRunSpeed = 0.2f;
 
+	// 向き
 	LRDirection lrDirection_ = LRDirection::kRight;
 
-	//旋回開始時の角度
+	//旋回関連
 	float turnFirstRotationY_ = 0.0f;
-	//旋回タイマー
 	float turnTimer_ = 0.0f;
-	//旋回時間(秒)
 	static inline const float kTimeTurn = 0.3f;
-
-	//接地状態フラグ
-	bool onGround_ = true;
 
 	//重力加速度
 	static inline const float kGravityAcceleration = 0.0098f;
@@ -61,6 +56,9 @@ private:
 	// 衝突後処理の数値
 	static inline const float kAttenuationTop = 0.5f;
 	static inline const float kAttenuationWall = 0.5f;
+
+	//接地状態フラグ
+	bool onGround_ = true;
 
 	// --- アンカー ---
 	std::unique_ptr<Anchor> anchor_;
@@ -136,4 +134,23 @@ public:
 	const Vector3& GetVelocity() const { return velocity_; }
 	WorldTransform& GetWorldTransform() { return worldTransform_; }
 	Vector3 GetPosition()const { return worldTransform_.translate; }
+	Vector3 GetWorldPosition();
+	AABB GetAABB();
+	void OnCollision(const Enemy* enemy);
+	bool HasAnchor() const {
+		return anchor_ != nullptr;
+	}
+
+	Anchor& GetAnchor() {
+		assert(anchor_); // nullではないことを確認
+		return *anchor_;
+	}
+
+	/// <summary>
+	/// アンカーのゲッター (const版)
+	/// </summary>
+	const Anchor& GetAnchor() const {
+		assert(anchor_); // nullではないことを確認
+		return *anchor_;
+	}
 };

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <numbers>
 #include<array>
+#include"../enemy/Enemy.h"
 
 void Player::Initialize(Model* model, Camera* camera, const Vector3& position) {
 	assert(model);
@@ -183,21 +184,18 @@ void Player::isCollisionMapRight(CollisionMapInfo& info) {
 	}
 
 	MapChipType mapChipType;
-	MapChipType mapChipTypeNext;
 	// 真下の当たり判定
 	bool hit = false;
 	// 右上
 	MapChipField::IndexSet indexSet;
 	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightTop]);
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
-	mapChipTypeNext = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex + 1, indexSet.yIndex);
 	if (mapChipType == MapChipType::kBlock) {
 		hit = true;
 	}
 	// 右下
 	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom]);
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
-	mapChipTypeNext = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex + 1, indexSet.yIndex);
 	if (mapChipType == MapChipType::kBlock) {
 		hit = true;
 	}
@@ -240,14 +238,13 @@ void Player::isCollisionMapLeft(CollisionMapInfo& info) {
 	MapChipField::IndexSet indexSet;
 	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftTop]);
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
-	mapChipTypeNext = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex - 1, indexSet.yIndex);
 	if (mapChipType == MapChipType::kBlock) {
 		hit = true;
 	}
+
 	// 左下
 	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom]);
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
-	mapChipTypeNext = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex - 1, indexSet.yIndex);
 	if (mapChipType == MapChipType::kBlock) {
 		hit = true;
 	}
@@ -447,4 +444,23 @@ void Player::shootAnchor() {
 
 	Vector3 spawnPos = { worldTransform_.translate.x, worldTransform_.translate.y,0.0f };
 	anchor_ = std::make_unique<Anchor>(spawnPos, initialVelocity,mapChipField_);
+}
+
+Vector3 Player::GetWorldPosition() {
+	return worldTransform_.translate;
+}
+
+
+AABB Player::GetAABB() {
+	AABB aabb;
+	Vector3 worldPos = GetWorldPosition();
+	aabb.min = { worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f };
+	aabb.max = { worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f };
+	return aabb;
+}
+
+void Player::OnCollision(const Enemy* enemy) {
+	(void)enemy;
+	//ジャンプ開始
+	velocity_ = Add(velocity_, Vector3(0, kJumpAcceleration, 0));
 }
