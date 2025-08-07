@@ -38,14 +38,12 @@ public:
     float GetAngle() const { return worldTransform_.rotate.z; }
     AABB GetAABB();
     void OnCollision();
-
+    bool IsDead() const { return isDead_; }
 private:
     // 座標
     Vector3 position_;
     // 速度
     Vector3 velocity_;
-
-    // 
 
     // モデル
     Model* model_;
@@ -70,7 +68,11 @@ private:
     // 角の座標を取得するヘルパーメソッド
     Vector3 CornerPosition(const Vector3& center, Corner corner);
 
+    // 待機状態
     bool isStandBy;
+
+    // 破壊
+    bool isDead_ = false;
 
     Vector3 GetWorldPosition();
 

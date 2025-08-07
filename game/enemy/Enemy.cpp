@@ -70,3 +70,16 @@ AABB Enemy::GetAABB() {
 	aabb.max = { worldPos.x + kWidth_ / 2.0f, worldPos.y + kHeight_ / 2.0f, worldPos.z + kWidth_ / 2.0f };
 	return aabb;
 }
+
+void Enemy::OnCollision() {
+	isLockedOn_ = true;
+	model_->SetColor(Vector4{ 1, 0, 0, 1 });
+}
+
+void Enemy::SetIsLockedOn(bool frag) {
+	if (frag == true) {
+		model_->SetColor(Vector4{ 1, 0, 0, 1 });
+	} else {
+		model_->SetColor(Vector4{ 1,1,1,1 });
+	}
+}

@@ -4,31 +4,39 @@
 #include"../enemy/Enemy.h"
 #include"../field/Skydome.h"
 #include"../mapchip/MapChipField.h"
+#include <list>
+#include <memory>
 
 class GameScene {
 private:
 	//--- カメラ ---
 	Camera camera_;
+	Vector3 cameraTarget_; // カメラのターゲット座標
+	static inline const float kCameraLerpRate = 0.05f; // カメラの追従速度（補間率）
 
 	//--- プレイヤー関連 ---
-	Player* player_ = nullptr;
+	std::unique_ptr<Player> player_ = nullptr;
 	WorldTransform worldTransform_;
-	Model* model_ = nullptr;
+	// モデルをunique_ptrに変更
+	std::unique_ptr<Model> model_ = nullptr;
 
 	//--- 敵関連 ---
-	Enemy* enemy_ = nullptr;
-	Model* enemyModel_ = nullptr;
+	std::list<std::unique_ptr<Enemy>> enemies_;
+	std::list<std::unique_ptr<Model>> enemyModels_;
+	std::list<Enemy*> lockedOnEnemies_;
+	static const uint32_t kMaxLockedOnEnemies = 3;
 
 	// --- 天球関連 ---
-	Skydome* skydome_ = nullptr;
-	Model* skydomeModel_ = nullptr;
+	std::unique_ptr<Skydome> skydome_ = nullptr;
+	// モデルをunique_ptrに変更
+	std::unique_ptr<Model> skydomeModel_ = nullptr;
 
 	// --- ブロック関連 ---
 	static const uint32_t kNumBlockVirtical = 10;
 	static const uint32_t kNumBlockHorizontal = 25;
 	Model* blockModel_[kNumBlockVirtical][kNumBlockHorizontal] = { nullptr };
 	WorldTransform blockWorldTransform_[kNumBlockVirtical][kNumBlockHorizontal];
-	MapChipField* mapChipField_;
+	std::unique_ptr<MapChipField> mapChipField_;
 
 	/// <summary>
 	/// ブロック生成
@@ -46,11 +54,6 @@ public:
 	void Initialize();
 
 	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~GameScene();
-
-	/// <summary>
 	/// 更新処理
 	/// </summary>
 	void Update();
@@ -60,4 +63,3 @@ public:
 	/// </summary>
 	void Draw();
 };
-

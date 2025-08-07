@@ -94,4 +94,5 @@ AABB Anchor::GetAABB() {
 
 void Anchor::OnCollision() {
 	isStandBy = true;
+	isDead_ = true;
 }

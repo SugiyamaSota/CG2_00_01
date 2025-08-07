@@ -97,6 +97,9 @@
     <Filter Include="game\シーン関連">
       <UniqueIdentifier>{f5083cdb-6f31-4864-9a14-f27f9eeea4d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\その他">
+      <UniqueIdentifier>{cf713e2f-783d-45e6-8452-ce9f348c6359}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -183,15 +186,6 @@
     <ClCompile Include="engine\pso\shaderCompiler\ShaderCompiler.cpp">
       <Filter>engine\pso\ShaderCompiler</Filter>
     </ClCompile>
-    <ClCompile Include="game\mapchip\MapChipField.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
-    <ClCompile Include="game\field\Skydome.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
-    <ClCompile Include="game\others\Collision.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
     <ClCompile Include="game\player\Anchor.cpp">
       <Filter>game\プレイヤー関連</Filter>
     </ClCompile>
@@ -206,6 +200,18 @@
     </ClCompile>
     <ClCompile Include="TitleScene.cpp">
       <Filter>game\シーン関連</Filter>
+    </ClCompile>
+    <ClCompile Include="game\mapchip\MapChipField.cpp">
+      <Filter>game\その他</Filter>
+    </ClCompile>
+    <ClCompile Include="game\others\Collision.cpp">
+      <Filter>game\その他</Filter>
+    </ClCompile>
+    <ClCompile Include="game\field\Skydome.cpp">
+      <Filter>game\その他</Filter>
+    </ClCompile>
+    <ClCompile Include="game\others\CameraController.cpp">
+      <Filter>game\その他</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -302,18 +308,6 @@
     <ClInclude Include="engine\pso\shaderCompiler\ShaderCompiler.h">
       <Filter>engine\pso\ShaderCompiler</Filter>
     </ClInclude>
-    <ClInclude Include="game\mapchip\MapChipField.h">
-      <Filter>game</Filter>
-    </ClInclude>
-    <ClInclude Include="game\field\Skydome.h">
-      <Filter>game</Filter>
-    </ClInclude>
-    <ClInclude Include="game\others\Data.h">
-      <Filter>game</Filter>
-    </ClInclude>
-    <ClInclude Include="game\others\Collision.h">
-      <Filter>game</Filter>
-    </ClInclude>
     <ClInclude Include="game\player\Anchor.h">
       <Filter>game\プレイヤー関連</Filter>
     </ClInclude>
@@ -328,6 +322,21 @@
     </ClInclude>
     <ClInclude Include="TitleScene.h">
       <Filter>game\シーン関連</Filter>
+    </ClInclude>
+    <ClInclude Include="game\others\Collision.h">
+      <Filter>game\その他</Filter>
+    </ClInclude>
+    <ClInclude Include="game\others\Data.h">
+      <Filter>game\その他</Filter>
+    </ClInclude>
+    <ClInclude Include="game\mapchip\MapChipField.h">
+      <Filter>game\その他</Filter>
+    </ClInclude>
+    <ClInclude Include="game\field\Skydome.h">
+      <Filter>game\その他</Filter>
+    </ClInclude>
+    <ClInclude Include="game\others\CameraController.h">
+      <Filter>game\その他</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

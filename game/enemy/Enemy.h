@@ -1,19 +1,18 @@
 #pragma once
 #include"../../engine/bonjin/BonjinEngine.h"
 
+#include"../others/Data.h"
+
 class Enemy {
 private:
-	// 向いている方向の情報enum
-	enum class LRDirection {
-		kRight,
-		kLeft,
-	};
+	// ワールドトランスフォーム
+	WorldTransform worldTransform_;
 
-	WorldTransform worldTransform_; // ワールドトランスフォーム
+	// カメラ
+	Camera* camera_ = nullptr;
 
-	Camera* camera_ = nullptr; // カメラ
-
-	Model* model_ = nullptr; // 3Dモデル
+	// 3Dモデル
+	Model* model_ = nullptr;
 
 	static inline const float kWidth_ = 2.0f;  // 当たり判定の幅
 	static inline const float kHeight_ = 2.0f; // 当たり判定の高さ
@@ -31,7 +30,11 @@ private:
 	float walkTimer_ = 0.0f;
 	static inline const float pi = float(3.14159265359);
 
+	// ロックオン状態
+	bool isLockedOn_ = false;
 
+	// 死亡状態
+	bool isDead_ = false;
 public:
 	/// <summary>
 	/// 初期化
@@ -56,4 +59,12 @@ public:
 	Vector3 GetWorldPosition();
 
 	AABB GetAABB();
+
+	void OnCollision();
+
+	bool GetIsLockedOn() { return isLockedOn_; }
+	void SetIsLockedOn(bool frag);
+
+	bool GetIsDead() const { return isDead_; }
+	void SetIsDead(bool frag) { isDead_ = frag; }
 };

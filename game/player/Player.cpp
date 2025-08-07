@@ -231,7 +231,7 @@ void Player::isCollisionMapLeft(CollisionMapInfo& info) {
 	}
 
 	MapChipType mapChipType;
-	MapChipType mapChipTypeNext;
+
 	// 真下の当たり判定
 	bool hit = false;
 	// 左上
@@ -307,9 +307,6 @@ void Player::CheckLanding(const CollisionMapInfo& info) {
 	}
 }
 
-
-
-// 角の座標取得
 Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
 	Vector3 offsetTable[kNumCorner] = {
 		{+kWidth / 2.0f, -kHeight / 2.0f, 0.0f},
@@ -357,7 +354,6 @@ void Player::Update() {
 	// 着地フラグ
 	CheckLanding(collisionMapinfo);
 
-
 	// 旋回制御
 	if (turnTimer_ > 0.0f) {
 
@@ -387,6 +383,10 @@ void Player::Update() {
 	if (anchor_ != nullptr) {
 		// アンカーを更新
 		anchor_->Update(*camera_);
+		// 衝突フラグが立っているかチェック
+		if (anchor_->IsDead()) {
+			anchor_ = nullptr; // アンカーを削除
+		}
 	}
 
 	if (Input::GetInstance()->IsTrigger(DIK_K)) {
