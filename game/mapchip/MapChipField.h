@@ -4,14 +4,13 @@
 enum class MapChipType {
 	kBlank, // 空白
 	kBlock, // ブロック
+	kEnemy, // 敵
 	kGoal,  // ゴール
 };
 
 struct MapChipData {
 	std::vector<std::vector<MapChipType>> data;
 };
-
-
 
 class MapChipField {
 private:

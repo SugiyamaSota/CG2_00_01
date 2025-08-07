@@ -22,18 +22,21 @@ void GameScene::Initialize() {
 	cameraTarget_ = playerPosition;
 
 	///// 敵に関する初期化 /////
-	// 敵とモデルをセットで生成し、それぞれのリストに追加
-	for (int i = 0; i < 5; ++i) { // 例として5体の敵を生成
-		// 新しいモデルを生成
-		enemyModels_.push_back(std::make_unique<Model>());
-		enemyModels_.back()->LoadModel("cube");
+	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kEnemy) {
+				// 新しいモデルを生成
+				enemyModels_.push_back(std::make_unique<Model>());
+				enemyModels_.back()->LoadModel("cube");
 
-		// 新しい敵を生成
-		enemies_.push_back(std::make_unique<Enemy>());
-		// 敵の位置を縦に並べる
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6, 6 + i * 2);
-		// 生成したモデルを敵に渡して初期化
-		enemies_.back()->Initialize(enemyModels_.back().get(), &camera_, enemyPosition);
+				// 新しい敵を生成
+				enemies_.push_back(std::make_unique<Enemy>());
+				// 敵の位置を縦に並べる
+				Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(j,i);
+				// 生成したモデルを敵に渡して初期化
+				enemies_.back()->Initialize(enemyModels_.back().get(), &camera_, enemyPosition);
+			}
+		}
 	}
 
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
