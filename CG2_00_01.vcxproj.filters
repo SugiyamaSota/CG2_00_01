@@ -210,9 +210,6 @@
     <ClCompile Include="game\field\Skydome.cpp">
       <Filter>game\その他</Filter>
     </ClCompile>
-    <ClCompile Include="game\others\CameraController.cpp">
-      <Filter>game\その他</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -333,9 +330,6 @@
       <Filter>game\その他</Filter>
     </ClInclude>
     <ClInclude Include="game\field\Skydome.h">
-      <Filter>game\その他</Filter>
-    </ClInclude>
-    <ClInclude Include="game\others\CameraController.h">
       <Filter>game\その他</Filter>
     </ClInclude>
   </ItemGroup>

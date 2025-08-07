@@ -50,8 +50,8 @@ private:
 
 	// --- 当たり判定 ---
 	// サイズ
-	static inline const float kWidth = 2.0f;
-	static inline const float kHeight = 2.0f;
+	static inline const float kWidth = 1.9f;
+	static inline const float kHeight = 1.9f;
 
 	// 衝突後処理の数値
 	static inline const float kAttenuationTop = 0.5f;

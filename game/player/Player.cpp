@@ -76,10 +76,10 @@ void Player::Move() {
 
 // 移動量を加味した衝突判定
 void Player::isCollisionMap(CollisionMapInfo& info) {
-	isCollisionMapTop(info);
-	isCollisionMapBottom(info);
 	isCollisionMapLeft(info);
 	isCollisionMapRight(info);
+	isCollisionMapTop(info);
+	isCollisionMapBottom(info);
 
 }
 
@@ -283,13 +283,13 @@ void Player::CheckLanding(const CollisionMapInfo& info) {
 			bool hit = false;
 			// 左下
 			MapChipField::IndexSet indexSet;
-			indexSet = mapChipField_->GetMapChipIndexSetByPosition(Add(positionsNew[kLeftBottom], Vector3(0, -0.00001f, 0)));
+			indexSet = mapChipField_->GetMapChipIndexSetByPosition(Add(positionsNew[kLeftBottom], Vector3(0, -0.01f, 0)));
 			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 			if (mapChipType == MapChipType::kBlock) {
 				hit = true;
 			}
 			// 右下
-			indexSet = mapChipField_->GetMapChipIndexSetByPosition(Add(positionsNew[kRightBottom], Vector3(0, -0.00001f, 0)));
+			indexSet = mapChipField_->GetMapChipIndexSetByPosition(Add(positionsNew[kRightBottom], Vector3(0, -0.01f, 0)));
 			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 			if (mapChipType == MapChipType::kBlock) {
 				hit = true;

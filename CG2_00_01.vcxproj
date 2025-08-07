@@ -95,7 +95,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="game\others\CameraController.cpp" />
     <ClCompile Include="engine\color\Color.cpp" />
     <ClCompile Include="engine\bonjin\BonjinEngine.cpp" />
     <ClCompile Include="engine\camera\Camera.cpp" />
@@ -134,7 +133,6 @@
     <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="game\others\CameraController.h" />
     <ClInclude Include="engine\color\Color.h" />
     <ClInclude Include="engine\bonjin\BonjinEngine.h" />
     <ClInclude Include="engine\camera\Camera.h" />

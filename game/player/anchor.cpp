@@ -7,9 +7,9 @@ Anchor::Anchor(const Vector3& position, const Vector3& velocity, MapChipField* m
 	: position_(position), velocity_(velocity), mapChipField_(mapChipField) {
 	model_ = new Model();
 	model_->LoadModel("anchor");
-	model_->SetColor({ 0, 255, 255, 1 });
+	model_->SetColor({ 1, 1, 1, 1 });
 	worldTransform_ = InitializeWorldTransform();
-	worldTransform_.scale = { 0.5f,0.5f,0.5f };
+	worldTransform_.scale = { 1.0f,1.0f,1.0f };
 	if (velocity_.x != 0.0f || velocity_.y != 0.0f) {
 		float angle = atan2f(velocity_.y, velocity_.x) + std::numbers::pi_v<float> / 2.0f;
 
