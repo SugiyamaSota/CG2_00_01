@@ -58,7 +58,7 @@ bool Anchor::isCollisionMap() {
 
 	// 各角がブロックと衝突しているかチェック
 	for (const auto& corner : corners) {
-		MapChipField::IndexSet indexSet = mapChipField_->GetMapChipIndexSetByPosition(corner);
+		IndexSet indexSet = mapChipField_->GetMapChipIndexSetByPosition(corner);
 		MapChipType mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 		if (mapChipType == MapChipType::kBlock) {
 			isStandBy = true;

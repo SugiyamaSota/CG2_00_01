@@ -198,7 +198,7 @@
     <ClCompile Include="game\scene\GameScene.cpp">
       <Filter>game\シーン関連</Filter>
     </ClCompile>
-    <ClCompile Include="TitleScene.cpp">
+    <ClCompile Include="game\scene\TitleScene.cpp">
       <Filter>game\シーン関連</Filter>
     </ClCompile>
     <ClCompile Include="game\mapchip\MapChipField.cpp">
@@ -209,6 +209,9 @@
     </ClCompile>
     <ClCompile Include="game\field\Skydome.cpp">
       <Filter>game\その他</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>game\シーン関連</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -317,7 +320,7 @@
     <ClInclude Include="game\scene\GameScene.h">
       <Filter>game\シーン関連</Filter>
     </ClInclude>
-    <ClInclude Include="TitleScene.h">
+    <ClInclude Include="game\scene\TitleScene.h">
       <Filter>game\シーン関連</Filter>
     </ClInclude>
     <ClInclude Include="game\others\Collision.h">
@@ -331,6 +334,9 @@
     </ClInclude>
     <ClInclude Include="game\field\Skydome.h">
       <Filter>game\その他</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>game\シーン関連</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

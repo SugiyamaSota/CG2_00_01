@@ -23,8 +23,16 @@ void Player::Initialize(Model* model, Camera* camera, const Vector3& position) {
 }
 
 void Player::Move() {
+	if (isKnockedBack_) {
+		// 移動減衰を適用（キー入力による加速は行わない）
+		// 重力加速度を適用（落下はさせる）
+		velocity_ = Add(velocity_, Vector3(0, -kGravityAcceleration, 0));
+		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
+		return;
+	}
+
 	// 移動入力
-	// //接地状態
+	// 接地状態
 	if (onGround_) {
 		// 左右移動操作
 		if (Input::GetInstance()->IsPress(DIK_D) || Input::GetInstance()->IsPress(DIK_A)) {
@@ -32,7 +40,6 @@ void Player::Move() {
 			Vector3 acceleration = {};
 			if (Input::GetInstance()->IsPress(DIK_D)) {
 				if (velocity_.x < 0.0f) {
-
 					// 速度と逆方向に入力中は急ブレーキ
 					velocity_.x *= (1.0f - kAttenuation);
 				}
@@ -44,7 +51,6 @@ void Player::Move() {
 				}
 			} else if (Input::GetInstance()->IsPress(DIK_A)) {
 				if (velocity_.x > 0.0f) {
-
 					// 速度と逆方向に入力中は急ブレーキ
 					velocity_.x *= (1.0f - kAttenuation);
 				}
@@ -67,8 +73,23 @@ void Player::Move() {
 		if (Input::GetInstance()->IsPress(DIK_SPACE)) {
 			velocity_ = Add(velocity_, Vector3(0, kJumpAcceleration, 0));
 		}
-	} else {
-		// 空中
+	}
+	// ここから下が修正箇所
+	// 空中移動の処理
+	else {
+		// 左右移動操作
+		if (Input::GetInstance()->IsPress(DIK_D) || Input::GetInstance()->IsPress(DIK_A)) {
+			Vector3 acceleration = {};
+			if (Input::GetInstance()->IsPress(DIK_D)) {
+				acceleration.x += kAccelerationInAir; // 空中での加速度
+			} else if (Input::GetInstance()->IsPress(DIK_A)) {
+				acceleration.x -= kAccelerationInAir; // 空中での加速度
+			}
+			velocity_ = Add(velocity_, acceleration);
+			// 最大速度制限
+			velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
+		}
+		// 重力加速度を適用
 		velocity_ = Add(velocity_, Vector3(0, -kGravityAcceleration, 0));
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 	}
@@ -99,7 +120,7 @@ void Player::isCollisionMapTop(CollisionMapInfo& info) {
 	// 真上の当たり判定
 	bool hit = false;
 	// 左上
-	MapChipField::IndexSet indexSet;
+	IndexSet indexSet;
 	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftTop]);
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 	if (mapChipType == MapChipType::kBlock) {
@@ -139,7 +160,7 @@ void Player::isCollisionMapBottom(CollisionMapInfo& info) {
 	// 真下の当たり判定
 	bool hit = false;
 	// 左下
-	MapChipField::IndexSet indexSet;
+	IndexSet indexSet;
 	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom]);
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 	mapChipTypeNext = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex - 1);
@@ -159,10 +180,10 @@ void Player::isCollisionMapBottom(CollisionMapInfo& info) {
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom]);
 		Vector3 temporaryPosition = worldTransform_.translate;
 		temporaryPosition.y -= kHeight / 2;
-		MapChipField::IndexSet indexSetNow;
+		IndexSet indexSetNow;
 		indexSetNow = mapChipField_->GetMapChipIndexSetByPosition(temporaryPosition);
 		if (indexSetNow.yIndex != indexSet.yIndex) {
-			MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+			Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 			// 修正: プレイヤーの底面が地面の上端に乗るように
 			info.movement_.y = std::max(0.0f, rect.top - (worldTransform_.translate.y - kHeight / 2));
 			info.isLandin_ = true;
@@ -187,7 +208,7 @@ void Player::isCollisionMapRight(CollisionMapInfo& info) {
 	// 真下の当たり判定
 	bool hit = false;
 	// 右上
-	MapChipField::IndexSet indexSet;
+	IndexSet indexSet;
 	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightTop]);
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 	if (mapChipType == MapChipType::kBlock) {
@@ -206,10 +227,10 @@ void Player::isCollisionMapRight(CollisionMapInfo& info) {
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom]);
 		Vector3 temporaryPosition = worldTransform_.translate;
 		temporaryPosition.x += kWidth / 2;
-		MapChipField::IndexSet indexSetNow;
+		IndexSet indexSetNow;
 		indexSetNow = mapChipField_->GetMapChipIndexSetByPosition(temporaryPosition);
 		if (indexSetNow.xIndex != indexSet.xIndex) {
-			MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+			Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 			// 修正: プレイヤーの底面が地面の上端に乗るように
 			info.movement_.x = std::max(0.0f, rect.right - worldTransform_.translate.x - kWidth);
 			info.isHitWall_ = true;
@@ -235,7 +256,7 @@ void Player::isCollisionMapLeft(CollisionMapInfo& info) {
 	// 真下の当たり判定
 	bool hit = false;
 	// 左上
-	MapChipField::IndexSet indexSet;
+	IndexSet indexSet;
 	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftTop]);
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 	if (mapChipType == MapChipType::kBlock) {
@@ -255,10 +276,10 @@ void Player::isCollisionMapLeft(CollisionMapInfo& info) {
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom]);
 		Vector3 temporaryPosition = worldTransform_.translate;
 		temporaryPosition.x -= kWidth / 2;
-		MapChipField::IndexSet indexSetNow;
+		IndexSet indexSetNow;
 		indexSetNow = mapChipField_->GetMapChipIndexSetByPosition(temporaryPosition);
 		if (indexSetNow.xIndex != indexSet.xIndex) {
-			MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+			Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 			// 修正: プレイヤーの底面が地面の上端に乗るように
 			info.movement_.x = std::max(0.0f, rect.right - worldTransform_.translate.x + kWidth / 2);
 			info.isHitWall_ = true;
@@ -282,7 +303,7 @@ void Player::CheckLanding(const CollisionMapInfo& info) {
 			// 真下の当たり判定
 			bool hit = false;
 			// 左下
-			MapChipField::IndexSet indexSet;
+			IndexSet indexSet;
 			indexSet = mapChipField_->GetMapChipIndexSetByPosition(Add(positionsNew[kLeftBottom], Vector3(0, -0.01f, 0)));
 			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 			if (mapChipType == MapChipType::kBlock) {
@@ -302,9 +323,13 @@ void Player::CheckLanding(const CollisionMapInfo& info) {
 		if (info.isLandin_) {
 			onGround_ = true;
 			velocity_.y *= (1.0f - 0.5f);
-			velocity_.y = 0.0f;
+			velocity_.y = 0.0f; 
 		}
 	}
+	int a = onGround_;
+	ImGui::Begin("a");
+	ImGui::DragInt("on", &a, 0, 1);
+	ImGui::End();
 }
 
 Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
@@ -338,6 +363,14 @@ void Player::WallCollisionReaction(const CollisionMapInfo& info) {
 void Player::Update() {
 	// 1.移動処理
 	Move();
+
+	if (isKnockedBack_) {
+		knockbackTimer_ -= 1.0f / 60.0f; // 1秒間に60フレームを想定
+		if (knockbackTimer_ <= 0.0f) {
+			isKnockedBack_ = false;
+			knockbackTimer_ = 0.0f;
+		}
+	}
 
 	// 2.移動量を加味した衝突判定
 	CollisionMapInfo collisionMapinfo;      // 衝突情報初期化
@@ -459,8 +492,31 @@ AABB Player::GetAABB() {
 	return aabb;
 }
 
-void Player::OnCollision(const Enemy* enemy) {
-	(void)enemy;
-	//ジャンプ開始
-	velocity_ = Add(velocity_, Vector3(0, kJumpAcceleration, 0));
+void Player::OnCollision(Enemy* enemy) {
+	// ノックバック中は再ノックバックさせない
+	if (isKnockedBack_) {
+		return;
+	}
+
+	// 速度をゼロにリセット
+	velocity_ = { 0.0f, 0.0f, 0.0f };
+
+	// 敵とプレイヤーの相対位置を計算
+	Vector3 toEnemy = Subtract(enemy->GetWorldPosition(), worldTransform_.translate);
+
+	// 水平方向のみ正規化して方向を求める
+	toEnemy.y = 0.0f;
+	toEnemy = Normalize(toEnemy);
+
+	// プレイヤーが敵に当たったときに受ける衝撃ベクトルを計算
+	Vector3 impactVector = {};
+	impactVector.x = -toEnemy.x * kKnockbackPower; // 敵と逆方向に飛ばす
+	impactVector.y = kKnockbackUpPower; // 上方向に少し浮かせる
+
+	// プレイヤーの速度に衝撃ベクトルを加算
+	velocity_ = Add(velocity_, impactVector);
+
+	// ノックバック状態を開始
+	isKnockedBack_ = true;
+	knockbackTimer_ = kKnockbackTime;
 }

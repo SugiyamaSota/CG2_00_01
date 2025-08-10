@@ -33,20 +33,30 @@ private:
 
 	// --- ブロック関連 ---
 	static const uint32_t kNumBlockVirtical = 10;
-	static const uint32_t kNumBlockHorizontal = 25;
+	static const uint32_t kNumBlockHorizontal = 60;
 	Model* blockModel_[kNumBlockVirtical][kNumBlockHorizontal] = { nullptr };
 	WorldTransform blockWorldTransform_[kNumBlockVirtical][kNumBlockHorizontal];
 	std::unique_ptr<MapChipField> mapChipField_;
 
+	// --- ゴール関連 ---
+	Model* goalModel_ = nullptr;
+	WorldTransform goalWorldTransform_;
+	bool isGoal_;
+
 	/// <summary>
 	/// ブロック生成
 	/// </summary>
-	void GenerateBlocks();
+	void GenerateBlocksAndGoal();
 
 	/// <summary>
 	/// 当たり判定
 	/// </summary>
 	void CheckAllCollisions();
+
+	/// <summary>
+	/// ゴールとの判定
+	/// </summary>
+	void CheckGoal();
 public:
 	/// <summary>
 	/// 初期化
@@ -62,4 +72,6 @@ public:
 	/// 描画処理
 	/// </summary>
 	void Draw();
+
+	bool GetIsGoal() { return isGoal_; }
 };

@@ -23,3 +23,17 @@ enum class LRDirection {
 	kRight,
 	kLeft,
 };
+
+//
+struct IndexSet {
+	uint32_t xIndex;
+	uint32_t yIndex;
+};
+
+// 矩形
+struct Rect {
+	float left;
+	float right;
+	float bottom;
+	float top;
+};

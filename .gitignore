@@ -85,6 +85,10 @@ StyleCopReport.xml
 !resources/models/plane/plane.obj
 !resources/models/suzanne/suzanne.obj
 !resources/models/teapot/teapot.obj
+!resources/models/anchor/anchor.obj
+!resources/models/player/player.obj
+!resources/models/goal/goal.obj
+!resources/models//.obj
 *.iobj
 *.pch
 *.pdb

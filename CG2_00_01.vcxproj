@@ -130,7 +130,8 @@
     <ClCompile Include="engine\math\Matrix.cpp" />
     <ClCompile Include="engine\math\vector.cpp" />
     <ClCompile Include="engine\sprite\sprite.cpp" />
-    <ClCompile Include="TitleScene.cpp" />
+    <ClCompile Include="game\scene\TitleScene.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\color\Color.h" />
@@ -172,7 +173,8 @@
     <ClInclude Include="game\player\Anchor.h" />
     <ClInclude Include="game\player\Player.h" />
     <ClInclude Include="game\scene\GameScene.h" />
-    <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="game\scene\TitleScene.h" />
+    <ClInclude Include="SceneManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

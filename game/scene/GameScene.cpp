@@ -1,16 +1,16 @@
 #include "GameScene.h"
 #include"../others/Collision.h"
+#include"../others/Data.h"
 
 void GameScene::Initialize() {
-	// カメラの初期化
+	// カメラ
 	camera_.Initialize(1280, 720);
 
 	// マップチップフィールド
 	mapChipField_ = std::make_unique<MapChipField>();
 	mapChipField_->LoadmapChipCsv("resources/maps/tutrial.csv");
 
-	// 自キャラの生成と初期化
-	// unique_ptrでモデルを生成
+	// プレイヤー
 	model_ = std::make_unique<Model>();
 	model_->LoadModel("player");
 	player_ = std::make_unique<Player>();
@@ -21,7 +21,7 @@ void GameScene::Initialize() {
 	// カメラのターゲット座標をプレイヤーの初期座標に設定
 	cameraTarget_ = playerPosition;
 
-	///// 敵に関する初期化 /////
+	// 敵
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
 			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kEnemy) {
@@ -39,6 +39,7 @@ void GameScene::Initialize() {
 		}
 	}
 
+	// ブロック
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
 			blockModel_[i][j] = new Model();
@@ -48,7 +49,14 @@ void GameScene::Initialize() {
 			blockWorldTransform_[i][j].translate = { 0,0,0 };
 		}
 	}
-	GenerateBlocks();
+
+	// ゴール
+	goalModel_ = new Model();
+	goalModel_->LoadModel("goal");
+	goalWorldTransform_ = InitializeWorldTransform();
+	isGoal_ = false;
+
+	GenerateBlocksAndGoal();
 
 	// 天球
 	skydomeModel_ = std::make_unique<Model>();
@@ -58,6 +66,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	CheckGoal();
 	// 当たり判定
 	CheckAllCollisions();
 
@@ -88,6 +97,8 @@ void GameScene::Update() {
 			}
 		}
 	}
+
+	goalModel_->Update(goalWorldTransform_,&camera_);
 
 	// Lキーが押されたら、ロックオン中の敵をすべて削除する
 	if (Input::GetInstance()->IsTrigger(DIK_L)) {
@@ -129,21 +140,28 @@ void GameScene::Draw() {
 			}
 		}
 	}
+
+	goalModel_->Draw();
 }
 
-void GameScene::GenerateBlocks() {
+void GameScene::GenerateBlocksAndGoal() {
 	uint32_t numBlockVirtical = mapChipField_->GetNumBlockVirtical();
 	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
 
 	const float kBlockWidth = 2.0f;
 	const float kBlockHeight = 2.0f;
 
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
+		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
 			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
 				blockWorldTransform_[i][j].rotate = { 0,0,0 };
 				blockWorldTransform_[i][j].scale = { 1,1,1 };
 				blockWorldTransform_[i][j].translate = mapChipField_->GetMapChipPositionByIndex(j, i);
+			}else 
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kGoal) {
+				goalWorldTransform_.rotate = { 0,0,0 };
+				goalWorldTransform_.scale = { 1,1,1 };
+				goalWorldTransform_.translate = mapChipField_->GetMapChipPositionByIndex(j, i);
 			}
 		}
 	}
@@ -189,5 +207,14 @@ void GameScene::CheckAllCollisions() {
 				}
 			}
 		}
+	}
+}
+
+void GameScene::CheckGoal() {
+	IndexSet playerIndexSet = mapChipField_->GetMapChipIndexSetByPosition(player_->GetPosition());
+	MapChipType playerMapChip = mapChipField_->GetMapChipTypeByIndex(playerIndexSet.xIndex, playerIndexSet.yIndex);
+
+	if (playerMapChip == MapChipType::kGoal) {
+		isGoal_ = true;
 	}
 }

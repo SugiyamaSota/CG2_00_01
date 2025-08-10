@@ -1,6 +1,8 @@
 #pragma once
 #include "../../engine/bonjin/BonjinEngine.h"
 
+#include"../others/Data.h"
+
 enum class MapChipType {
 	kBlank, // 空白
 	kBlock, // ブロック
@@ -18,26 +20,14 @@ private:
 	static inline const float kBlockHeight = 2.0f;
 
 	static inline const uint32_t kNumBlockVirtical = 10;
-	static inline const uint32_t kNumBlockHorizontal = 30;
+	static inline const uint32_t kNumBlockHorizontal = 60;
 
 	MapChipData mapChipData_;
 
 
 
 public:
-	//
-	struct IndexSet {
-		uint32_t xIndex;
-		uint32_t yIndex;
-	};
-
-	// 矩形
-	struct Rect {
-		float left;
-		float right;
-		float bottom;
-		float top;
-	};
+	
 
 	/// <summary>
 	/// データリセット

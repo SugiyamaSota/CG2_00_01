@@ -27,8 +27,10 @@ private:
 	// 移動速度
 	Vector3 velocity_ = {};
 	static inline const float kAcceleration = 0.010f;
-	static inline const float kAttenuation = 0.5f;
-	static inline const float kLimitRunSpeed = 0.2f;
+	static inline const float kAttenuation = 0.8f;
+	static inline const float kLimitRunSpeed = 0.15f;
+
+	static inline const float kAccelerationInAir = 0.010f;
 
 	// 向き
 	LRDirection lrDirection_ = LRDirection::kRight;
@@ -43,7 +45,7 @@ private:
 	//最大落下速度
 	static inline const float kLimitFallSpeed = 2.0f;
 	//ジャンプ初速
-	static inline const float kJumpAcceleration = 0.3f;
+	static inline const float kJumpAcceleration = 0.32f;
 
 	//マップチップフィールド
 	MapChipField* mapChipField_ = nullptr;
@@ -57,8 +59,15 @@ private:
 	static inline const float kAttenuationTop = 0.5f;
 	static inline const float kAttenuationWall = 0.5f;
 
+	static inline const float kKnockbackUpPower = 0.15f;
+	static inline const float kKnockbackPower = 0.15f;
+
 	//接地状態フラグ
 	bool onGround_ = true;
+
+	bool isKnockedBack_ = false;
+	float knockbackTimer_ = 0.0f;
+	static inline const float kKnockbackTime = 1.0f;
 
 	// --- アンカー ---
 	std::unique_ptr<Anchor> anchor_;
@@ -136,7 +145,7 @@ public:
 	Vector3 GetPosition()const { return worldTransform_.translate; }
 	Vector3 GetWorldPosition();
 	AABB GetAABB();
-	void OnCollision(const Enemy* enemy);
+	void OnCollision(Enemy* enemy);
 	bool HasAnchor() const {
 		return anchor_ != nullptr;
 	}

@@ -46,6 +46,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 				}
 			}
 
+			if (gameScene->GetIsGoal()) {
+				if (showTutrial == false) {
+					showTutrial = true;
+				}
+			}
+
 			if (showTutrial == false) {
 				HUD->Update({ 640.0f,360.0f,0.0f }, Color::White);
 				gameScene->Update();
