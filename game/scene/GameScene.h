@@ -43,6 +43,14 @@ private:
 	WorldTransform goalWorldTransform_;
 	bool isGoal_;
 
+	// UIとか
+	Sprite* HUD;
+	Sprite* tutrial;
+	bool showTutrial;
+
+	// シーン変更
+	bool sceneChangeStandby_;
+
 	/// <summary>
 	/// ブロック生成
 	/// </summary>

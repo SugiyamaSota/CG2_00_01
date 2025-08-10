@@ -210,7 +210,7 @@
     <ClCompile Include="game\field\Skydome.cpp">
       <Filter>game\その他</Filter>
     </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
+    <ClCompile Include="game\scene\SceneManager.cpp">
       <Filter>game\シーン関連</Filter>
     </ClCompile>
   </ItemGroup>
@@ -335,7 +335,7 @@
     <ClInclude Include="game\field\Skydome.h">
       <Filter>game\その他</Filter>
     </ClInclude>
-    <ClInclude Include="SceneManager.h">
+    <ClInclude Include="game\scene\SceneManager.h">
       <Filter>game\シーン関連</Filter>
     </ClInclude>
   </ItemGroup>

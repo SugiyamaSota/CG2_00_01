@@ -131,7 +131,7 @@
     <ClCompile Include="engine\math\vector.cpp" />
     <ClCompile Include="engine\sprite\sprite.cpp" />
     <ClCompile Include="game\scene\TitleScene.cpp" />
-    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="game\scene\SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\color\Color.h" />
@@ -174,7 +174,7 @@
     <ClInclude Include="game\player\Player.h" />
     <ClInclude Include="game\scene\GameScene.h" />
     <ClInclude Include="game\scene\TitleScene.h" />
-    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="game\scene\SceneManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

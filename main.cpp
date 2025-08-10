@@ -1,6 +1,6 @@
 #include"engine/bonjin/BonjinEngine.h"
 
-#include"game/scene/GameScene.h"
+#include"game/scene/SceneManager.h"
 
 using namespace BonjinEngine;
 
@@ -14,16 +14,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	D3DResourceLeakChecker leakChecker_;
 	Initialize(hInstance, kClientWidth, kClientHeight);
 
-	GameScene* gameScene = new GameScene();
-	gameScene->Initialize();
-
-	Sprite* HUD = new Sprite();
-	HUD->Initialize({ 640.0f,360.0f,0.0f }, Color::White, { 0.5f,0.5f,0.0f }, {1280,720}, "HUD.png");
-
-	Sprite* tutrial = new Sprite();
-	tutrial->Initialize({ 640.0f,360.0f,0.0f }, Color::White, { 0.5f,0.5f,0.0f }, { 1280,720 }, "tutrial.png");
-
-	bool showTutrial = false;
+	SceneManager* sceneManager_ = new SceneManager();
+	sceneManager_->Initialize();
 
 	//ウィンドウの×ボタンが押されるまでループ
 	MSG msg{};
@@ -38,27 +30,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			/// 更新処理ここから
 			///
 
-			if (Input::GetInstance()->IsTrigger(DIK_TAB)) {
-				if (showTutrial == false) {
-					showTutrial = true;
-				} else {
-					showTutrial = false;
-				}
-			}
-
-			if (gameScene->GetIsGoal()) {
-				if (showTutrial == false) {
-					showTutrial = true;
-				}
-			}
-
-			if (showTutrial == false) {
-				HUD->Update({ 640.0f,360.0f,0.0f }, Color::White);
-				gameScene->Update();
-			} else {
-				tutrial->Update({ 640.0f,360.0f,0.0f }, Color::White);
-			}
-
+			sceneManager_->Update();
 
 			///
 			/// 更新処理ここまで
@@ -68,13 +40,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			/// 描画処理ここから
 			///
 
-			gameScene->Draw();
-
-			if (showTutrial == false) {
-				HUD->Draw();
-			} else {
-				tutrial->Draw();
-			}
+			sceneManager_->Draw();
 
 			///
 			/// 描画処理ここまで
@@ -84,9 +50,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	}
 
 	/////  解放処理 /////
-	delete tutrial;
-	delete HUD;
-	delete gameScene;
+	delete sceneManager_;
 	Finalize();
 	return 0;
 }
