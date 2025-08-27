@@ -128,12 +128,9 @@ void GameScene::Update() {
 	goalModel_->Update(goalWorldTransform_, &camera_);
 
 	// Lキーが押されたら、ロックオン中の敵をすべて削除する
-	if (Input::GetInstance()->IsTrigger(DIK_L)) {
-
-		for (Enemy* enemy : lockedOnEnemies_) {
-			enemy->SetIsDead(true); // 敵の死亡フラグを立てる
-		}
-		lockedOnEnemies_.clear(); // ロックオンリストをクリア
+	if (Input::GetInstance()->IsPadTrigger(3)) {
+		// Playerクラスのメソッドを呼び出し、ロックオンリストを渡す
+		player_->RemoveLockedOnEnemies(lockedOnEnemies_);
 	}
 
 	// 敵を死亡状態のものを削除

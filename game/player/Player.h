@@ -69,12 +69,18 @@ private:
 	float knockbackTimer_ = 0.0f;
 	static inline const float kKnockbackTime = 1.0f;
 
+	// Padのデッドゾーン
+	long kPadDeadZone_ = 750;
+
 	// --- アンカー ---
 	std::unique_ptr<Anchor> anchor_;
 	/// <summary>
 	/// アンカーの射出
 	/// </summary>
 	void shootAnchor();
+
+	// ロックオンされた敵のリストへのポインタ
+	std::list<Enemy*>* lockedOnEnemies_ = nullptr;
 	
 public:
 	/// <summary>
@@ -162,4 +168,7 @@ public:
 		assert(anchor_); // nullではないことを確認
 		return *anchor_;
 	}
+
+	// ロックオン中の敵をすべて削除する
+	void RemoveLockedOnEnemies(std::list<Enemy*>& enemies);
 };

@@ -23,24 +23,18 @@ void Player::Initialize(Model* model, Camera* camera, const Vector3& position) {
 }
 
 void Player::Move() {
-	if (isKnockedBack_) {
-		// 移動減衰を適用（キー入力による加速は行わない）
-		// 重力加速度を適用（落下はさせる）
-		velocity_ = Add(velocity_, Vector3(0, -kGravityAcceleration, 0));
-		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
-		return;
-	}
-
 	// 移動入力
 	// 接地状態
 	if (onGround_) {
-		// 左右移動操作
-		if (Input::GetInstance()->IsPress(DIK_D) || Input::GetInstance()->IsPress(DIK_A)) {
-			// 左右加速
+		// ゲームパッドの左スティックのX軸の値を取得
+		long lStickX = Input::GetInstance()->GetPadLStickX();
+
+		// 左右移動操作 (左スティックのX軸がデッドゾーンの範囲外にある場合)
+		if (std::abs(lStickX) > kPadDeadZone_) {
+			// 加速/減速
 			Vector3 acceleration = {};
-			if (Input::GetInstance()->IsPress(DIK_D)) {
+			if (lStickX > 0) { // 右に移動
 				if (velocity_.x < 0.0f) {
-					// 速度と逆方向に入力中は急ブレーキ
 					velocity_.x *= (1.0f - kAttenuation);
 				}
 				acceleration.x += kAcceleration;
@@ -49,9 +43,8 @@ void Player::Move() {
 					turnFirstRotationY_ = worldTransform_.rotate.y;
 					turnTimer_ = kTimeTurn;
 				}
-			} else if (Input::GetInstance()->IsPress(DIK_A)) {
+			} else if (lStickX < 0) { // 左に移動
 				if (velocity_.x > 0.0f) {
-					// 速度と逆方向に入力中は急ブレーキ
 					velocity_.x *= (1.0f - kAttenuation);
 				}
 				acceleration.x -= kAcceleration;
@@ -61,6 +54,7 @@ void Player::Move() {
 					turnTimer_ = kTimeTurn;
 				}
 			}
+
 			// 加速/減速
 			velocity_ = Add(velocity_, acceleration);
 
@@ -70,26 +64,13 @@ void Player::Move() {
 			// 非入力時は移動減衰をかける
 			velocity_.x *= (1.0f - kAttenuation);
 		}
-		if (Input::GetInstance()->IsPress(DIK_SPACE)) {
+
+		// Aボタンでジャンプ
+		if (Input::GetInstance()->IsPadPress(0)) {
 			velocity_ = Add(velocity_, Vector3(0, kJumpAcceleration, 0));
 		}
-	}
-	// ここから下が修正箇所
-	// 空中移動の処理
-	else {
-		// 左右移動操作
-		if (Input::GetInstance()->IsPress(DIK_D) || Input::GetInstance()->IsPress(DIK_A)) {
-			Vector3 acceleration = {};
-			if (Input::GetInstance()->IsPress(DIK_D)) {
-				acceleration.x += kAccelerationInAir; // 空中での加速度
-			} else if (Input::GetInstance()->IsPress(DIK_A)) {
-				acceleration.x -= kAccelerationInAir; // 空中での加速度
-			}
-			velocity_ = Add(velocity_, acceleration);
-			// 最大速度制限
-			velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
-		}
-		// 重力加速度を適用
+	} else {
+		// 空中
 		velocity_ = Add(velocity_, Vector3(0, -kGravityAcceleration, 0));
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 	}
@@ -406,7 +387,8 @@ void Player::Update() {
 
 	model_->Update(worldTransform_,camera_);
 
-	if (Input::GetInstance()->IsTrigger(DIK_J)) { // 例: スペースキーで発射
+	// XボタンでshootAnchor
+	if (Input::GetInstance()->IsPadTrigger(2)) {
 		shootAnchor();
 	}
 
@@ -422,7 +404,8 @@ void Player::Update() {
 		}
 	}
 
-	if (Input::GetInstance()->IsTrigger(DIK_K)) {
+	// Yボタンでテレポート
+	if (Input::GetInstance()->IsPadTrigger(1)) {
 		// アンカーが存在し、isStandByがtrueの場合
 		if (anchor_ && anchor_->GetStandBy()) {
 			// アンカーの位置を取得
@@ -432,7 +415,7 @@ void Player::Update() {
 			Vector3 teleportPosition = anchorPos;
 
 			// プレイヤーの移動方向を判定
-			if (anchor_->GetAngle()<2.0f) {
+			if (anchor_->GetAngle() < 2.0f) {
 				// プレイヤーがアンカーの左にいる場合、テレポート後は右向き
 				lrDirection_ = LRDirection::kRight;
 				// 壁にめり込まないように、アンカーの位置からプレイヤーの幅の半分だけ右にずらす
@@ -519,4 +502,12 @@ void Player::OnCollision(Enemy* enemy) {
 	// ノックバック状態を開始
 	isKnockedBack_ = true;
 	knockbackTimer_ = kKnockbackTime;
+}
+
+// Player::RemoveLockedOnEnemiesメソッドの実装
+void Player::RemoveLockedOnEnemies(std::list<Enemy*>& enemies) {
+	for (Enemy* enemy : enemies) {
+		enemy->SetIsDead(true); // 敵の死亡フラグを立てる
+	}
+	enemies.clear(); // ロックオンリストをクリア
 }

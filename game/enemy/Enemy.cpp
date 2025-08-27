@@ -31,9 +31,9 @@ void Enemy::Update() {
 	// 縦方向の動き
 	walkTimer_ += 1.0f / 60.0f;
 
-	float param = std::sin(pi * 2 * walkTimer_ / kWalkTimer);
+	float param = std::sin(kPi * 2 * walkTimer_ / kWalkTimer);
 	float radian = kWalkMotionAngleStart + kWalkMotionAngleEnd * (param + 1.0f) / 2.0f;
-	worldTransform_.rotate.z = radian * (pi / 180.0f);
+	worldTransform_.rotate.z = radian * (kPi / 180.0f);
 
 	if (walkTimer_ >= kWalkTimer) {
 		walkTimer_ = 0.0f;
@@ -73,7 +73,6 @@ AABB Enemy::GetAABB() {
 
 void Enemy::OnCollision() {
 	isLockedOn_ = true;
-	model_->SetColor(Vector4{ 1, 0, 0, 1 });
 }
 
 void Enemy::SetIsLockedOn(bool frag) {
