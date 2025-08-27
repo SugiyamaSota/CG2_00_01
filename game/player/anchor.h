@@ -34,7 +34,9 @@ public:
 
     bool GetStandBy()const { return isStandBy; }
 
-    const Vector3& GetPosition() const { return worldTransform_.translate; }
+    Vector3& GetPosition(){ return worldTransform_.translate; }
+
+    const Vector3& GetVelocity() const { return velocity_; }
     float GetAngle() const { return worldTransform_.rotate.z; }
     AABB GetAABB();
     void OnCollision();

@@ -150,5 +150,5 @@ Matrix4x4 Camera::MakeLookAtMatrix(const Vector3& eye, const Vector3& target, co
 }
 
 void Camera::SetTarget(Vector3 targetPosition) {
-	targetPosition_ = targetPosition; isTargeting_ = true;
+	targetPosition_ = targetPosition;
 }

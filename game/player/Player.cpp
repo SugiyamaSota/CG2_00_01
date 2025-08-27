@@ -71,11 +71,38 @@ void Player::Move() {
 		}
 	} else {
 		// 空中
+		// === ここから追加 ===
+		long lStickX = Input::GetInstance()->GetPadLStickX();
+
+		// 左右移動操作 (空中での左右入力)
+		if (std::abs(lStickX) > kPadDeadZone_) {
+			Vector3 acceleration = {};
+			if (lStickX > 0) { // 右に移動
+				acceleration.x += kAccelerationInAir;
+				if (lrDirection_ != LRDirection::kRight) {
+					lrDirection_ = LRDirection::kRight;
+					turnFirstRotationY_ = worldTransform_.rotate.y;
+					turnTimer_ = kTimeTurn;
+				}
+			} else if (lStickX < 0) { // 左に移動
+				acceleration.x -= kAccelerationInAir;
+				if (lrDirection_ != LRDirection::kLeft) {
+					lrDirection_ = LRDirection::kLeft;
+					turnFirstRotationY_ = worldTransform_.rotate.y;
+					turnTimer_ = kTimeTurn;
+				}
+			}
+			velocity_ = Add(velocity_, acceleration);
+
+			// 最大速度制限
+			velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
+		}
+		// === ここまで追加 ===
+
 		velocity_ = Add(velocity_, Vector3(0, -kGravityAcceleration, 0));
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 	}
 }
-
 // 移動量を加味した衝突判定
 void Player::isCollisionMap(CollisionMapInfo& info) {
 	isCollisionMapLeft(info);
@@ -308,9 +335,6 @@ void Player::CheckLanding(const CollisionMapInfo& info) {
 		}
 	}
 	int a = onGround_;
-	ImGui::Begin("a");
-	ImGui::DragInt("on", &a, 0, 1);
-	ImGui::End();
 }
 
 Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
@@ -414,19 +438,23 @@ void Player::Update() {
 			// テレポート先の座標を決定
 			Vector3 teleportPosition = anchorPos;
 
+			// === ここから修正 ===
+			// キャラクターの高さの半分だけ上方向に移動
+			teleportPosition.y = anchorPos.y + kHeight / 2.0f;
+			// === ここまで修正 ===
+
+			Vector3 anchorVelocity = anchor_->GetVelocity();
+
 			// プレイヤーの移動方向を判定
-			if (anchor_->GetAngle() < 2.0f) {
-				// プレイヤーがアンカーの左にいる場合、テレポート後は右向き
-				lrDirection_ = LRDirection::kRight;
+			if (anchorVelocity.x > 0.0f) {
 				// 壁にめり込まないように、アンカーの位置からプレイヤーの幅の半分だけ右にずらす
 				teleportPosition.x -= kWidth / 2.0f;
+
 			} else {
-				// プレイヤーがアンカーの右にいる場合、テレポート後は左向き
-				lrDirection_ = LRDirection::kLeft;
 				// 壁にめり込まないように、アンカーの位置からプレイヤーの幅の半分だけ左にずらす
 				teleportPosition.x += kWidth / 2.0f;
-			}
 
+			}
 			// プレイヤーを計算された座標にテレポート
 			worldTransform_.translate = teleportPosition;
 
@@ -450,16 +478,35 @@ void Player::shootAnchor() {
 		return;
 	}
 
+	// ゲームパッドの左スティックのX軸とY軸の値を取得
+	long lStickX = Input::GetInstance()->GetPadLStickX();
+	long lStickY = Input::GetInstance()->GetPadLStickY();
+
 	// プレイヤーが向いている方向を考慮してアンカーを生成
 	Vector3 initialVelocity;
-	if (lrDirection_ == LRDirection::kRight) {
-		initialVelocity = { 0.3f, 0.0f,0.0f };
+
+	// 左右の向きに応じてX軸の初速を決定
+	float xVelocity = (lrDirection_ == LRDirection::kRight) ? kAnchorSpeed : -kAnchorSpeed;
+
+	// 上下の傾き具合で初速のY軸成分を決定
+	if (lStickY > kAnchorDeadZone) {
+		// 上に傾いている場合は45度上向き
+		xVelocity = (lrDirection_ == LRDirection::kRight) ? kAnchorSpeed * 0.7071f : -kAnchorSpeed * 0.7071f; // cos(45)
+		initialVelocity.y = -kAnchorSpeed * 0.7071f; // sin(45)
+	} else if (lStickY < -kAnchorDeadZone) {
+		// 下に傾いている場合は45度下向き
+		xVelocity = (lrDirection_ == LRDirection::kRight) ? kAnchorSpeed * 0.7071f : -kAnchorSpeed * 0.7071f; // cos(45)
+		initialVelocity.y = kAnchorSpeed * 0.7071f; // -sin(45)
 	} else {
-		initialVelocity = { -0.3f, 0.0f,0.0f };
+		// 上下に傾いていない場合は水平
+		initialVelocity.y = 0.0f;
 	}
 
+	initialVelocity.x = xVelocity;
+	initialVelocity.z = 0.0f;
+
 	Vector3 spawnPos = { worldTransform_.translate.x, worldTransform_.translate.y,0.0f };
-	anchor_ = std::make_unique<Anchor>(spawnPos, initialVelocity,mapChipField_);
+	anchor_ = std::make_unique<Anchor>(spawnPos, initialVelocity, mapChipField_);
 }
 
 Vector3 Player::GetWorldPosition() {

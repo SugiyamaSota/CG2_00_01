@@ -7,6 +7,13 @@
 #include <list>
 #include <memory>
 
+// シーンの状態を表す列挙型
+enum class Phase {
+	kStart, // 開始前（カメラ演出）
+	kPlay,  // ゲームプレイ中
+	kGoal,  // クリア後
+};
+
 class GameScene {
 private:
 	//--- カメラ ---
@@ -42,11 +49,19 @@ private:
 	Model* goalModel_ = nullptr;
 	WorldTransform goalWorldTransform_;
 	bool isGoal_;
+	Vector3 goalPosition = { 0,0,0 };
 
 	// UIとか
 	Sprite* HUD;
 	Sprite* tutrial;
 	bool showTutrial;
+
+	// 現在のフェーズ
+	Phase phase_ = Phase::kStart;
+	// フェーズ開始からの経過時間
+	float phaseTimer_ = 0.0f;
+	// 開始フェーズの演出時間
+	static inline const float kStartTime = 5.0f;
 
 	// シーン変更
 	bool sceneChangeStandby_;

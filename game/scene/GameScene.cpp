@@ -72,46 +72,94 @@ void GameScene::Initialize() {
 	showTutrial = false;
 
 	sceneChangeStandby_ = false;
+
+	// フェーズの初期化
+	phase_ = Phase::kStart;
+	phaseTimer_ = 0.0f;
+
+	// カメラ
+	camera_.SetTarget(goalWorldTransform_.translate);
+	camera_.Update(Camera::CameraType::kNormal);
 }
 
 void GameScene::Update() {
-	// 操作方法の表示操作
-	if (Input::GetInstance()->IsTrigger(DIK_TAB)) {
-		if (showTutrial == false) {
-			showTutrial = true;
+
+	switch (phase_) {
+	case Phase::kStart:
+		// フェーズ開始から経過時間を計測
+		phaseTimer_ += 1.0f / 60.0f; 
+		Vector3 goalPos = goalWorldTransform_.translate;
+		Vector3 playerPos = player_->GetPosition();
+		if (phaseTimer_ < kStartTime) {
+
+			float t = phaseTimer_ / kStartTime;
+
+			camera_.SetTarget(Lerp(goalPos, playerPos, t));
+
 		} else {
-			showTutrial = false;
+			phase_ = Phase::kPlay;
 		}
+		// 修正2：kStartフェーズ内でのカメラ更新
+		camera_.Update(Camera::CameraType::kNormal);
+		break;
+	case Phase::kPlay:
+		if (showTutrial == false) {
+			HUD->Update({ 640.0f,360.0f,0.0f }, Color::White);
+		} else {
+			tutrial->Update({ 640.0f,360.0f,0.0f }, Color::White);
+			return;
+		}
+
+		player_->Update();
+
+		// ゴール判定
+		CheckGoal();
+
+		// 当たり判定
+		CheckAllCollisions();
+
+		// カメラのターゲットを線形補間
+		cameraTarget_ = Lerp(cameraTarget_, player_->GetPosition(), kCameraLerpRate);
+		camera_.SetTarget(cameraTarget_);
+		camera_.Update(Camera::CameraType::kNormal);
+
+
+		// Lキーが押されたら、ロックオン中の敵をすべて削除する
+		if (Input::GetInstance()->IsPadTrigger(3)) {
+			// Playerクラスのメソッドを呼び出し、ロックオンリストを渡す
+			player_->RemoveLockedOnEnemies(lockedOnEnemies_);
+		}
+
+		// 敵を死亡状態のものを削除
+		enemies_.remove_if([&](const std::unique_ptr<Enemy>& enemy) {
+			if (enemy->GetIsDead()) {
+				lockedOnEnemies_.remove(enemy.get());
+				return true;
+			}
+			return false;
+			});
+
+		// 操作方法の表示操作
+		if (Input::GetInstance()->IsTrigger(DIK_TAB)) {
+			if (showTutrial == false) {
+				showTutrial = true;
+			} else {
+				showTutrial = false;
+			}
+		}
+		break;
+	case Phase::kGoal:
+
+		camera_.SetPosition(player_->GetPosition());
+		break;
 	}
-
-	if (showTutrial == false) {
-		HUD->Update({ 640.0f,360.0f,0.0f }, Color::White);
-	} else {
-		tutrial->Update({ 640.0f,360.0f,0.0f }, Color::White);
-		return;
-	}
-
-	// ゴール判定
-	CheckGoal();
-
-	// 当たり判定
-	CheckAllCollisions();
-
-	// カメラのターゲットを線形補間
-	cameraTarget_ = Lerp(cameraTarget_, player_->GetPosition(), kCameraLerpRate);
-	camera_.SetTarget(cameraTarget_);
-
-	// カメラ
-	camera_.Update(Camera::CameraType::kNormal);
-
 	// 天球の更新
 	skydome_->Update();
 
-	// プレイヤー
-	player_->Update();
+	player_->UpdateWorldTransform();
 
 	// 敵
-	// リスト内のすべての敵を更新
+		// リスト内のすべての敵を更新
 	for (const auto& enemy : enemies_) {
 		enemy->Update();
 	}
@@ -127,20 +175,6 @@ void GameScene::Update() {
 
 	goalModel_->Update(goalWorldTransform_, &camera_);
 
-	// Lキーが押されたら、ロックオン中の敵をすべて削除する
-	if (Input::GetInstance()->IsPadTrigger(3)) {
-		// Playerクラスのメソッドを呼び出し、ロックオンリストを渡す
-		player_->RemoveLockedOnEnemies(lockedOnEnemies_);
-	}
-
-	// 敵を死亡状態のものを削除
-	enemies_.remove_if([&](const std::unique_ptr<Enemy>& enemy) {
-		if (enemy->GetIsDead()) {
-			lockedOnEnemies_.remove(enemy.get());
-			return true;
-		}
-		return false;
-		});
 }
 
 void GameScene::Draw() {
@@ -194,6 +228,7 @@ void GameScene::GenerateBlocksAndGoal() {
 					goalWorldTransform_.rotate = { 0,0,0 };
 					goalWorldTransform_.scale = { 1,1,1 };
 					goalWorldTransform_.translate = mapChipField_->GetMapChipPositionByIndex(j, i);
+					goalPosition = goalWorldTransform_.translate;
 				}
 		}
 	}
