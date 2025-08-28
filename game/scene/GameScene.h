@@ -56,7 +56,8 @@ private:
 
 	// UIとか
 	Sprite* HUD;
-	Sprite* tutrial;
+	std::vector<std::unique_ptr<Sprite>> tutrialSprites_; 
+	int currentTutrialPage_ = 0;
 	bool showTutrial;
 
 	Sprite* gameClearSprite_ = nullptr;

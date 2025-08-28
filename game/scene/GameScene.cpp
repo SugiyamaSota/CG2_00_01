@@ -68,9 +68,15 @@ void GameScene::Initialize() {
 	HUD = new Sprite();
 	HUD->Initialize({ 640.0f,360.0f,0.0f }, Color::White, { 0.5f,0.5f,0.0f }, { 1280,720 }, "HUD.png");
 
-	tutrial = new Sprite();
-	tutrial->Initialize({ 640.0f,360.0f,0.0f }, Color::White, { 0.5f,0.5f,0.0f }, { 1280,720 }, "tutrial.png");
+	for (int i = 1; i <= 4; ++i) {
+		std::string filename = "tutrial" + std::to_string(i) + ".png";
+		std::unique_ptr<Sprite> sprite = std::make_unique<Sprite>();
+		sprite->Initialize({ 640.0f,360.0f,0.0f }, Color::White, { 0.5f,0.5f,0.0f }, { 1280,720 }, filename);
+		tutrialSprites_.push_back(std::move(sprite));
+	}
+
 	showTutrial = false;
+	currentTutrialPage_ = 0;
 
 	gameClearSprite_ = new Sprite();
 	gameClearSprite_->Initialize({ 640.0f,360.0f,0.0f }, Color::White, { 0.5f,0.5f,0.0f }, { 1280,720 }, "GameClear.png");
@@ -161,7 +167,18 @@ void GameScene::Update() {
 			player_->Update();
 			HUD->Update({ 640.0f,360.0f,0.0f }, Color::White);
 		} else {
-			tutrial->Update({ 640.0f,360.0f,0.0f }, Color::White);
+			// 左右の入力でチュートリアルページを切り替える
+			if (Input::GetInstance()->IsPadTrigger(1)) {
+				// 前のページへ、ただし0より小さくならないように
+				currentTutrialPage_ = max(0, currentTutrialPage_ - 1);
+			}
+			if (Input::GetInstance()->IsPadTrigger(0)) {
+				// 次のページへ、ただし最後のページを超えないように
+				currentTutrialPage_ = min(static_cast<int>(tutrialSprites_.size() - 1), currentTutrialPage_ + 1);
+			}
+
+			// 現在選択されているチュートリアルスプライトのみを更新
+			tutrialSprites_[currentTutrialPage_]->Update({ 640.0f,360.0f,0.0f }, Color::White);
 		}
 
 		// ゴール判定
@@ -299,7 +316,7 @@ void GameScene::Draw() {
 	if (showTutrial == false) {
 		HUD->Draw();
 	} else {
-		tutrial->Draw();
+		tutrialSprites_[currentTutrialPage_]->Draw();
 	}
 
 	if (isGoal_ == true) {

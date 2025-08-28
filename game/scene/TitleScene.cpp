@@ -2,6 +2,8 @@
 #include<algorithm>
 
 void TitleScene::Initialize() {
+	camera_.Initialize(1280, 720);
+
 	isFinished_ = false;
 
 	blackScreenSprite_ = new Sprite();
@@ -10,9 +12,31 @@ void TitleScene::Initialize() {
 	// フェーズとタイマーを初期化
 	phase_ = TitlePhase::kFadeIn;
 	phaseTimer_ = 0.0f;
+
+	worldTransform_ = InitializeWorldTransform();
+	titleModel_ = new Model;
+	titleModel_->LoadModel("title");
+	titleModel_->Update(worldTransform_, &camera_);
+
+	titleUIModel_ = new Model;
+	titleUIModel_->LoadModel("titleUI");
+	titleUIModel_->Update(worldTransform_, &camera_);
+
+	// 天球
+	skydomeModel_ = std::make_unique<Model>();
+	skydomeModel_->LoadModel("debugSkydome");
+	skydome_ = std::make_unique<Skydome>();
+	skydome_->Initialize(skydomeModel_.get(), &camera_);
 }
 
 void TitleScene::Update() {
+	camera_.Update(Camera::CameraType::kDebug);
+
+	skydome_->Update();
+
+	titleModel_->Update(worldTransform_, &camera_);
+	titleUIModel_->Update(worldTransform_, &camera_);
+
 	phaseTimer_ += 1.0f / 60.0f;
 
 	switch (phase_) {
@@ -32,7 +56,7 @@ void TitleScene::Update() {
 	break;
 	case TitlePhase::kActive:
 		// スペースキーが押されたらフェードアウト開始
-		if (Input::GetInstance()->IsTrigger(DIK_SPACE)) {
+		if (Input::GetInstance()->IsPadTrigger(0)) {
 			phase_ = TitlePhase::kFadeOut;
 			phaseTimer_ = 0.0f;
 		}
@@ -54,6 +78,10 @@ void TitleScene::Update() {
 }
 
 void TitleScene::Draw() {
+	// 天球の描画
+	skydome_->Draw();
+	titleModel_->Draw();
+	titleUIModel_->Draw();
 	// 黒いスプライトを描画
 	blackScreenSprite_->Draw();
 }

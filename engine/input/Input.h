@@ -85,4 +85,5 @@ public:
     bool IsPadConnected();
 
     static BOOL CALLBACK EnumGamePadCallback(const DIDEVICEINSTANCE* pdidInstance, VOID* pContext);
+
 };

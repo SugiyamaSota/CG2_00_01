@@ -18,6 +18,7 @@ void Skydome::Initialize(Model* model,Camera* camera) {
 /// 更新
 /// </summary>
 void Skydome::Update() {
+	worldTransform_.rotate.y += 0.01f;
 	model_->Update(worldTransform_, camera_);
 }
 
