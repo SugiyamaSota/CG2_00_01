@@ -26,6 +26,8 @@ public:
     /// </summary>
     void Draw();
 
+   void  SetColor(Vector4 color) { materialData_->color = color; }
+
 private:
     // 頂点リソース
     Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;

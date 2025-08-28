@@ -1,7 +1,9 @@
 #include "Enemy.h"
 #include <cmath>
 #include <numbers>
-
+#include <random>
+#include <list>
+#include <algorithm>
 
 void Enemy::Initialize(Model* model, Camera* camera, const Vector3& position) {
 
@@ -18,6 +20,10 @@ void Enemy::Initialize(Model* model, Camera* camera, const Vector3& position) {
 	velocity_ = { -kWalkSpeed, 0, 0 };
 
 	walkTimer_ = 0.0f;
+
+	
+	lockedOnSprite_ = new Sprite();
+	lockedOnSprite_->Initialize({ 0, 0, 0 }, Color::White, { 0.5f, 0.5f, 0.0f }, { 128, 128 }, "lockOn.png");
 }
 
 void Enemy::Update() {
@@ -41,9 +47,20 @@ void Enemy::Update() {
 
 	// 行列の変換
 	model_->Update(worldTransform_, camera_);
+
+    Vector3 worldPos = GetWorldPosition();
+    Vector3 screenPos = camera_->Project(worldPos);
+    lockedOnSprite_->Update({screenPos.x, screenPos.y, 0.0f}, Color::White);
 }
 
-void Enemy::Draw() { model_->Draw(); }
+
+void Enemy::Draw() { 
+	model_->Draw(); 
+	
+	if (isLockedOn_) {
+		lockedOnSprite_->Draw();
+	}
+}
 
 void Enemy::TurningControl() {
 	{
@@ -76,9 +93,34 @@ void Enemy::OnCollision() {
 }
 
 void Enemy::SetIsLockedOn(bool frag) {
+	isLockedOn_ = frag;
 	if (frag == true) {
 		model_->SetColor(Vector4{ 1, 0, 0, 1 });
 	} else {
 		model_->SetColor(Vector4{ 1,1,1,1 });
 	}
+}
+
+std::list<std::unique_ptr<Debris>> Enemy::ExplodeAndGetDebris() {
+	std::list<std::unique_ptr<Debris>> debrisList;
+	const int kDebrisCount = 20; // 生成する破片の数
+	std::random_device seed_gen;
+	std::mt19937 engine(seed_gen());
+	std::uniform_real_distribution<> dist(-1.0f, 1.0f);
+
+	for (int i = 0; i < kDebrisCount; ++i) {
+		// 破片の初期速度をランダムに決定
+		Vector3 randomVelocity = {
+			(float)dist(engine) * 0.1f,
+			(float)dist(engine) * 0.1f + 0.15f, // 上方向の速度を少し強めにする
+			(float)dist(engine) * 0.1f
+		};
+
+		// 新しいDebrisオブジェクトを生成
+		std::unique_ptr<Debris> newDebris = std::make_unique<Debris>();
+		// Initializeにmodel_を渡す
+		newDebris->Initialize(camera_, worldTransform_.translate, randomVelocity);
+		debrisList.push_back(std::move(newDebris));
+	}
+	return debrisList;
 }

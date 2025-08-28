@@ -213,6 +213,9 @@
     <ClCompile Include="game\scene\SceneManager.cpp">
       <Filter>game\シーン関連</Filter>
     </ClCompile>
+    <ClCompile Include="game\enemy\Debris.cpp">
+      <Filter>game\エネミー関連</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -337,6 +340,9 @@
     </ClInclude>
     <ClInclude Include="game\scene\SceneManager.h">
       <Filter>game\シーン関連</Filter>
+    </ClInclude>
+    <ClInclude Include="game\enemy\Debris.h">
+      <Filter>game\エネミー関連</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -10,8 +10,8 @@ enum class Scene {
 class SceneManager {
 private:
 	// シーン管理変数
-	Scene nowScene = Scene::kGame;
-	Scene nextScene = Scene::kTitle;
+	Scene nowScene = Scene::kTitle;
+	Scene nextScene = Scene::kGame;
 
 	// タイトルシーン
 	TitleScene* titleScene_ = nullptr;

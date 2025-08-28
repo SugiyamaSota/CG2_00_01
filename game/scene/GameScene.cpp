@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include"../others/Collision.h"
 #include"../others/Data.h"
+#include<algorithm>
 
 void GameScene::Initialize() {
 	// カメラ
@@ -71,46 +72,97 @@ void GameScene::Initialize() {
 	tutrial->Initialize({ 640.0f,360.0f,0.0f }, Color::White, { 0.5f,0.5f,0.0f }, { 1280,720 }, "tutrial.png");
 	showTutrial = false;
 
+	gameClearSprite_ = new Sprite();
+	gameClearSprite_->Initialize({ 640.0f,360.0f,0.0f }, Color::White, { 0.5f,0.5f,0.0f }, { 1280,720 }, "GameClear.png");
+
+	blackScreenSprite_ = new Sprite();
+	blackScreenSprite_->Initialize({ 640.0f,360.0f,0.0f }, Color::Black, { 0.5f,0.5f,0.0f }, { 1280,720 }, "uvChecker.png");
+	blackScreenSprite_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+
 	sceneChangeStandby_ = false;
 
 	// フェーズの初期化
-	phase_ = Phase::kStart;
+	phase_ = GamePhase::kStart;
 	phaseTimer_ = 0.0f;
 
 	// カメラ
 	camera_.SetTarget(goalWorldTransform_.translate);
 	camera_.Update(Camera::CameraType::kNormal);
+
+	fadeInAlpha = 1.0f;
+
+	// 天球の更新
+	skydome_->Update();
+
+	player_->UpdateWorldTransform();
+
+	// 敵
+		// リスト内のすべての敵を更新
+	for (const auto& enemy : enemies_) {
+		enemy->Update();
+	}
+
+	// 破片の更新と削除
+	for (auto it = debris_.begin(); it != debris_.end();) {
+		if ((*it)->GetIsDead()) {
+			it = debris_.erase(it);
+		} else {
+			(*it)->Update();
+			++it;
+		}
+	}
+
+	// ブロック
+	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+				blockModel_[i][j]->Update(blockWorldTransform_[i][j], &camera_);
+			}
+		}
+	}
+
+	goalModel_->Update(goalWorldTransform_, &camera_);
 }
 
 void GameScene::Update() {
 
 	switch (phase_) {
-	case Phase::kStart:
-		// フェーズ開始から経過時間を計測
-		phaseTimer_ += 1.0f / 60.0f; 
-		Vector3 goalPos = goalWorldTransform_.translate;
-		Vector3 playerPos = player_->GetPosition();
-		if (phaseTimer_ < kStartTime) {
+	case GamePhase::kStart:
+		// フェーズ開始からの時間を計測
+		phaseTimer_ += 1.0f / 60.0f;
 
-			float t = phaseTimer_ / kStartTime;
+		// フェードインのアルファ値を計算（2秒かけて不透明から透明へ）
+		fadeInAlpha = 1.0f - min(phaseTimer_ / 2.0f, 1.0f);
+		blackScreenSprite_->Update({ 640.0f,360.0f,0.0f }, Color::Black);
+		blackScreenSprite_->SetColor({ 0.0f, 0.0f, 0.0f, fadeInAlpha });
+
+		// フェードインが完了（2秒経過）したら、カメラ演出を開始
+		if (phaseTimer_ >= 2.0f) {
+			// カメラ演出の補間率を計算
+			Vector3 goalPos = goalWorldTransform_.translate;
+			Vector3 playerPos = player_->GetPosition();
+
+			// 残りの演出時間を計算（kStartTime - 2.0f）
+			float t = (phaseTimer_ - 2.0f) / (kStartTime - 2.0f);
+			t = min(t, 1.0f); // 0.0から1.0の範囲にクランプ
 
 			camera_.SetTarget(Lerp(goalPos, playerPos, t));
 
-		} else {
-			phase_ = Phase::kPlay;
+			// カメラ演出が完了したら次のフェーズへ
+			if (t >= 1.0f) {
+				phase_ = GamePhase::kPlay;
+			}
 		}
-		// 修正2：kStartフェーズ内でのカメラ更新
 		camera_.Update(Camera::CameraType::kNormal);
 		break;
-	case Phase::kPlay:
+	case GamePhase::kPlay:
+
 		if (showTutrial == false) {
+			player_->Update();
 			HUD->Update({ 640.0f,360.0f,0.0f }, Color::White);
 		} else {
 			tutrial->Update({ 640.0f,360.0f,0.0f }, Color::White);
-			return;
 		}
-
-		player_->Update();
 
 		// ゴール判定
 		CheckGoal();
@@ -133,6 +185,10 @@ void GameScene::Update() {
 		// 敵を死亡状態のものを削除
 		enemies_.remove_if([&](const std::unique_ptr<Enemy>& enemy) {
 			if (enemy->GetIsDead()) {
+				// 敵が死んだら、破片を生成して取得
+				std::list<std::unique_ptr<Debris>> newDebris = enemy->ExplodeAndGetDebris();
+				// 取得した破片をGameSceneのリストに移動
+				debris_.splice(debris_.end(), std::move(newDebris));
 				lockedOnEnemies_.remove(enemy.get());
 				return true;
 			}
@@ -140,7 +196,7 @@ void GameScene::Update() {
 			});
 
 		// 操作方法の表示操作
-		if (Input::GetInstance()->IsTrigger(DIK_TAB)) {
+		if (Input::GetInstance()->IsPadTrigger(7)) {
 			if (showTutrial == false) {
 				showTutrial = true;
 			} else {
@@ -148,33 +204,64 @@ void GameScene::Update() {
 			}
 		}
 		break;
-	case Phase::kGoal:
+	case GamePhase::kGoal:
+		// 常にゲームクリアスプライトを更新
+		gameClearSprite_->Update({ 640.0f,360.0f,0.0f }, Color::White);
 
+		// タイマーをインクリメント
+		phaseTimer_ += 1.0f / 60.0f;
+
+		// ゴール後1秒経過したらフェード開始
+		if (phaseTimer_ >= 1.0f) {
+			// フェードインのタイマーを更新
+			fadeTimer_ += 1.0f / 60.0f;
+			// アルファ値を0から1へ徐々に増加させる（例: 2秒かけてフェードイン）
+			float alpha = min(fadeTimer_ / 2.0f, 1.0f);
+			blackScreenSprite_->Update({ 640.0f,360.0f,0.0f }, Color::White);
+			blackScreenSprite_->SetColor({ 0.0f, 0.0f, 0.0f, alpha });
+			// フェード完了後、シーン変更待機状態へ
+			if (alpha >= 1.0f) {
+				sceneChangeStandby_ = true;
+			}
+		}
+		// カメラをプレイヤーの位置に固定
 		camera_.SetPosition(player_->GetPosition());
 		break;
 	}
-	// 天球の更新
-	skydome_->Update();
 
-	player_->UpdateWorldTransform();
+	if (showTutrial == false) {
+		// 天球の更新
+		skydome_->Update();
 
-	// 敵
-		// リスト内のすべての敵を更新
-	for (const auto& enemy : enemies_) {
-		enemy->Update();
-	}
+		player_->UpdateWorldTransform();
 
-	// ブロック
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
-				blockModel_[i][j]->Update(blockWorldTransform_[i][j], &camera_);
+		// 敵
+			// リスト内のすべての敵を更新
+		for (const auto& enemy : enemies_) {
+			enemy->Update();
+		}
+
+		// 破片の更新と削除
+		for (auto it = debris_.begin(); it != debris_.end();) {
+			if ((*it)->GetIsDead()) {
+				it = debris_.erase(it);
+			} else {
+				(*it)->Update();
+				++it;
 			}
 		}
+
+		// ブロック
+		for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+				if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+					blockModel_[i][j]->Update(blockWorldTransform_[i][j], &camera_);
+				}
+			}
+		}
+
+		goalModel_->Update(goalWorldTransform_, &camera_);
 	}
-
-	goalModel_->Update(goalWorldTransform_, &camera_);
-
 }
 
 void GameScene::Draw() {
@@ -184,11 +271,6 @@ void GameScene::Draw() {
 	// 自キャラの描画
 	player_->Draw();
 
-	// 敵
-	// リスト内のすべての敵を描画
-	for (const auto& enemy : enemies_) {
-		enemy->Draw();
-	}
 
 	// ブロックの描画
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
@@ -199,6 +281,18 @@ void GameScene::Draw() {
 		}
 	}
 
+	// 敵
+	// リスト内のすべての敵を描画
+	for (const auto& enemy : enemies_) {
+		enemy->Draw();
+	}
+
+	// 破片の描画
+	for (const auto& debris : debris_) {
+		debris->Draw();
+	}
+
+
 	goalModel_->Draw();
 
 
@@ -208,6 +302,11 @@ void GameScene::Draw() {
 		tutrial->Draw();
 	}
 
+	if (isGoal_ == true) {
+		gameClearSprite_->Draw();
+	}
+	// 黒いスプライトを一番手前に描画
+	blackScreenSprite_->Draw();
 }
 
 void GameScene::GenerateBlocksAndGoal() {
@@ -281,7 +380,13 @@ void GameScene::CheckGoal() {
 	IndexSet playerIndexSet = mapChipField_->GetMapChipIndexSetByPosition(player_->GetPosition());
 	MapChipType playerMapChip = mapChipField_->GetMapChipTypeByIndex(playerIndexSet.xIndex, playerIndexSet.yIndex);
 
+	// プレイヤーがゴール地点にいるか判定
 	if (playerMapChip == MapChipType::kGoal) {
+		// ゴールした瞬間にタイマーをリセット
+		if (!isGoal_) { // 既にゴール済みでないかチェック
+			phaseTimer_ = 0.0f;
+		}
 		isGoal_ = true;
+		phase_ = GamePhase::kGoal;
 	}
 }

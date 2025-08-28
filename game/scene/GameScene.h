@@ -2,13 +2,14 @@
 #include"../../engine/bonjin/BonjinEngine.h"
 #include"../player/Player.h"
 #include"../enemy/Enemy.h"
+#include"../enemy/Debris.h"
 #include"../field/Skydome.h"
 #include"../mapchip/MapChipField.h"
 #include <list>
 #include <memory>
 
 // シーンの状態を表す列挙型
-enum class Phase {
+enum class GamePhase {
 	kStart, // 開始前（カメラ演出）
 	kPlay,  // ゲームプレイ中
 	kGoal,  // クリア後
@@ -33,6 +34,8 @@ private:
 	std::list<Enemy*> lockedOnEnemies_;
 	static const uint32_t kMaxLockedOnEnemies = 3;
 
+	std::list<std::unique_ptr<Debris>> debris_;
+
 	// --- 天球関連 ---
 	std::unique_ptr<Skydome> skydome_ = nullptr;
 	// モデルをunique_ptrに変更
@@ -56,8 +59,13 @@ private:
 	Sprite* tutrial;
 	bool showTutrial;
 
+	Sprite* gameClearSprite_ = nullptr;
+	Sprite* blackScreenSprite_ = nullptr;
+	float fadeTimer_ = 0.0f;
+
 	// 現在のフェーズ
-	Phase phase_ = Phase::kStart;
+	GamePhase phase_ = GamePhase::kStart;
+	float fadeInAlpha;
 	// フェーズ開始からの経過時間
 	float phaseTimer_ = 0.0f;
 	// 開始フェーズの演出時間
@@ -97,4 +105,6 @@ public:
 	void Draw();
 
 	bool GetIsGoal() { return isGoal_; }
+
+	bool GetSceneChengeStandby() { return sceneChangeStandby_; }
 };

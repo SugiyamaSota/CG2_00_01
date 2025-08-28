@@ -2,6 +2,7 @@
 #include "../../engine/bonjin/BonjinEngine.h"
 
 #include "../others/Data.h"
+#include "Debris.h"
 
 class Enemy {
 public:
@@ -65,6 +66,12 @@ public:
     /// <param name="flag">設定するフラグ</param>
     void SetIsDead(bool flag) { isDead_ = flag; }
 
+    /// <summary>
+   /// 爆発して破片を取得
+   /// </summary>
+   /// <returns>生成された破片のリスト</returns>
+    std::list<std::unique_ptr<Debris>> ExplodeAndGetDebris();
+
 private:
     // --- メンバー変数 ---
 
@@ -92,6 +99,8 @@ private:
     static inline const float kWalkMotionAngleStart = -25.0f; // 首を振る開始角度
     static inline const float kWalkMotionAngleEnd = 50.0f;    // 首を振る終了角度
     static inline const float kPi = 3.14159265359f; // 円周率
+
+    Sprite* lockedOnSprite_ = nullptr;
 
 private:
     // --- プライベート関数 ---

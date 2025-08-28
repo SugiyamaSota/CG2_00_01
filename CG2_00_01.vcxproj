@@ -118,6 +118,7 @@
     <ClCompile Include="externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="game\enemy\Debris.cpp" />
     <ClCompile Include="game\enemy\Enemy.cpp" />
     <ClCompile Include="game\field\Skydome.cpp" />
     <ClCompile Include="game\mapchip\MapChipField.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="engine\math\Struct.h" />
     <ClInclude Include="engine\math\vector.h" />
     <ClInclude Include="engine\sprite\sprite.h" />
+    <ClInclude Include="game\enemy\Debris.h" />
     <ClInclude Include="game\enemy\Enemy.h" />
     <ClInclude Include="game\field\Skydome.h" />
     <ClInclude Include="game\mapchip\MapChipField.h" />

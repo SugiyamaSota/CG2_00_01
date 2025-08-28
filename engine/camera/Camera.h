@@ -93,4 +93,6 @@ public:
 	void SetPosition(const Vector3& pos) {
 		translation_ = pos;
 	}
+
+	Vector3 Project(const Vector3& worldPosition) const;
 };

@@ -23,7 +23,7 @@ void SceneManager::Update() {
 		break;
 	case Scene::kGame:
 		gameScene_->Update();
-		if (gameScene_->GetIsGoal()) {
+		if (gameScene_->GetSceneChengeStandby()) {
 			ChangeScene();
 		}
 		break;
