@@ -28,7 +28,7 @@ void GameScene::Initialize() {
 			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kEnemy) {
 				// 新しいモデルを生成
 				enemyModels_.push_back(std::make_unique<Model>());
-				enemyModels_.back()->LoadModel("cube");
+				enemyModels_.back()->LoadModel("enemy");
 
 				// 新しい敵を生成
 				enemies_.push_back(std::make_unique<Enemy>());
