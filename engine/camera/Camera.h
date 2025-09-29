@@ -24,7 +24,9 @@ private:
 	Matrix4x4 viewProjectionMatrix_;
 
 	// カメラの速度(ズーム、移動、回転)
-	const float multiSpeed_ = 0.01f;
+	const float zoomSpeed_ = 0.01f;
+	const float moveSpeed_ = 0.01f;
+	const float rotateSpeed_ = 0.0005f;
 
 	// ターゲット関連
 	bool isTargeting_;       // フラグ

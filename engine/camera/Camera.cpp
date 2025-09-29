@@ -47,7 +47,8 @@ void Camera::Move() {
 	if (input->GetMouseWheel() != 0) {
 		long mouseDeltaZ = input->GetMouseWheel();
 
-		radius_ -= static_cast<float>(mouseDeltaZ) * multiSpeed_;
+		// multiSpeed_ -> zoomSpeed_ に変更
+		radius_ -= static_cast<float>(mouseDeltaZ) * zoomSpeed_;
 		radius_ = std::clamp(radius_, 1.0f, 500.0f);
 	}
 
@@ -58,10 +59,13 @@ void Camera::Move() {
 
 
 		Vector3 moveLocal = {
-			static_cast<float>(-mouseDeltaX) * multiSpeed_, // X軸方向 (左右)
-			static_cast<float>(mouseDeltaY) * multiSpeed_,  // Y軸方向 (上下)
+			// multiSpeed_ -> moveSpeed_ に変更
+			static_cast<float>(-mouseDeltaX) * moveSpeed_, // X軸方向 (左右)
+			// multiSpeed_ -> moveSpeed_ に変更
+			static_cast<float>(mouseDeltaY) * moveSpeed_,  // Y軸方向 (上下)
 			0.0f
 		};
+
 
 		// ローカル移動ベクトルをワールド座標系に変換
 		Matrix4x4 cameraWorldMatrix = Inverse(viewMatrix_);
@@ -82,11 +86,11 @@ void Camera::Rotate() {
 		long mouseDeltaX = input->GetMouseDeltaX();
 		long mouseDeltaY = input->GetMouseDeltaY();
 
-		// Y軸回転
-		theta_ += static_cast<float>(mouseDeltaX) * multiSpeed_;
+		// Y軸回転 (multiSpeed_ -> rotateSpeed_ に変更)
+		theta_ += static_cast<float>(mouseDeltaX) * rotateSpeed_;
 
-		// X軸回転
-		phi_ += static_cast<float>(-mouseDeltaY) * multiSpeed_;
+		// X軸回転 (multiSpeed_ -> rotateSpeed_ に変更)
+		phi_ += static_cast<float>(-mouseDeltaY) * rotateSpeed_;
 
 		// 角度の最大最小
 		const float MIN_PHI = DegToRad(1.0f);
@@ -95,7 +99,6 @@ void Camera::Rotate() {
 
 	}
 }
-
 void Camera::CalculateCameraPositionAndRotation() {
 	// XZ平面での投影された半径
 	float projectedRadius = radius_ * std::sin(phi_);
