@@ -20,6 +20,12 @@ void WinApp::DestroyInstance() {
 }
 
 void WinApp::Initialize() {
+	// ログのディレクトリを用意
+	std::filesystem::create_directory("logs");
+
+	// ダンプファイルの設定
+	SetUnhandledExceptionFilter(ExportDump);
+
 	//
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
@@ -28,6 +34,7 @@ void WinApp::Initialize() {
 	wc.lpfnWndProc = WindowProc;
 	wc.lpszClassName = L"CG2WindowClass";
 	wc.hInstance = GetModuleHandle(nullptr);
+	hInstance_ = wc.hInstance; // インスタンスハンドルを保持
 	wc.hCursor = (LoadCursor(nullptr, IDC_ARROW));
 	RegisterClass(&wc);
 
@@ -97,3 +104,26 @@ LRESULT CALLBACK WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 	// 標準のメッセージ処理を行う
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
+
+LONG WINAPI WinApp::ExportDump(EXCEPTION_POINTERS* exception) {
+	//時刻を取得して、時刻を名前に入れたファイルを作成。Dumpsディレクトリ以下に出力
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+	wchar_t filePath[MAX_PATH] = { 0 };
+	CreateDirectory(L"./Dumps", nullptr);
+	StringCchPrintfW(filePath, MAX_PATH, L"./Dumps/%04d-%02d%02d-%02d%02d.dmp", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute);
+	HANDLE dumpFileHandle = CreateFile(filePath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
+	//processID(このexeのid)とクラッシュの発生したthreadidを取得
+	DWORD processId = GetCurrentProcessId();
+	DWORD threadId = GetCurrentThreadId();
+	//設定情報を入力
+	MINIDUMP_EXCEPTION_INFORMATION minidumpInformation{ 0 };
+	minidumpInformation.ThreadId = threadId;
+	minidumpInformation.ExceptionPointers = exception;
+	minidumpInformation.ClientPointers = TRUE;
+	//Dumpを出力。MiniDumpNormalは最低限の情報を出力するフラグ
+	MiniDumpWriteDump(GetCurrentProcess(), processId, dumpFileHandle, MiniDumpNormal, &minidumpInformation, nullptr, nullptr);
+	//ほかに関連付けられているSEH例外ハンドラがあれば実行。通常はprocessを終了する
+	return EXCEPTION_EXECUTE_HANDLER;
+}
+

@@ -35,7 +35,7 @@ namespace BonjinEngine {
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(HINSTANCE hInstance, int32_t kClientWidth, int32_t ClientHeight);
+	void Initialize();
 
 	/// <summary>
 	/// 終了関数

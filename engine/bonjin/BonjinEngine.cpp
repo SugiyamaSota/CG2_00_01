@@ -23,10 +23,9 @@ std::string logFilePath = std::string("logs/") + dateString + ".log";
 // ファイルを使って書き込み準備
 std::ofstream logStream(logFilePath);
 
-void BonjinEngine::Initialize(HINSTANCE hInstance, int32_t clientWidth, int32_t clientHeight) {
+void BonjinEngine::Initialize() {
 	// directXcommon、Input、テクスチャのインスタンスを取得
-	DirectXCommon::GetInstance(hInstance, clientWidth, clientHeight);
-	Input::GetInstance()->Initialize(hInstance, WinApp::GetInstance()->GetHWND());
+	Input::GetInstance()->Initialize(WinApp::GetInstance()->GetHInstance(), WinApp::GetInstance()->GetHWND());
 	Input::GetInstance()->SetMouseLock(true);
 	TextureManager::GetInstance();
 	ImGuiManager::GetInstance()->Initialize();

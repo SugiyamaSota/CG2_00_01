@@ -1,7 +1,5 @@
 #pragma once
 
-
-// DirectX関連のSDKヘッダー
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <wrl/client.h>
@@ -12,27 +10,34 @@
 
 class DirectXCommon {
 public:
-	// Singleton インスタンスへのアクセサー
-	// 初回呼び出し時にインスタンスを生成し、以降は既存のインスタンスを返します。
-	static DirectXCommon* GetInstance(HINSTANCE hInstance = nullptr, int32_t kClientWidth = 0, int32_t ClientHeight = 0);
+	/// --- インスタンス関連 ---
+	// 生成、取得
+	static DirectXCommon* GetInstance();
 
+	// 破棄
 	static void DestroyInstance();
-	// コピーコンストラクタと代入演算子を削除し、コピーを禁止します
+
+	// コピー禁止
 	DirectXCommon(const DirectXCommon&) = delete;
 	DirectXCommon& operator=(const DirectXCommon&) = delete;
 
+	/// --- 汎用関数 ---
 	// デストラクタ
 	~DirectXCommon();
 
-	// 初期化処理（コンストラクタで全て行う場合は不要になる可能性があります）
+	// 初期化処
 	void Initialize();
 
+	// フレーム開始
 	void NewFeame();
+
+	// フレーム最後
 	void EndFrame();
 
-	// コマンドリストの実行と完了待機、リセットを行う関数を追加
+	// コマンドリストの実行と完了待機、リセット
 	void WaitAndResetCommandList();
 
+	/// --- 取得関数 ---
 	// デバイス関連
 	ID3D12Device* GetDevice() { return device_.Get(); }
 	IDXGIFactory7* GetDxgiFactory() { return dxgiFactory_.Get(); }
@@ -64,7 +69,6 @@ public:
 	void IncrementFencevalue() { fenceValue_++; }
 	HANDLE GetFenceEvent() { return fenceEvent_; }
 
-
 	// 深度
 	ID3D12DescriptorHeap* GetDSVDescriptorHeap() { return dsvDescriptorHeap_.Get(); }
 
@@ -76,13 +80,13 @@ public:
 
 
 private:
-	// プライベートコンストラクタ
-	// シングルトンパターンでは外部からのインスタンス化を禁止するため、コンストラクタをprivateにします。
-	DirectXCommon(HINSTANCE hInstance, int32_t kClientWidth, int32_t ClientHeight);
+	// コンストラクタ
+	DirectXCommon();
 
-	// シングルトンインスタンスを保持する静的メンバー変数
+	// シングルトンインスタンス
 	static DirectXCommon* instance_;
 
+	/// --- 変数 ---
 	// デバイス関連
 	Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
 	Microsoft::WRL::ComPtr<IDXGIAdapter4> useAdapter_ = nullptr;
@@ -124,40 +128,26 @@ private:
 	PSOManager* pso = nullptr;
 
 	// 光
-	struct Vector4 {
-		float x, y, z, w;
-	};
-
-	struct Vector3 {
-		float x, y, z;
-	};
-
-	struct DirectionalLight {
-		Vector4 color;
-		Vector3 direction;
-		float intentity;
-	};
 	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_ = nullptr;
 	DirectionalLight* directionalLightData_ = nullptr;
 
-	/////　行列の宣言 /////
 	// ビューポート
 	D3D12_VIEWPORT viewport_{};
 
 	// シザー矩形
 	D3D12_RECT scissorRect_{};
 
-	// 描画前
+	// バリア
 	D3D12_RESOURCE_BARRIER barrier_{};
 
-	// プライベート関数
-	void CreateDevice();    // デバイス生成
-	void CreateCommand();   //コマンド関連の生成
-	void CreateSwapChain(); // スワップチェーンの作成
-	void CreateFence();
-	void CreateDepth();
-	void CreateLight();
+	/// --- 関数 ---
+	void CreateDevice();    // デバイス
+	void CreateCommand();   // コマンド関連
+	void CreateSwapChain(); // スワップチェーン
+	void CreateFence();     // フェンス
+	void CreateDepth();     // 深度
+	void CreateLight();     // 光
 
-	static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception);
+	// 深度生成
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(ID3D12Device* device, int32_t width, int32_t height);
 };

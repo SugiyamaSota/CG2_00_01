@@ -6,43 +6,20 @@
 #include"../windows/WinApp.h"
 #include"../imgui/ImGuiManager.h"
 
-// 静的メンバ変数の実体を定義
+
 DirectXCommon* DirectXCommon::instance_ = nullptr;
 
-// GetInstance メソッドの実装
-DirectXCommon* DirectXCommon::GetInstance(HINSTANCE hInstance, int32_t kClientWidth, int32_t ClientHeight) {
+DirectXCommon* DirectXCommon::GetInstance() {
 	if (instance_ == nullptr) {
 		// 初回呼び出し時のみインスタンスを生成
-		instance_ = new DirectXCommon(hInstance, kClientWidth, ClientHeight);
+		instance_ = new DirectXCommon();
 		instance_->Initialize(); // 必要であればInitializeを呼び出す
 	}
 	return instance_;
 }
 void DirectXCommon::DestroyInstance() {
-    delete instance_; // シングルトンインスタンスを解放
+    delete instance_;
     instance_ = nullptr;
-}
-
-LONG WINAPI DirectXCommon::ExportDump(EXCEPTION_POINTERS* exception) {
-	//時刻を取得して、時刻を名前に入れたファイルを作成。Dumpsディレクトリ以下に出力
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-	wchar_t filePath[MAX_PATH] = { 0 };
-	CreateDirectory(L"./Dumps", nullptr);
-	StringCchPrintfW(filePath, MAX_PATH, L"./Dumps/%04d-%02d%02d-%02d%02d.dmp", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute);
-	HANDLE dumpFileHandle = CreateFile(filePath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
-	//processID(このexeのid)とクラッシュの発生したthreadidを取得
-	DWORD processId = GetCurrentProcessId();
-	DWORD threadId = GetCurrentThreadId();
-	//設定情報を入力
-	MINIDUMP_EXCEPTION_INFORMATION minidumpInformation{ 0 };
-	minidumpInformation.ThreadId = threadId;
-	minidumpInformation.ExceptionPointers = exception;
-	minidumpInformation.ClientPointers = TRUE;
-	//Dumpを出力。MiniDumpNormalは最低限の情報を出力するフラグ
-	MiniDumpWriteDump(GetCurrentProcess(), processId, dumpFileHandle, MiniDumpNormal, &minidumpInformation, nullptr, nullptr);
-	//ほかに関連付けられているSEH例外ハンドラがあれば実行。通常はprocessを終了する
-	return EXCEPTION_EXECUTE_HANDLER;
 }
 
 Microsoft::WRL::ComPtr<ID3D12Resource>  DirectXCommon::CreateDepthStencilTextureResource(ID3D12Device* device, int32_t width, int32_t height) {
@@ -80,16 +57,9 @@ Microsoft::WRL::ComPtr<ID3D12Resource>  DirectXCommon::CreateDepthStencilTexture
 	return resource;
 }
 
-// コンストラクタ（privateに変更）
-DirectXCommon::DirectXCommon(HINSTANCE hInstance, int32_t clientWidth, int32_t clientHeight) {
-	// ログのディレクトリを用意
-	std::filesystem::create_directory("logs");
-
-	// ダンプファイルの設定
-	SetUnhandledExceptionFilter(ExportDump);
+DirectXCommon::DirectXCommon() {
 }
 
-// 初期化メソッド（GetInstanceから呼び出されるか、必要に応じて手動で呼び出す）
 void DirectXCommon::Initialize() {
 #ifdef _DEBUG
 	Microsoft::WRL::ComPtr<ID3D12Debug1> debugController = nullptr;
@@ -101,27 +71,27 @@ void DirectXCommon::Initialize() {
 	}
 #endif
 
+	// 諸々の初期化
 	CreateDevice();
 	CreateCommand();
 	CreateSwapChain();
 	CreateFence();
+	CreateDepth();
+	CreateLight();
 
 	pso = new PSOManager();
 
 	// PSOクラスを使用
 	pso->InitializeDefaultPSO(
 		device_.Get(),
-		// logStream, // LogStreamをPSOに渡す場合
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
 		DXGI_FORMAT_D24_UNORM_S8_UINT
 	);
 
-	pso->InitializeLinePSO(device_.Get(),
+	pso->InitializeLinePSO(
+		device_.Get(),
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
 		DXGI_FORMAT_D24_UNORM_S8_UINT);
-
-	CreateDepth();
-	CreateLight();
 
 	viewport_.Width = float(WinApp::GetInstance()->GetClientWidth());
 	viewport_.Height = float(WinApp::GetInstance()->GetClientHeight());
@@ -136,7 +106,6 @@ void DirectXCommon::Initialize() {
 	scissorRect_.bottom = LONG(WinApp::GetInstance()->GetClientHeight());
 
 }
-
 
 DirectXCommon::~DirectXCommon() {
 	if (fenceEvent_ != nullptr) {

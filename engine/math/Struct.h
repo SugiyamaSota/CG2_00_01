@@ -60,4 +60,10 @@ struct Plane {
 	float distance;
 };
 
+// 光
+struct DirectionalLight {
+	Vector4 color;
+	Vector3 direction;
+	float intentity;
+};
 

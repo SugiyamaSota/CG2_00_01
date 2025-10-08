@@ -10,7 +10,7 @@ const int32_t kClientHeight = 720;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 	D3DResourceLeakChecker leakChecker_;
-	Initialize(hInstance, kClientWidth, kClientHeight);
+	Initialize();
 
 	Camera* camera = new Camera();
 	camera->Initialize(kClientWidth, kClientHeight);
