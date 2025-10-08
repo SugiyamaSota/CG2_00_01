@@ -41,6 +41,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 		camera->Update(Camera::CameraType::kDebug);
 
+		model->SetEnableLighting(true);
 		model->Update(worldTransform, camera);
 
 		if (Input::GetInstance()->IsPadPress(0)) {
@@ -48,7 +49,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 		}
 
 		// グリッドとデバッグ用天球
-		skydome->SetColor({ 0,0,0,1 });
 		skydome->Update(skydomeWorldTransform, camera);
 		grid->Update(camera);
 
@@ -60,12 +60,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 		///
 		/// 描画処理ここから
 		///
-		model->Draw();
-
 		// グリッドとデバッグ用天球
 		skydome->Draw();
 		grid->Draw();
 
+
+		model->Draw();
 
 		///
 		/// 描画処理ここまで

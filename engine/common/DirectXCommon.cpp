@@ -116,7 +116,6 @@ DirectXCommon::~DirectXCommon() {
 }
 
 void DirectXCommon::NewFeame() {
-
 	//これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
 	//描画先のRTVとDSVを設定
