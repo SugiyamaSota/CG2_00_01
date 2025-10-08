@@ -1,4 +1,6 @@
 #include "ImGuiManager.h"
+
+#include"../windows/WinApp.h"
 #include"../common/DirectXCommon.h"
 
 // 静的メンバ変数の初期化
@@ -31,7 +33,7 @@ void ImGuiManager::Initialize() {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
-	ImGui_ImplWin32_Init(DirectXCommon::GetInstance()->GetHWND());
+	ImGui_ImplWin32_Init(WinApp::GetInstance()->GetHWND());
 	ImGui_ImplDX12_Init(
 		DirectXCommon::GetInstance()->GetDevice(),
 		2,

@@ -15,6 +15,7 @@
 #include"../sprite/sprite.h"
 #include"../color/Color.h"
 #include"../draw/Grid.h"
+#include"../windows/WinApp.h"
 
 /// <summary>
 /// リソースリークチェッカーの構造体

@@ -1,7 +1,10 @@
 #include "DirectXCommon.h"
 #include<cassert>
-#include"../function/Utility.h"
 #include<filesystem>
+
+#include"../function/Utility.h"
+#include"../windows/WinApp.h"
+#include"../imgui/ImGuiManager.h"
 
 // 静的メンバ変数の実体を定義
 DirectXCommon* DirectXCommon::instance_ = nullptr;
@@ -18,23 +21,6 @@ DirectXCommon* DirectXCommon::GetInstance(HINSTANCE hInstance, int32_t kClientWi
 void DirectXCommon::DestroyInstance() { // ★追加★
     delete instance_; // シングルトンインスタンスを解放
     instance_ = nullptr;
-}
-
-LRESULT CALLBACK DirectXCommon::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
-	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) {
-		return true;
-	}
-	//メッセージに応じてゲーム固有の処理を行う
-	switch (msg) {
-		//ウィンドウが破棄された
-	case WM_DESTROY:
-		//OSに対して、アプリの終了を伝える
-		PostQuitMessage(0);
-		return 0;
-	}
-
-	//標準のメッセージ処理を行う
-	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
 LONG WINAPI DirectXCommon::ExportDump(EXCEPTION_POINTERS* exception) {
@@ -96,50 +82,11 @@ Microsoft::WRL::ComPtr<ID3D12Resource>  DirectXCommon::CreateDepthStencilTexture
 
 // コンストラクタ（privateに変更）
 DirectXCommon::DirectXCommon(HINSTANCE hInstance, int32_t clientWidth, int32_t clientHeight) {
-	clientWidth_ = clientWidth;
-	clientHeight_ = clientHeight;
-
-	RECT wrc = { 0,0,clientWidth ,clientHeight };
-
-	CoInitializeEx(0, COINIT_MULTITHREADED);
-
 	// ログのディレクトリを用意
 	std::filesystem::create_directory("logs");
 
 	// ダンプファイルの設定
 	SetUnhandledExceptionFilter(ExportDump);
-
-	WNDCLASS wc{};
-	//ウィンドウプロシージャ
-	wc.lpfnWndProc = WindowProc;
-	//ウィンドウクラス名
-	wc.lpszClassName = L"CG2WindowClass";
-	//インスタンスハンドル
-	wc.hInstance = hInstance;
-	//カーソル
-	wc.hCursor = (LoadCursor(nullptr, IDC_ARROW));
-
-	//ウィンドウクラスを登録する
-	RegisterClass(&wc);
-
-	//ウィンドウの生成
-	hwnd_ = CreateWindow(
-		wc.lpszClassName,
-		L"CG2",
-		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT,
-		CW_USEDEFAULT,
-		wrc.right - wrc.left,
-		wrc.bottom - wrc.top,
-		nullptr,
-		nullptr,
-		wc.hInstance,
-		nullptr);
-
-	// Initializeメソッドに移動する初期化処理をここに書いても良いが、
-	// シングルトン化に伴いInitialize()を呼び出す形がより一般的。
-	// ここではコンストラクタで全て完結させているため、Initialize()は空で問題ない。
-	// 必要に応じて、Initialize()に移動してください。
 }
 
 // 初期化メソッド（GetInstanceから呼び出されるか、必要に応じて手動で呼び出す）
@@ -176,17 +123,17 @@ void DirectXCommon::Initialize() {
 	CreateDepth();
 	CreateLight();
 
-	viewport_.Width = float(clientWidth_);
-	viewport_.Height = float(clientHeight_);
+	viewport_.Width = float(WinApp::GetInstance()->GetClientWidth());
+	viewport_.Height = float(WinApp::GetInstance()->GetClientHeight());
 	viewport_.TopLeftX = 0;
 	viewport_.TopLeftY = 0;
 	viewport_.MinDepth = 0.0f;
 	viewport_.MaxDepth = 1.0f;
 
 	scissorRect_.left = 0;
-	scissorRect_.right = LONG(clientWidth_);
+	scissorRect_.right = LONG(WinApp::GetInstance()->GetClientWidth());
 	scissorRect_.top = 0;
-	scissorRect_.bottom = LONG(clientHeight_);
+	scissorRect_.bottom = LONG(WinApp::GetInstance()->GetClientHeight());
 
 }
 
@@ -196,8 +143,6 @@ DirectXCommon::~DirectXCommon() {
 		CloseHandle(fenceEvent_);
 		fenceEvent_ = nullptr;
 	}
-	CoUninitialize();
-	CloseWindow(hwnd_);
 	delete pso;
 }
 
@@ -277,8 +222,6 @@ void DirectXCommon::EndFrame() {
 	assert(SUCCEEDED(hr));
 	hr = commandList_->Reset(commandAllocator_.Get(), nullptr);
 	assert(SUCCEEDED(hr));
-	//ウィンドウを表示する
-	ShowWindow(hwnd_, SW_SHOW);
 }
 
 void DirectXCommon::WaitAndResetCommandList() {
@@ -410,15 +353,15 @@ void DirectXCommon::CreateCommand() {
 
 void DirectXCommon::CreateSwapChain() {
 	//スワップチェーンの生成
-	swapChainDesc_.Width = clientWidth_;
-	swapChainDesc_.Height = clientHeight_;
+	swapChainDesc_.Width = WinApp::GetInstance()->GetClientWidth();
+	swapChainDesc_.Height = WinApp::GetInstance()->GetClientHeight();
 	swapChainDesc_.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	swapChainDesc_.SampleDesc.Count = 1;
 	swapChainDesc_.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swapChainDesc_.BufferCount = 2;
 	swapChainDesc_.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	//コマンドキュー、ウィンドウハンドル、設定を渡して生成
-	HRESULT hr = dxgiFactory_->CreateSwapChainForHwnd(commandQueue_.Get(), hwnd_, &swapChainDesc_, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf())); // Get() と GetAddressOf() を使用
+	HRESULT hr = dxgiFactory_->CreateSwapChainForHwnd(commandQueue_.Get(), WinApp::GetInstance()->GetHWND(), &swapChainDesc_, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf())); // Get() と GetAddressOf() を使用
 	assert(SUCCEEDED(hr));
 
 	//スワップチェーンからリソースを引っ張る
@@ -464,7 +407,7 @@ void DirectXCommon::CreateFence() {
 
 void DirectXCommon::CreateDepth() {
 	//DepthStencilTextureをウィンドウのサイズで作成
-	depthStencilResource_ = CreateDepthStencilTextureResource(device_.Get(), clientWidth_, clientHeight_);
+	depthStencilResource_ = CreateDepthStencilTextureResource(device_.Get(), WinApp::GetInstance()->GetClientWidth(), WinApp::GetInstance()->GetClientHeight());
 	//DSV
 	dsvDescriptorHeap_ = CreateDescriptorHeap(device_.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 	//DSVの設定

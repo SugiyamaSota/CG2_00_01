@@ -77,6 +77,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>$(ProjectDir)engine\bonjin</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -100,6 +101,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalIncludeDirectories>$(ProjectDir)engine\bonjin</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -126,6 +128,7 @@
       <TreatWarningAsError>false</TreatWarningAsError>
       <Optimization>Disabled</Optimization>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)engine\bonjin</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -170,6 +173,7 @@
     <ClCompile Include="engine\math\Matrix.cpp" />
     <ClCompile Include="engine\math\vector.cpp" />
     <ClCompile Include="engine\sprite\sprite.cpp" />
+    <ClCompile Include="engine\windows\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\color\Color.h" />
@@ -203,6 +207,7 @@
     <ClInclude Include="engine\math\Struct.h" />
     <ClInclude Include="engine\math\vector.h" />
     <ClInclude Include="engine\sprite\sprite.h" />
+    <ClInclude Include="engine\windows\WinApp.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

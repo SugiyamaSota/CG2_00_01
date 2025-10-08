@@ -1,5 +1,5 @@
 #pragma once
-#include<stdint.h>
+
 
 // DirectX関連のSDKヘッダー
 #include <d3d12.h>
@@ -7,7 +7,6 @@
 #include <wrl/client.h>
 #include<vector>
 
-#include"../imgui/ImGuiManager.h"
 #include"../pso/PSOManager.h"
 #include"../math/Struct.h"
 
@@ -33,9 +32,6 @@ public:
 
 	// コマンドリストの実行と完了待機、リセットを行う関数を追加
 	void WaitAndResetCommandList();
-
-	//// ゲッター /////
-	HWND GetHWND() { return hwnd_; }
 
 	// デバイス関連
 	ID3D12Device* GetDevice() { return device_.Get(); }
@@ -86,14 +82,6 @@ private:
 
 	// シングルトンインスタンスを保持する静的メンバー変数
 	static DirectXCommon* instance_;
-
-	///// プライベート変数 /////
-	// 画面サイズ
-	int32_t clientWidth_ = 1280;
-	int32_t clientHeight_ = 720;
-
-	// ウィンドウ
-	HWND hwnd_ = nullptr;
 
 	// デバイス関連
 	Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
@@ -170,7 +158,6 @@ private:
 	void CreateDepth();
 	void CreateLight();
 
-	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception);
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(ID3D12Device* device, int32_t width, int32_t height);
 };

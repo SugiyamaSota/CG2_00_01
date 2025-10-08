@@ -1,16 +1,6 @@
-#include"engine/bonjin/BonjinEngine.h"
+#include"BonjinEngine.h"
 
 using namespace BonjinEngine;
-
-// グリッド描画用の頂点構造体
-struct GridVertex {
-	Vector4 position;
-};
-
-// ワールドビュープロジェクション行列用の定数バッファ
-struct GridTransformationMatrix {
-	Matrix4x4 worldviewProjection;
-};
 
 //クライアント領域のサイズ
 const int32_t kClientWidth = 1280;
