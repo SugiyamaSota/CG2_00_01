@@ -33,7 +33,7 @@ void Player::Move() {
 		if (std::abs(lStickX) > kPadDeadZone_) {
 			// 加速/減速
 			Vector3 acceleration = {};
-			if (lStickX > 0) { // 右に移動
+			if (lStickX > 0 || Input::GetInstance()->IsTrigger(DIK_D)) { // 右に移動
 				if (velocity_.x < 0.0f) {
 					velocity_.x *= (1.0f - kAttenuation);
 				}
@@ -43,7 +43,7 @@ void Player::Move() {
 					turnFirstRotationY_ = worldTransform_.rotate.y;
 					turnTimer_ = kTimeTurn;
 				}
-			} else if (lStickX < 0) { // 左に移動
+			} else if (lStickX < 0 || Input::GetInstance()->IsTrigger(DIK_A)) { // 左に移動
 				if (velocity_.x > 0.0f) {
 					velocity_.x *= (1.0f - kAttenuation);
 				}
@@ -66,7 +66,7 @@ void Player::Move() {
 		}
 
 		// Aボタンでジャンプ
-		if (Input::GetInstance()->IsPadPress(0)) {
+		if (Input::GetInstance()->IsPadPress(0) || Input::GetInstance()->IsTrigger(DIK_SPACE)) {
 			velocity_ = Add(velocity_, Vector3(0, kJumpAcceleration, 0));
 		}
 	} else {
@@ -109,7 +109,6 @@ void Player::isCollisionMap(CollisionMapInfo& info) {
 	isCollisionMapRight(info);
 	isCollisionMapTop(info);
 	isCollisionMapBottom(info);
-
 }
 
 // 天井の衝突判定
@@ -412,7 +411,7 @@ void Player::Update() {
 	model_->Update(worldTransform_,camera_);
 
 	// XボタンでshootAnchor
-	if (Input::GetInstance()->IsPadTrigger(2)) {
+	if (Input::GetInstance()->IsPadTrigger(2) || Input::GetInstance()->IsTrigger(DIK_J)) {
 		shootAnchor();
 	}
 
@@ -429,7 +428,7 @@ void Player::Update() {
 	}
 
 	// Yボタンでテレポート
-	if (Input::GetInstance()->IsPadTrigger(1)) {
+	if (Input::GetInstance()->IsPadTrigger(1) || Input::GetInstance()->IsTrigger(DIK_K)) {
 		// アンカーが存在し、isStandByがtrueの場合
 		if (anchor_ && anchor_->GetStandBy()) {
 			// アンカーの位置を取得

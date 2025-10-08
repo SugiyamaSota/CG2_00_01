@@ -56,7 +56,7 @@ void TitleScene::Update() {
 	break;
 	case TitlePhase::kActive:
 		// スペースキーが押されたらフェードアウト開始
-		if (Input::GetInstance()->IsPadTrigger(0)) {
+		if (Input::GetInstance()->IsPadTrigger(0)||Input::GetInstance()->IsTrigger(DIK_SPACE)) {
 			phase_ = TitlePhase::kFadeOut;
 			phaseTimer_ = 0.0f;
 		}

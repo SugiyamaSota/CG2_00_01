@@ -194,7 +194,7 @@ void GameScene::Update() {
 
 
 		// Lキーが押されたら、ロックオン中の敵をすべて削除する
-		if (Input::GetInstance()->IsPadTrigger(3)) {
+		if (Input::GetInstance()->IsPadTrigger(3) || Input::GetInstance()->IsTrigger(DIK_L)) {
 			// Playerクラスのメソッドを呼び出し、ロックオンリストを渡す
 			player_->RemoveLockedOnEnemies(lockedOnEnemies_);
 		}
