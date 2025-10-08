@@ -56,8 +56,21 @@ WinApp::~WinApp() {
 	CloseWindow(hwnd_);
 }
 
-void WinApp::Update() {
-	
+bool WinApp::ProcessMessage() {
+	MSG msg{};
+
+	if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+	if (msg.message == WM_QUIT)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 
@@ -67,6 +80,13 @@ LRESULT CALLBACK WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 	}
 	// メッセージに応じてゲーム固有の処理を行う
 	switch (msg) {
+	case WM_KEYUP: // キーが離されたとき
+		// Escキーが押されたら
+		if (wparam == VK_ESCAPE) {
+			// Windowを閉じるメッセージを送信する
+			PostMessage(hwnd, WM_CLOSE, 0, 0);
+		}
+		return 0;
 		// ウィンドウが破棄された
 	case WM_DESTROY:
 		// OSに対して、アプリの終了を伝える

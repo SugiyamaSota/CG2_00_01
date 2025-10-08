@@ -29,52 +29,48 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	Model* skydome = new Model();
 	skydome->LoadModel("debugSkydome");
 
-	//ウィンドウの×ボタンが押されるまでループ
-	MSG msg{};
-	while (msg.message != WM_QUIT) {
+	while (true) {
 		//Windowにメッセージが来てたら最優先で処理させる
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		} else {
-			NewFrame();
-			///
-			/// 更新処理ここから
-			///
-
-			camera->Update(Camera::CameraType::kDebug);
-
-			model->Update(worldTransform, camera);
-
-			if(Input::GetInstance()->IsPadPress(0)) {
-				worldTransform.translate.x++;
-			}
-
-			// グリッドとデバッグ用天球
-			skydome->SetColor({ 0,0,0,1 });
-			skydome->Update(skydomeWorldTransform, camera);
-			grid->Update(camera);
-
-
-			///
-			/// 更新処理ここまで
-			/// 
-			PreDraw();
-			///
-			/// 描画処理ここから
-			///
-			model->Draw();
-
-			// グリッドとデバッグ用天球
-			skydome->Draw();
-			grid->Draw();
-
-
-			///
-			/// 描画処理ここまで
-			///
-			EndFrame();
+		if (WinApp::GetInstance()->ProcessMessage()) {
+			break;
 		}
+		NewFrame();
+		///
+		/// 更新処理ここから
+		///
+
+		camera->Update(Camera::CameraType::kDebug);
+
+		model->Update(worldTransform, camera);
+
+		if (Input::GetInstance()->IsPadPress(0)) {
+			worldTransform.translate.x++;
+		}
+
+		// グリッドとデバッグ用天球
+		skydome->SetColor({ 0,0,0,1 });
+		skydome->Update(skydomeWorldTransform, camera);
+		grid->Update(camera);
+
+
+		///
+		/// 更新処理ここまで
+		/// 
+		PreDraw();
+		///
+		/// 描画処理ここから
+		///
+		model->Draw();
+
+		// グリッドとデバッグ用天球
+		skydome->Draw();
+		grid->Draw();
+
+
+		///
+		/// 描画処理ここまで
+		///
+		EndFrame();
 	}
 
 	/////  解放処理 /////

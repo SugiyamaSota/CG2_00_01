@@ -18,7 +18,7 @@ DirectXCommon* DirectXCommon::GetInstance(HINSTANCE hInstance, int32_t kClientWi
 	}
 	return instance_;
 }
-void DirectXCommon::DestroyInstance() { // ★追加★
+void DirectXCommon::DestroyInstance() {
     delete instance_; // シングルトンインスタンスを解放
     instance_ = nullptr;
 }

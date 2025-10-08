@@ -16,8 +16,8 @@ public:
 	/// --- 汎用関数 ---
 	// デストラクタ
 	~WinApp();
-	// 更新
-	void Update();
+	// ウィンドウ管理
+	bool ProcessMessage();
 
 
 	/// --- 取得関数 ---
@@ -28,18 +28,9 @@ public:
 	HWND GetHWND() { return hwnd_; }
 
 private:
-	// シングルトンインスタンスを保持
-	static WinApp* instance_;
-
-	// プライベートコンストラクタ
-	WinApp();
-
-	/// --- 汎用関数 ---
-	// 初期化 (GetInstanceから内部的に呼び出されます)
-	void Initialize(); // Typoを修正: Initialzie -> Initialize
-
-
 	/// --- 変数 --- 
+	// シングルトンインスタンス
+	static WinApp* instance_;
 	// クライアント領域
 	const int32_t kClientWidth = 1280;
 	const int32_t kClientHeight = 720;
@@ -48,6 +39,11 @@ private:
 
 
 	/// --- 関数 ---
+
+	// プライベートコンストラクタ
+	WinApp();
+	// 初期化
+	void Initialize();
 	// ウィンドウプロシージャ
 	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 };
