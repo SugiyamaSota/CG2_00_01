@@ -34,7 +34,7 @@ void Model::LoadModel(const std::string& fileName) {
 	materialData_ = nullptr;
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	materialData_->enableLighting = false;
+	materialData_->enableLighting = true;
 	materialData_->uvTransform = MakeIdentity4x4();
 
 	// WVP用のリソース
@@ -73,7 +73,9 @@ void Model::Draw() {
 	DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
 	//SRVようのdescriptionTavleの先頭を設定
 	DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetGPUHandle(textureHandle_));
-	//描画!3頂点で1つのインスタンス
+	//光
+	DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(3, DirectXCommon::GetInstance()->GetDirectionalLightResource()->GetGPUVirtualAddress());
+	//描画!
 	DirectXCommon::GetInstance()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 }
 
