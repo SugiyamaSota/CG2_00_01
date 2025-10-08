@@ -22,6 +22,9 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
 		(void**)directInput_.GetAddressOf(), nullptr);
 	assert(SUCCEEDED(hr));
 
+    // hwndを保持
+    this->hwnd_ = hwnd;
+
 	// キーボードデバイスの取得
 	hr = directInput_->CreateDevice(GUID_SysKeyboard, keyboard_.GetAddressOf(), NULL);
 	assert(SUCCEEDED(hr));
@@ -130,6 +133,25 @@ void Input::Update() {
             ZeroMemory(&gamepadState_, sizeof(gamepadState_));
         }
     }
+
+    // マウス固定状態の処理
+    if (isMouseLocked_) {
+        RECT clientRect;
+        GetClientRect(hwnd_, &clientRect);
+
+        // クライアント座標をスクリーン座標に変換
+        POINT clientTopLeft = { clientRect.left, clientRect.top };
+        POINT clientBottomRight = { clientRect.right, clientRect.bottom };
+        ClientToScreen(hwnd_, &clientTopLeft);
+        ClientToScreen(hwnd_, &clientBottomRight);
+
+        // 中央座標を計算（スクリーン座標）
+        int centerX = (clientTopLeft.x + clientBottomRight.x) / 2;
+        int centerY = (clientTopLeft.y + clientBottomRight.y) / 2;
+
+        // 強制的に中央に戻す
+        SetCursorPos(centerX, centerY);
+    }
 }
 
 bool Input::IsPress(int DIK_KEY) {
@@ -159,6 +181,50 @@ long Input::GetMouseDeltaY() {
 
 long Input::GetMouseWheel() {
 	return mouseState_.lZ;
+}
+
+void Input::SetMouseLock(bool lock) {
+    if (isMouseLocked_ == lock) {
+        return;
+    }
+    isMouseLocked_ = lock;
+
+    if (isMouseLocked_) {
+        // 1. カーソルを非表示
+        ShowCursor(FALSE);
+
+        // 2. カーソルをウィンドウ内に制限 (ClipCursor)
+        RECT clientRect;
+        // クライアント領域の座標を取得
+        GetClientRect(hwnd_, &clientRect);
+
+        // クライアント座標をスクリーン座標に変換 (ClipCursorはスクリーン座標を要求するため)
+        POINT clientTopLeft = { clientRect.left, clientRect.top };
+        POINT clientBottomRight = { clientRect.right, clientRect.bottom };
+        ClientToScreen(hwnd_, &clientTopLeft);
+        ClientToScreen(hwnd_, &clientBottomRight);
+
+        RECT clipRect;
+        clipRect.left = clientTopLeft.x;
+        clipRect.top = clientTopLeft.y;
+        clipRect.right = clientBottomRight.x;
+        clipRect.bottom = clientBottomRight.y;
+
+        // マウス入力をこの領域内に制限
+        ClipCursor(&clipRect);
+
+        // 3. カーソルを中央にリセット（固定開始時）
+        int centerX = (clipRect.left + clipRect.right) / 2;
+        int centerY = (clipRect.top + clipRect.bottom) / 2;
+        SetCursorPos(centerX, centerY);
+
+    } else {
+        // 1. カーソルを再表示
+        ShowCursor(TRUE);
+
+        // 2. カーソル制限を解除
+        ClipCursor(NULL);
+    }
 }
 
 bool Input::IsPadPress(int button) {

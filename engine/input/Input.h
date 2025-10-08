@@ -28,6 +28,10 @@ private:
     DIJOYSTATE2 gamepadState_;
     DIJOYSTATE2 prevGamepadState_;
 
+    // マウス固定関連
+    bool isMouseLocked_ = false;
+    HWND hwnd_ = nullptr;
+
 public:
     /// --- 入力クラス全般 ---
     // シングルトンインスタンスを取得
@@ -58,6 +62,9 @@ public:
 
     // マウスのホイール移動量を取得
     long GetMouseWheel();
+
+    // マウスの固定状態の変更
+    void SetMouseLock(bool lock);
 
     /// --- ゲームパッド入力 ---
     // パッドのボタンが押されているか

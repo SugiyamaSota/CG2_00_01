@@ -27,6 +27,7 @@ void BonjinEngine::Initialize(HINSTANCE hInstance, int32_t clientWidth, int32_t 
 	// directXcommon、Input、テクスチャのインスタンスを取得
 	DirectXCommon::GetInstance(hInstance, clientWidth, clientHeight);
 	Input::GetInstance()->Initialize(hInstance, DirectXCommon::GetInstance()->GetHWND());
+	Input::GetInstance()->SetMouseLock(true);
 	TextureManager::GetInstance();
 	ImGuiManager::GetInstance()->Initialize();
 }
