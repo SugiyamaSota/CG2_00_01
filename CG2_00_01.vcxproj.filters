@@ -276,9 +276,9 @@
     <None Include="engine\shander\Object3d.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="engine\shander\Object3d.PS.hlsl" />
-    <FxCompile Include="engine\shander\Object3d.VS.hlsl" />
     <FxCompile Include="engine\shader\Grid.VS.hlsl" />
     <FxCompile Include="engine\shader\Grid.PS.hlsl" />
+    <FxCompile Include="resources\shader\Object3d.PS.hlsl" />
+    <FxCompile Include="resources\shader\Object3d.VS.hlsl" />
   </ItemGroup>
 </Project>

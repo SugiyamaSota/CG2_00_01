@@ -61,6 +61,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 			}
 
 			// グリッドとデバッグ用天球
+			skydome->SetColor({ 0,0,0,1 });
 			skydome->Update(skydomeWorldTransform, camera);
 			grid->Update(camera);
 
