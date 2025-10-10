@@ -1,13 +1,7 @@
 #include "TextureManager.h"
-#include <cassert>
-#include "../function/Utility.h" 
-#include "../common/DirectXCommon.h" 
-#include "../../externals/DirectXTex/d3dx12.h" 
 
-// 静的メンバ変数の実体を定義
 TextureManager* TextureManager::instance_ = nullptr;
 
-// GetInstance メソッドの実装
 TextureManager* TextureManager::GetInstance() {
 	if (instance_ == nullptr) {
 		instance_ = new TextureManager();
@@ -32,7 +26,6 @@ void TextureManager::Initialize() {
 	nextHandleIndex_ = 0;
 }
 
-// 戻り値を int に変更
 int TextureManager::LoadTexture(const std::string& filePath) {
 
 	// 既にロード済みであれば、既存のインデックスを返す
