@@ -1,8 +1,20 @@
-#pragma once
+﻿#pragma once
 #include <d3d12.h>
 #include <wrl/client.h>
 #include <vector>
 #include<dxcapi.h>
+
+enum class BlendMode {
+    kNone,        // ブレンドなし (不透明)
+    kNormal,      // 通常αブレンド。Src * SrcA + Dest * (1 - SrcA)
+    kAdd,         // 加算。Src * SrcA + Dest * 1
+    kSubtract,    // 減算。Dest * 1 - Src * SrcA
+    kMutiliy,     // 乗算。Src * 0 + Dest * Src
+    kScreen,      // スクリーン。Src * (1 - Dest) + Dest * 1
+
+    // ⭐ 要素の総数
+    kCount,
+};
 
 class GraphicsPipelineStateBuilder {
 public:
@@ -22,6 +34,8 @@ public:
     GraphicsPipelineStateBuilder& SetSampleMask(UINT mask);
 
     Microsoft::WRL::ComPtr<ID3D12PipelineState> Build(ID3D12Device* device);
+
+    GraphicsPipelineStateBuilder& SetBlendMode(BlendMode blendMode);
 
 private:
     D3D12_GRAPHICS_PIPELINE_STATE_DESC desc_;

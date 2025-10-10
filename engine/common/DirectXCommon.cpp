@@ -121,8 +121,8 @@ void DirectXCommon::NewFeame() {
 	//描画先のRTVとDSVを設定
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 	commandList_->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, &dsvHandle);
-	commandList_->SetGraphicsRootSignature(pso->GetDefaultRootSignature());
-	commandList_->SetPipelineState(pso->GetDefaultPipelineState());//PSOを設定 
+	//commandList_->SetGraphicsRootSignature(pso->GetDefaultRootSignature());
+	//commandList_->SetPipelineState(pso->GetDefaultPipelineState());//PSOを設定 
 
 	//TransitionBarrierの設定
 	//今回のバリアはTransition
@@ -151,7 +151,7 @@ void DirectXCommon::NewFeame() {
 	commandList_->RSSetScissorRects(1, &scissorRect_);//Scirssorを設定
 
 	//光
-	commandList_->SetGraphicsRootConstantBufferView(3, directionalLightResource_.Get()->GetGPUVirtualAddress());
+	//commandList_->SetGraphicsRootConstantBufferView(3, directionalLightResource_.Get()->GetGPUVirtualAddress());
 }
 
 void DirectXCommon::EndFrame() {
