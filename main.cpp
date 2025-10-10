@@ -44,12 +44,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 		model->SetEnableLighting(true);
 		model->Update(worldTransform, camera);
 
-		ImGui::Begin("debug");
-
-		ImGui::Text("%f", model->GetAlpha());
-
-		ImGui::End();
-
 		// グリッドとデバッグ用天球
 		skydome->Update(skydomeWorldTransform, camera);
 		grid->Update(camera);
