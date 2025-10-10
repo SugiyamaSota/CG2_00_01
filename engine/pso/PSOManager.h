@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <dxcapi.h>
+#include<array>
 
 #include "shaderCompiler/ShaderCompiler.h"
 #include "rootSignatureBuilder/RootSignatureBuilder.h"
@@ -28,15 +29,20 @@ public:
 
 	// デフォルトのオブジェクトのゲッター
 	ID3D12RootSignature* GetDefaultRootSignature() const { return defaultRootSignature_.Get(); }
-	ID3D12PipelineState* GetDefaultPipelineState() const { return defaultGraphicsPipelineState_.Get(); }
+	ID3D12PipelineState* GetDefaultPipelineState(BlendMode mode) const {
+		return defaultGPS_[static_cast<size_t>(mode)].Get();
+	}
 
 	// グリッド描画用のオブジェクトのゲッター
 	ID3D12RootSignature* GetLineRootSignature() const { return lineRootSignature_.Get(); }
 	ID3D12PipelineState* GetLinePipelineState() const { return lineGraphicsPipelineState_.Get(); }
 
+	// ブレンドモード設定
+
+
 private:
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> defaultRootSignature_;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> defaultGraphicsPipelineState_;
+	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, static_cast<size_t>(BlendMode::kCount)>defaultGPS_;
 
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> lineRootSignature_;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> lineGraphicsPipelineState_;

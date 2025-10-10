@@ -34,7 +34,7 @@ void Model::LoadModel(const std::string& fileName) {
 	materialData_ = nullptr;
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	materialData_->enableLighting = false;
+	materialData_->enableLighting = true;
 	materialData_->uvTransform = MakeIdentity4x4();
 
 	// WVP用のリソース
@@ -61,7 +61,7 @@ void Model::Update(WorldTransform worldTransform, Camera* camera) {
 void Model::Draw() {
 	// PSOの設定
 	DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootSignature(DirectXCommon::GetInstance()->GetPSO()->GetDefaultRootSignature());
-	DirectXCommon::GetInstance()->GetCommandList()->SetPipelineState(DirectXCommon::GetInstance()->GetPSO()->GetDefaultPipelineState());//PSOを設定 
+	DirectXCommon::GetInstance()->GetCommandList()->SetPipelineState(DirectXCommon::GetInstance()->GetPSO()->GetDefaultPipelineState(BlendMode::kNone));
 
 	//モデルの描画
 	DirectXCommon::GetInstance()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);//VBVを設定

@@ -82,17 +82,6 @@ void PSOManager::InitializeDefaultPSO(
     inputLayoutDesc.pInputElementDescs = inputElementDescs;
     inputLayoutDesc.NumElements = _countof(inputElementDescs);
 
-    // BlendState
-    D3D12_BLEND_DESC blendDesc{};
-    blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-    blendDesc.RenderTarget[0].BlendEnable = true;
-    blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-    blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-    blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-    blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
-    blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
-    blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
-
     // RasterizerState
     D3D12_RASTERIZER_DESC rasterizerDesc{};
     rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
@@ -104,20 +93,24 @@ void PSOManager::InitializeDefaultPSO(
     depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
     depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
-    // GraphicsPipelineStateBuilder を使用してPSOを作成
-    GraphicsPipelineStateBuilder psoBuilder;
-    defaultGraphicsPipelineState_ = psoBuilder
-        .SetRootSignature(defaultRootSignature_.Get())
-        .SetInputLayout(inputLayoutDesc)
-        .SetVertexShader(vertexShaderBlob.Get())
-        .SetPixelShader(pixelShaderBlob.Get())
-        .SetBlendState(blendDesc)
-        .SetRasterizerState(rasterizerDesc)
-        .SetDepthStencilState(depthStencilDesc)
-        .AddRenderTargetFormat(rtvFormat)
-        .SetDepthStencilViewFormat(dsvFormat)
-        .SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE)
-        .Build(device);
+    for (int i = 0; i < static_cast<int>(BlendMode::kCount); ++i) {
+        BlendMode mode = static_cast<BlendMode>(i);
+
+        // GraphicsPipelineStateBuilder を使用してPSOを作成
+        GraphicsPipelineStateBuilder psoBuilder;
+       defaultGPS_[i] = psoBuilder
+            .SetRootSignature(defaultRootSignature_.Get())
+            .SetInputLayout(inputLayoutDesc)
+            .SetVertexShader(vertexShaderBlob.Get())
+            .SetPixelShader(pixelShaderBlob.Get())
+            .SetBlendMode(mode)
+            .SetRasterizerState(rasterizerDesc)
+            .SetDepthStencilState(depthStencilDesc)
+            .AddRenderTargetFormat(rtvFormat)
+            .SetDepthStencilViewFormat(dsvFormat)
+            .SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE)
+            .Build(device);
+    }
 }
 
 void PSOManager::InitializeLinePSO(
@@ -157,10 +150,6 @@ void PSOManager::InitializeLinePSO(
     lineInputLayoutDesc.pInputElementDescs = lineInputElementDescs;
     lineInputLayoutDesc.NumElements = _countof(lineInputElementDescs);
 
-    // BlendState
-    D3D12_BLEND_DESC lineBlendDesc{};
-    lineBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-
     // RasterizerState
     D3D12_RASTERIZER_DESC lineRasterizerDesc{};
     lineRasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
@@ -179,7 +168,7 @@ void PSOManager::InitializeLinePSO(
         .SetInputLayout(lineInputLayoutDesc)
         .SetVertexShader(lineVertexShaderBlob.Get())
         .SetPixelShader(linePixelShaderBlob.Get())
-        .SetBlendState(lineBlendDesc)
+        .SetBlendMode(BlendMode::kNone)
         .SetRasterizerState(lineRasterizerDesc)
         .SetDepthStencilState(lineDepthStencilDesc)
         .AddRenderTargetFormat(rtvFormat)
