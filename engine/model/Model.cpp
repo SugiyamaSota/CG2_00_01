@@ -51,8 +51,8 @@ void Model::Update(WorldTransform worldTransform, Camera* camera) {
 
 void Model::Draw() {
 	// PSOの設定
-	common->GetCommandList()->SetGraphicsRootSignature(common->GetPSO()->GetDefaultRootSignature());
-	common->GetCommandList()->SetPipelineState(common->GetPSO()->GetDefaultPipelineState(BlendMode::kNormal));
+	common->GetCommandList()->SetGraphicsRootSignature(common->GetPSO()->GetRootSignature(PrimitiveType::kModel));
+	common->GetCommandList()->SetPipelineState(common->GetPSO()->GetPipelineState(PrimitiveType::kModel, BlendMode::kNormal));
 
 	//　モデルの描画
 	// VBV

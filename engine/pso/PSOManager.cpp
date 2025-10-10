@@ -2,18 +2,53 @@
 #include <cassert>
 #include <format>
 
+// ⭐ シェーダーファイルパスの定数定義 [PrimitiveType][ShaderStage]
+static const wchar_t* kShaderPaths[static_cast<size_t>(PrimitiveType::kCount)]
+[static_cast<size_t>(ShaderStage::kCount)] = {
+    // kModel
+    { L"engine/shader/Object3d.VS.hlsl", L"engine/shader/Object3d.PS.hlsl" },
+    // kLine
+    { L"engine/shader/Grid.VS.hlsl", L"engine/shader/Grid.PS.hlsl" }
+};
+
+// ⭐ シェーダープロファイルの定数定義 [ShaderStage]
+static const wchar_t* kShaderProfiles[static_cast<size_t>(ShaderStage::kCount)] = {
+    L"vs_6_0", // kVertex
+    L"ps_6_0"  // kPixel
+};
+
 PSOManager::PSOManager() {
     shaderCompiler_.InitializeDxc(); // コンストラクタでDXCを初期化
 }
 
 PSOManager::~PSOManager() {}
 
-void PSOManager::InitializeDefaultPSO(
-    ID3D12Device* device,
-    DXGI_FORMAT rtvFormat,
-    DXGI_FORMAT dsvFormat) {
+void PSOManager::Initialize(ID3D12Device* device,DXGI_FORMAT rtvFormat,DXGI_FORMAT dsvFormat)
+{
+    /// --- 形状ごとのRoorSignature ---
+    CreateRootSignature(device);
 
-    // RootSignatureBuilder を使用してルートシグネチャを作成
+    /// --- 共通の初期化 ---
+    // RasterizerState
+    rasterizerDesc_.CullMode = D3D12_CULL_MODE_BACK;
+    rasterizerDesc_.FillMode = D3D12_FILL_MODE_SOLID;
+
+    /// --- シェーダー ---
+    CompileAllShaders();
+
+    /// --- InputLayout ---
+    CreateInputLayout();
+
+    /// --- DepthStencilState ---
+    CreateDepthStencil();
+
+    /// --- PSO作成 ---
+    CreatePSO(device,rtvFormat,dsvFormat);
+}
+
+void PSOManager::CreateRootSignature(ID3D12Device* device)
+{
+    // モデル
     RootSignatureBuilder rootSigBuilder;
     rootSigBuilder.SetFlags(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
@@ -56,69 +91,9 @@ void PSOManager::InitializeDefaultPSO(
         rootSigBuilder.AddStaticSampler(staticSamplers[i]);
     }
 
-    defaultRootSignature_ = rootSigBuilder.Build(device);
+    rootSignatures_[(size_t)PrimitiveType::kModel] = rootSigBuilder.Build(device);
 
-    // シェーダーをコンパイル
-    Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = shaderCompiler_.CompileShader(L"engine/shader/Object3d.VS.hlsl", L"vs_6_0");
-    assert(vertexShaderBlob != nullptr);
-    Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = shaderCompiler_.CompileShader(L"engine/shader/Object3d.PS.hlsl", L"ps_6_0");
-    assert(pixelShaderBlob != nullptr);
-
-    // InputLayout
-    D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
-    inputElementDescs[0].SemanticName = "POSITION";
-    inputElementDescs[0].SemanticIndex = 0;
-    inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-    inputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-    inputElementDescs[1].SemanticName = "TEXCOORD";
-    inputElementDescs[1].SemanticIndex = 0;
-    inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-    inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-    inputElementDescs[2].SemanticName = "NORMAL";
-    inputElementDescs[2].SemanticIndex = 0;
-    inputElementDescs[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-    inputElementDescs[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-    D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
-    inputLayoutDesc.pInputElementDescs = inputElementDescs;
-    inputLayoutDesc.NumElements = _countof(inputElementDescs);
-
-    // RasterizerState
-    D3D12_RASTERIZER_DESC rasterizerDesc{};
-    rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
-    rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-
-    // DepthStencilState
-    D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
-    depthStencilDesc.DepthEnable = true;
-    depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-    depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-
-    for (int i = 0; i < static_cast<int>(BlendMode::kCount); ++i) {
-        BlendMode mode = static_cast<BlendMode>(i);
-
-        // GraphicsPipelineStateBuilder を使用してPSOを作成
-        GraphicsPipelineStateBuilder psoBuilder;
-       defaultGPS_[i] = psoBuilder
-            .SetRootSignature(defaultRootSignature_.Get())
-            .SetInputLayout(inputLayoutDesc)
-            .SetVertexShader(vertexShaderBlob.Get())
-            .SetPixelShader(pixelShaderBlob.Get())
-            .SetBlendMode(mode)
-            .SetRasterizerState(rasterizerDesc)
-            .SetDepthStencilState(depthStencilDesc)
-            .AddRenderTargetFormat(rtvFormat)
-            .SetDepthStencilViewFormat(dsvFormat)
-            .SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE)
-            .Build(device);
-    }
-}
-
-void PSOManager::InitializeLinePSO(
-    ID3D12Device* device,
-    DXGI_FORMAT rtvFormat,
-    DXGI_FORMAT dsvFormat) {
-
-    // RootSignatureBuilder を使用してライン用ルートシグネチャを作成
+    // グリッド
     RootSignatureBuilder lineRootSigBuilder;
     lineRootSigBuilder.SetFlags(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
@@ -128,49 +103,100 @@ void PSOManager::InitializeLinePSO(
     lineRootParameters[0].Descriptor.ShaderRegister = 0;
     lineRootSigBuilder.AddRootParameter(lineRootParameters[0]);
 
-    lineRootSignature_ = lineRootSigBuilder.Build(device);
+    rootSignatures_[(size_t)PrimitiveType::kGrid] = lineRootSigBuilder.Build(device);
+}
 
-    // シェーダーをコンパイル
-    Microsoft::WRL::ComPtr<IDxcBlob> lineVertexShaderBlob = shaderCompiler_.CompileShader(L"engine/shader/Grid.VS.hlsl", L"vs_6_0");
-    assert(lineVertexShaderBlob != nullptr);
-    Microsoft::WRL::ComPtr<IDxcBlob> linePixelShaderBlob = shaderCompiler_.CompileShader(L"engine/shader/Grid.PS.hlsl", L"ps_6_0");
-    assert(linePixelShaderBlob != nullptr);
+void PSOManager::CompileAllShaders() {
+    for (int i = 0; i < static_cast<int>(PrimitiveType::kCount); ++i) {
+        for (int j = 0; j < static_cast<int>(ShaderStage::kCount); ++j) {
 
-    // InputLayout
-    D3D12_INPUT_ELEMENT_DESC lineInputElementDescs[2] = {};
-    lineInputElementDescs[0].SemanticName = "POSITION";
-    lineInputElementDescs[0].SemanticIndex = 0;
-    lineInputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-    lineInputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-    lineInputElementDescs[1].SemanticName = "TEXCOORD";
-    lineInputElementDescs[1].SemanticIndex = 0;
-    lineInputElementDescs[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-    lineInputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-    D3D12_INPUT_LAYOUT_DESC lineInputLayoutDesc{};
-    lineInputLayoutDesc.pInputElementDescs = lineInputElementDescs;
-    lineInputLayoutDesc.NumElements = _countof(lineInputElementDescs);
+            // パスとプロファイルを取得
+            const wchar_t* path = kShaderPaths[i][j];
+            const wchar_t* profile = kShaderProfiles[j];
 
-    // RasterizerState
-    D3D12_RASTERIZER_DESC lineRasterizerDesc{};
-    lineRasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
-    lineRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+            // コンパイルして配列に格納
+            shaderBlobs_[i][j] = shaderCompiler_.CompileShader(path, profile);
+            assert(shaderBlobs_[i][j] != nullptr && "Shader compilation failed!");
+        }
+    }
+}
 
-    // DepthStencilState
-    D3D12_DEPTH_STENCIL_DESC lineDepthStencilDesc = {};
-    lineDepthStencilDesc.DepthEnable = true;
-    lineDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-    lineDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+void PSOManager::CreateInputLayout()
+{
+    // モデル
+    modelInputElementDescs_[0].SemanticName = "POSITION";
+    modelInputElementDescs_[0].SemanticIndex = 0;
+    modelInputElementDescs_[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+    modelInputElementDescs_[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+    modelInputElementDescs_[1].SemanticName = "TEXCOORD";
+    modelInputElementDescs_[1].SemanticIndex = 0;
+    modelInputElementDescs_[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+    modelInputElementDescs_[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+    modelInputElementDescs_[2].SemanticName = "NORMAL";
+    modelInputElementDescs_[2].SemanticIndex = 0;
+    modelInputElementDescs_[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+    modelInputElementDescs_[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-    // GraphicsPipelineStateBuilder を使用してライン用PSOを作成
+    // ⭐ メンバ配列のアドレスとサイズを設定する
+    inputLayoutDescs_[(size_t)PrimitiveType::kModel].pInputElementDescs = modelInputElementDescs_.data();
+    inputLayoutDescs_[(size_t)PrimitiveType::kModel].NumElements = kModelInputElements;
+
+    // グリッド
+    gridInputElementDescs_[0].SemanticName = "POSITION";
+    gridInputElementDescs_[0].SemanticIndex = 0;
+    gridInputElementDescs_[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+    gridInputElementDescs_[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+    gridInputElementDescs_[1].SemanticName = "TEXCOORD";
+    gridInputElementDescs_[1].SemanticIndex = 0;
+    gridInputElementDescs_[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+    gridInputElementDescs_[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+    // ⭐ メンバ配列のアドレスとサイズを設定する
+    inputLayoutDescs_[(size_t)PrimitiveType::kGrid].pInputElementDescs = gridInputElementDescs_.data();
+    inputLayoutDescs_[(size_t)PrimitiveType::kGrid].NumElements = kGridInputElements;
+}
+void PSOManager::CreateDepthStencil() 
+{
+    // モデル
+    depthStencilDescs_[(size_t)PrimitiveType::kModel].DepthEnable = true;
+    depthStencilDescs_[(size_t)PrimitiveType::kModel].DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+    depthStencilDescs_[(size_t)PrimitiveType::kModel].DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+
+    // グリッド
+    depthStencilDescs_[(size_t)PrimitiveType::kGrid].DepthEnable = true;
+    depthStencilDescs_[(size_t)PrimitiveType::kGrid].DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+    depthStencilDescs_[(size_t)PrimitiveType::kGrid].DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+}
+
+void PSOManager::CreatePSO(ID3D12Device* device, DXGI_FORMAT rtvFormat, DXGI_FORMAT dsvFormat)
+{
+    // モデル
+    for (int i = 0; i < static_cast<int>(BlendMode::kCount); ++i) {
+        BlendMode mode = static_cast<BlendMode>(i);
+        GraphicsPipelineStateBuilder psoBuilder;
+        graphicsPipelineStates_[(size_t)PrimitiveType::kModel][i] = psoBuilder
+            .SetRootSignature(rootSignatures_[(size_t)PrimitiveType::kModel].Get())
+            .SetInputLayout(inputLayoutDescs_[(size_t)PrimitiveType::kModel])
+            .SetVertexShader(shaderBlobs_[(size_t)PrimitiveType::kModel][(size_t)ShaderStage::kVertex].Get())
+            .SetPixelShader(shaderBlobs_[(size_t)PrimitiveType::kModel][(size_t)ShaderStage::kPixel].Get())
+            .SetBlendMode(mode)
+            .SetRasterizerState(rasterizerDesc_)
+            .SetDepthStencilState(depthStencilDescs_[(size_t)PrimitiveType::kModel])
+            .AddRenderTargetFormat(rtvFormat)
+            .SetDepthStencilViewFormat(dsvFormat)
+            .SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE)
+            .Build(device);
+    }
+
     GraphicsPipelineStateBuilder linePsoBuilder;
-    lineGraphicsPipelineState_ = linePsoBuilder
-        .SetRootSignature(lineRootSignature_.Get())
-        .SetInputLayout(lineInputLayoutDesc)
-        .SetVertexShader(lineVertexShaderBlob.Get())
-        .SetPixelShader(linePixelShaderBlob.Get())
+    graphicsPipelineStates_[(size_t)PrimitiveType::kGrid][(size_t)BlendMode::kNone] = linePsoBuilder
+        .SetRootSignature(rootSignatures_[(size_t)PrimitiveType::kGrid].Get())
+        .SetInputLayout(inputLayoutDescs_[(size_t)PrimitiveType::kGrid])
+        .SetVertexShader(shaderBlobs_[(size_t)PrimitiveType::kGrid][(size_t)ShaderStage::kVertex].Get())
+        .SetPixelShader(shaderBlobs_[(size_t)PrimitiveType::kGrid][(size_t)ShaderStage::kPixel].Get())
         .SetBlendMode(BlendMode::kNone)
-        .SetRasterizerState(lineRasterizerDesc)
-        .SetDepthStencilState(lineDepthStencilDesc)
+        .SetRasterizerState(rasterizerDesc_)
+        .SetDepthStencilState(depthStencilDescs_[(size_t)PrimitiveType::kGrid])
         .AddRenderTargetFormat(rtvFormat)
         .SetDepthStencilViewFormat(dsvFormat)
         .SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE)

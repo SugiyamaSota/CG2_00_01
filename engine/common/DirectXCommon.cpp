@@ -82,16 +82,11 @@ void DirectXCommon::Initialize() {
 	pso = new PSOManager();
 
 	// PSOクラスを使用
-	pso->InitializeDefaultPSO(
+	pso->Initialize(
 		device_.Get(),
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
 		DXGI_FORMAT_D24_UNORM_S8_UINT
 	);
-
-	pso->InitializeLinePSO(
-		device_.Get(),
-		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-		DXGI_FORMAT_D24_UNORM_S8_UINT);
 
 	viewport_.Width = float(WinApp::GetInstance()->GetClientWidth());
 	viewport_.Height = float(WinApp::GetInstance()->GetClientHeight());

@@ -10,43 +10,100 @@
 #include "rootSignatureBuilder/RootSignatureBuilder.h"
 #include "graphicsPipelineStateBuilder/GraphicsPipelineStateBuilder.h"
 
+enum class PrimitiveType {
+	kModel,   // モデル
+	kGrid,    // グリッド
+	kCount,
+};
+
+enum class ShaderStage {
+	kVertex,
+	kPixel,
+	kCount,
+};
+
 class PSOManager {
 public:
 	PSOManager();
 	~PSOManager();
 
-	// デフォルトのPSOを初期化
-	void InitializeDefaultPSO(
+	void Initialize(
 		ID3D12Device* device,
 		DXGI_FORMAT rtvFormat,
 		DXGI_FORMAT dsvFormat);
 
-	// グリッド描画用のPSOを初期化
-	void InitializeLinePSO(
-		ID3D12Device* device,
-		DXGI_FORMAT rtvFormat,
-		DXGI_FORMAT dsvFormat);
-
-	// デフォルトのオブジェクトのゲッター
-	ID3D12RootSignature* GetDefaultRootSignature() const { return defaultRootSignature_.Get(); }
-	ID3D12PipelineState* GetDefaultPipelineState(BlendMode mode) const {
-		return defaultGPS_[static_cast<size_t>(mode)].Get();
+	// RootSignature
+	ID3D12RootSignature* GetRootSignature(PrimitiveType type) const {
+		return rootSignatures_[static_cast<size_t>(type)].Get();
 	}
 
-	// グリッド描画用のオブジェクトのゲッター
-	ID3D12RootSignature* GetLineRootSignature() const { return lineRootSignature_.Get(); }
-	ID3D12PipelineState* GetLinePipelineState() const { return lineGraphicsPipelineState_.Get(); }
-
-	// ブレンドモード設定
-
+	// PipelineState
+	ID3D12PipelineState* GetPipelineState(PrimitiveType type, BlendMode mode) const {
+		return graphicsPipelineStates_[static_cast<size_t>(type)][static_cast<size_t>(mode)].Get();
+	}
 
 private:
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> defaultRootSignature_;
-	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, static_cast<size_t>(BlendMode::kCount)>defaultGPS_;
+	/// --- 変数 ---
+	// RootSignatureを形状ごとに管理
+	std::array<
+		Microsoft::WRL::ComPtr<ID3D12RootSignature>,
+		static_cast<size_t>(PrimitiveType::kCount)
+	> rootSignatures_;
 
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> lineRootSignature_;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> lineGraphicsPipelineState_;
+	// pipelineStateを形状とブレンドごとに管理
+	std::array<
+		std::array<
+		Microsoft::WRL::ComPtr<ID3D12PipelineState>,
+		static_cast<size_t>(BlendMode::kCount)
+		>,
+		static_cast<size_t>(PrimitiveType::kCount)
+	> graphicsPipelineStates_;
 
 	// シェーダーコンパイラー
 	ShaderCompiler shaderCompiler_;
+
+	// ⭐ モデルの入力要素ディスクリプタを格納するメンバ配列
+	static const size_t kModelInputElements = 3;
+	std::array<
+		D3D12_INPUT_ELEMENT_DESC,
+		kModelInputElements
+	> modelInputElementDescs_;
+
+	// ⭐ グリッドの入力要素ディスクリプタを格納するメンバ配列
+	static const size_t kGridInputElements = 2;
+	std::array<
+		D3D12_INPUT_ELEMENT_DESC,
+		kGridInputElements
+	> gridInputElementDescs_;
+
+	// 形状ごとのインプットレイアウトディスク
+	std::array<
+		D3D12_INPUT_LAYOUT_DESC, 
+		static_cast<size_t>(PrimitiveType::kCount)>
+		inputLayoutDescs_;
+
+	// ラスタライザーディスク
+	D3D12_RASTERIZER_DESC rasterizerDesc_{};
+
+	// シェーダー
+	std::array<
+		std::array<
+		Microsoft::WRL::ComPtr<IDxcBlob>,
+		static_cast<size_t>(ShaderStage::kCount)
+		>,
+		static_cast<size_t>(PrimitiveType::kCount)
+	> shaderBlobs_;
+
+	// 形状ごとのDepthStencil
+	std::array<
+		D3D12_DEPTH_STENCIL_DESC,
+		static_cast<size_t>(PrimitiveType::kCount)
+	> depthStencilDescs_;
+
+	/// --- 関数 ---
+	void CreateRootSignature(ID3D12Device* device);
+	void CompileAllShaders();
+	void CreateInputLayout();
+	void CreateDepthStencil();
+	void CreatePSO(ID3D12Device* device, DXGI_FORMAT rtvFormat, DXGI_FORMAT dsvFormat);
 };

@@ -57,7 +57,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 		/// 描画処理ここから
 		///
 		// グリッドとデバッグ用天球
-		//skydome->Draw();
+		skydome->Draw();
 		grid->Draw();
 
 		model->Draw();
