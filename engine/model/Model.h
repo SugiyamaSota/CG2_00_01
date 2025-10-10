@@ -57,6 +57,9 @@ public:
 	/// <param name="color">設定したい色と透明度</param>
 	void SetColor(Vector4 color) { materialData_->color = color; }
 
+	/// --- 取得関数 ---
+	float GetAlpha() { return materialData_->color.w; }
+
 private:
 	/// --- 変数 ---
 	// モデルデータ

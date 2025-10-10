@@ -18,7 +18,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	// モデル
 	WorldTransform worldTransform = InitializeWorldTransform();
 	Model* model = new Model();
-	model->LoadModel("suzanne");
+	model->LoadModel("fence");
 
 	// グリッド
 	Grid* grid = new Grid();
@@ -44,9 +44,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 		model->SetEnableLighting(true);
 		model->Update(worldTransform, camera);
 
-		if (Input::GetInstance()->IsPadPress(0)) {
-			worldTransform.translate.x++;
-		}
+		ImGui::Begin("debug");
+
+		ImGui::Text("%f", model->GetAlpha());
+
+		ImGui::End();
 
 		// グリッドとデバッグ用天球
 		skydome->Update(skydomeWorldTransform, camera);
@@ -61,7 +63,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 		/// 描画処理ここから
 		///
 		// グリッドとデバッグ用天球
-		skydome->Draw();
+		//skydome->Draw();
 		grid->Draw();
 
 		model->Draw();

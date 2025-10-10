@@ -9,7 +9,7 @@ float DegToRad(float deg) {
 
 void Camera::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 	radius_ = 50.0f;
-	theta_ = DegToRad(180.0f);
+	theta_ = DegToRad(0.0f);
 	phi_ = DegToRad(75.0f);
 	targetPosition_ = { 0,0,0 };
 	isTargeting_ = true;

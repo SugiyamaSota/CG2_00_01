@@ -25,7 +25,7 @@ void Model::LoadModel(const std::string& fileName) {
 	materialData_ = nullptr;
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	materialData_->enableLighting = true;
+	materialData_->enableLighting = false;
 	materialData_->uvTransform = MakeIdentity4x4();
 
 	// WVP用のリソース
@@ -52,7 +52,7 @@ void Model::Update(WorldTransform worldTransform, Camera* camera) {
 void Model::Draw() {
 	// PSOの設定
 	common->GetCommandList()->SetGraphicsRootSignature(common->GetPSO()->GetDefaultRootSignature());
-	common->GetCommandList()->SetPipelineState(common->GetPSO()->GetDefaultPipelineState(BlendMode::kNone));
+	common->GetCommandList()->SetPipelineState(common->GetPSO()->GetDefaultPipelineState(BlendMode::kNormal));
 
 	//　モデルの描画
 	// VBV
