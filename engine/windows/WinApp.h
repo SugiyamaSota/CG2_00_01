@@ -6,33 +6,63 @@
 class WinApp {
 public:
 	/// --- インスタンス関連 ---
-	// 生成
+	/// <summary>
+	/// インスタンスを生成
+	/// </summary>
 	static WinApp* GetInstance();
 
-	// 破棄
+	/// <summary>
+	/// インスタンスを破棄
+	/// </summary>
 	static void DestroyInstance();
 
-	// コピーを禁止
+	/// <summary>
+	/// コピーコンストラクタを削除
+	/// </summary>
+	/// <param name=""></param>
 	WinApp(const WinApp&) = delete;
+
+	/// <summary>
+	/// コピー演算子を削除
+	/// </summary>
 	WinApp& operator=(const WinApp&) = delete;
 
 	/// --- 汎用関数 ---
-	// デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~WinApp();
 
-	// ウィンドウ管理
+	/// <summary>
+	/// ウィンドウ管理
+	/// </summary>
+	/// <returns>ウィンドウの有無</returns>
 	bool ProcessMessage();
 
 
 	/// --- 取得関数 ---
-	// クライアント領域
+	/// <summary>
+	/// クライアント領域の幅を取得
+	/// </summary>
+	/// <returns>画面の幅</returns>
 	int32_t GetClientWidth() { return kClientWidth; }
+
+	/// <summary>
+	/// クライアント領域の高さを取得
+	/// </summary>
+	/// <returns>画面の高さ</returns>
 	int32_t GetClientHeight() { return kClientHeight; }
 
-	// ウィンドウハンドル
+	/// <summary>
+	/// ウィンドウハンドルを取得
+	/// </summary>
+	/// <returns>ウィンドウハンドル</returns>
 	HWND GetHWND() { return hwnd_; }
 
-	// インスタンスハンドル
+	/// <summary>
+	/// インスタンスハンドルを取得
+	/// </summary>
+	/// <returns>インスタンスハンドル</returns>
 	HINSTANCE GetHInstance() { return hInstance_; }
 
 private:
@@ -50,17 +80,24 @@ private:
 	// インスタンスハンドル
 	HINSTANCE hInstance_ = nullptr;
 
-
 	/// --- 関数 ---
-	// プライベートコンストラクタ
+	/// <summary>
+	/// 空のコンストラクタ
+	/// </summary>
 	WinApp();
 
-	// 初期化
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
 	void Initialize();
 
-	// ウィンドウプロシージャ
+	/// <summary>
+	/// ウィンドウプロシージャ
+	/// </summary>
 	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
-	// ダンプ設定
+	/// <summary>
+	/// ダンプの設定
+	/// </summary>
 	static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception);
 };

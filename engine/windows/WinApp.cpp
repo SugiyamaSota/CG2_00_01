@@ -26,7 +26,7 @@ void WinApp::Initialize() {
 	// ダンプファイルの設定
 	SetUnhandledExceptionFilter(ExportDump);
 
-	//
+	// 必要な奴
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
 	// ウィンドウクラスの生成と登録
