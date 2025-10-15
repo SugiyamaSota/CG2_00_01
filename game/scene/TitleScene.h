@@ -39,6 +39,8 @@ public:
 	/// </summary>
 	void Initialize();
 
+	~TitleScene();
+
 	/// <summary>
 	/// 更新処理
 	/// </summary>

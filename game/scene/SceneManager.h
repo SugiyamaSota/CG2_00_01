@@ -27,6 +27,11 @@ public:
 	void Initialize();
 
 	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~SceneManager();
+
+	/// <summary>
 	/// 更新処理
 	/// </summary>
 	void Update();

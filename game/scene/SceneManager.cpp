@@ -13,6 +13,11 @@ void SceneManager::Initialize() {
 	}
 }
 
+SceneManager::~SceneManager() {
+	delete titleScene_;
+	delete gameScene_;
+}
+
 void SceneManager::Update() {
 	switch (nowScene) {
 	case Scene::kTitle:

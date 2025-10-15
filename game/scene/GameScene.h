@@ -95,6 +95,8 @@ public:
 	/// </summary>
 	void Initialize();
 
+	~GameScene();
+
 	/// <summary>
 	/// 更新処理
 	/// </summary>

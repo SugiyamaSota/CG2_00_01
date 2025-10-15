@@ -130,6 +130,27 @@ void GameScene::Initialize() {
 	goalModel_->Update(goalWorldTransform_, &camera_);
 }
 
+GameScene::~GameScene() {
+	// ブロック
+	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+			delete blockModel_[i][j];
+		}
+	}
+
+	delete goalModel_;
+	delete HUD;
+	delete gameClearSprite_;
+	delete blackScreenSprite_;
+
+	for (Enemy* enemyPtr : lockedOnEnemies_) {
+		delete enemyPtr; // Enemyオブジェクトを解放
+	}
+
+	// 2. リスト自体をクリア
+	lockedOnEnemies_.clear();
+}
+
 void GameScene::Update() {
 
 	switch (phase_) {

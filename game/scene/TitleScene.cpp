@@ -29,6 +29,12 @@ void TitleScene::Initialize() {
 	skydome_->Initialize(skydomeModel_.get(), &camera_);
 }
 
+TitleScene::~TitleScene() {
+	delete titleModel_;
+	delete titleUIModel_;
+	delete blackScreenSprite_;
+}
+
 void TitleScene::Update() {
 	camera_.Update(Camera::CameraType::kDebug);
 
