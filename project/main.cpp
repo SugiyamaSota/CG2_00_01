@@ -18,7 +18,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	// モデル
 	WorldTransform worldTransform = InitializeWorldTransform();
 	Model* model = new Model();
-	model->LoadModel("fence");
+	model->LoadModel("axis");
 
 	// グリッド
 	Grid* grid = new Grid();
