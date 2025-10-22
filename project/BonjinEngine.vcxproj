@@ -150,6 +150,13 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="application\enemy\Debris.cpp" />
+    <ClCompile Include="application\enemy\Enemy.cpp" />
+    <ClCompile Include="application\field\Skydome.cpp" />
+    <ClCompile Include="application\mapchip\MapChipField.cpp" />
+    <ClCompile Include="application\others\Collision.cpp" />
+    <ClCompile Include="application\player\anchor.cpp" />
+    <ClCompile Include="application\player\Player.cpp" />
     <ClCompile Include="application\scene\game\GameScene.cpp" />
     <ClCompile Include="application\scene\manager\SceneManager.cpp" />
     <ClCompile Include="engine\color\Color.cpp" />
@@ -188,6 +195,14 @@
     <ClCompile Include="application\scene\title\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="application\enemy\Debris.h" />
+    <ClInclude Include="application\enemy\Enemy.h" />
+    <ClInclude Include="application\field\Skydome.h" />
+    <ClInclude Include="application\mapchip\MapChipField.h" />
+    <ClInclude Include="application\others\Collision.h" />
+    <ClInclude Include="application\others\Data.h" />
+    <ClInclude Include="application\player\anchor.h" />
+    <ClInclude Include="application\player\Player.h" />
     <ClInclude Include="application\scene\base\SceneBase.h" />
     <ClInclude Include="application\scene\game\GameScene.h" />
     <ClInclude Include="application\scene\manager\SceneManager.h" />

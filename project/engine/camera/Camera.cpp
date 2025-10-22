@@ -9,7 +9,7 @@ float DegToRad(float deg) {
 
 void Camera::Initialize(uint32_t clientWidth, uint32_t clientHeight) {
 	radius_ = 50.0f;
-	theta_ = DegToRad(0.0f);
+	theta_ = DegToRad(180.0f);
 	phi_ = DegToRad(75.0f);
 	targetPosition_ = { 0,0,0 };
 	isTargeting_ = true;
@@ -154,4 +154,25 @@ Matrix4x4 Camera::MakeLookAtMatrix(const Vector3& eye, const Vector3& target, co
 
 void Camera::SetTarget(Vector3 targetPosition) {
 	targetPosition_ = targetPosition; isTargeting_ = true;
+}
+
+Vector3 Camera::Project(const Vector3& worldPosition) const {
+	// クライアント領域のサイズを取得
+	RECT rect;
+	GetClientRect(GetActiveWindow(), &rect);
+	float clientWidth = static_cast<float>(rect.right - rect.left);
+	float clientHeight = static_cast<float>(rect.bottom - rect.top);
+
+	// 1. ビュープロジェクション変換
+	// ワールド座標を NDC 座標に変換
+	Vector3 ndcPosition = Conversion(worldPosition, viewProjectionMatrix_);
+
+	// 2. ビューポート変換
+	// NDC 座標をスクリーン座標に変換
+	Vector3 screenPosition = {
+		(ndcPosition.x + 1.0f) * 0.5f * clientWidth,
+		(1.0f - ndcPosition.y) * 0.5f * clientHeight,
+		ndcPosition.z
+	};
+	return screenPosition;
 }

@@ -66,3 +66,5 @@ WorldTransform InitializeWorldTransform();
 
 // マテリアルの初期化
 Material InitializeMaterial();
+
+Vector3 Lerp(const Vector3& a, const Vector3& b, float t);
