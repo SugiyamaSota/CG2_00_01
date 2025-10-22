@@ -85,6 +85,9 @@
     <Filter Include="engine\pso\ShaderCompiler">
       <UniqueIdentifier>{0d9ef477-636c-43b2-818b-5546b848f682}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\windows">
+      <UniqueIdentifier>{19a6279b-b423-49c0-ac3d-e4c401fb9dff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -172,7 +175,7 @@
       <Filter>engine\pso\ShaderCompiler</Filter>
     </ClCompile>
     <ClCompile Include="engine\windows\WinApp.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>engine\windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -270,7 +273,7 @@
       <Filter>engine\pso\ShaderCompiler</Filter>
     </ClInclude>
     <ClInclude Include="engine\windows\WinApp.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>engine\windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
