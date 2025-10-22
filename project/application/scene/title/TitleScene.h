@@ -1,7 +1,14 @@
 ﻿#pragma once
-#include "../base/SceneBase.h" // SceneBaseをインクルード
+#include "../base/SceneBase.h"
 
-#include"../bonjin/BonjinEngine.h"
+#include"../../field/Skydome.h"
+
+// シーンの状態を表す列挙型
+enum class TitlePhase {
+    kFadeIn,
+    kActive,
+    kFadeOut,
+};
 
 namespace BonjinEngine {
 
@@ -33,6 +40,24 @@ namespace BonjinEngine {
         SceneType GetNextScene() const override;
 
     private:
-        Model* model_ = nullptr;
+        //
+        bool isFinished_;
+
+        // フェーズ関連
+        TitlePhase phase_ = TitlePhase::kFadeIn;
+        float phaseTimer_ = 0.0f;
+
+        Model* titleModel_ = nullptr;
+        WorldTransform worldTransform_;
+
+        Model* titleUIModel_ = nullptr;
+
+        // --- 天球関連 ---
+        std::unique_ptr<Skydome> skydome_ = nullptr;
+        std::unique_ptr<Model> skydomeModel_ = nullptr;
+
+        // UI
+        Sprite* blackScreenSprite_ = nullptr;
+
     };
 }

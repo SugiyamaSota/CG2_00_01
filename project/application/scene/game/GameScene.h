@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "../base/SceneBase.h"
-#include"../bonjin/BonjinEngine.h"
 
 #include"../../player/Player.h"
 #include"../../enemy/Enemy.h"

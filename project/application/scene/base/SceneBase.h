@@ -1,7 +1,6 @@
 ﻿#pragma once
-#include "../bonjin/BonjinEngine.h" // エンジンの基本機能
+#include "../bonjin/BonjinEngine.h" 
 
-// 💡 BonjinEngineの名前空間内に定義するのが自然
 namespace BonjinEngine {
 
     // シーンの種類を識別するための列挙型 (enum)
