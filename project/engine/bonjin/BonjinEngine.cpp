@@ -31,6 +31,7 @@ void BonjinEngine::Initialize() {
 	Input::GetInstance()->SetMouseLock(true);
 	TextureManager::GetInstance();
 	ImGuiManager::GetInstance()->Initialize();
+	Time::GetInstance();
 }
 
 void BonjinEngine::Finalize() {
@@ -39,9 +40,11 @@ void BonjinEngine::Finalize() {
 	TextureManager::DestroyInstance();
 	WinApp::GetInstance()->DestroyInstance();
 	DirectXCommon::GetInstance()->DestroyInstance();
+	Time::DestroyInstance();
 }
 
 void BonjinEngine::NewFrame() {
+	Time::GetInstance()->Update();
 	Input::GetInstance()->Update();
 	ID3D12DescriptorHeap* descriptorHeaps[] = { DirectXCommon::GetInstance()->GetSRVDescriptorHeap() };
 	DirectXCommon::GetInstance()->GetCommandList()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);

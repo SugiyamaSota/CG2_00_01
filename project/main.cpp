@@ -1,5 +1,7 @@
 #include"BonjinEngine.h"
 
+#include"application/scene/manager/SceneManager.h"
+
 using namespace BonjinEngine;
 
 //クライアント領域のサイズ
@@ -12,22 +14,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	D3DResourceLeakChecker leakChecker_;
 	Initialize();
 
-	Camera* camera = new Camera();
-	camera->Initialize(kClientWidth, kClientHeight);
-
-	// モデル
-	WorldTransform worldTransform = InitializeWorldTransform();
-	Model* model = new Model();
-	model->LoadModel("axis");
-
-	// グリッド
-	Grid* grid = new Grid();
-	grid->Initialize(); // グリッドの初期化 (デフォルトのサイズと分割数)
-
-	// 天球
-	WorldTransform skydomeWorldTransform = InitializeWorldTransform();
-	Model* skydome = new Model();
-	skydome->LoadModel("debugSkydome");
+	SceneManager::GetInstance()->Initialize();
+	SceneManager::GetInstance()->AddScene(SceneType::kGame, new GameScene());
 
 	while (true) {
 		//Windowにメッセージが来てたら最優先で処理させる
@@ -39,14 +27,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 		/// 更新処理ここから
 		///
 
-		camera->Update(Camera::CameraType::kDebug);
+		float deltaTime = Time::GetInstance()->GetDeltaTime();
 
-		model->SetEnableLighting(true);
-		model->Update(worldTransform, camera);
-
-		// グリッドとデバッグ用天球
-		skydome->Update(skydomeWorldTransform, camera);
-		grid->Update(camera);
+		SceneManager::GetInstance()->Update(deltaTime);
 
 
 		///
@@ -57,10 +40,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 		/// 描画処理ここから
 		///
 		// グリッドとデバッグ用天球
-		skydome->Draw();
-		grid->Draw();
-
-		model->Draw();
+		SceneManager::GetInstance()->Draw();
 
 		///
 		/// 描画処理ここまで
@@ -69,10 +49,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 	}
 
 	/////  解放処理 /////
-	delete skydome;
-	delete grid;
-	delete model;
-	delete camera;
+	SceneManager::DestroyInstance();
 	Finalize();
 	return 0;
 }

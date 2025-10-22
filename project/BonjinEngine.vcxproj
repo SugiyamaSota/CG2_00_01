@@ -150,6 +150,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="application\scene\game\GameScene.cpp" />
+    <ClCompile Include="application\scene\manager\SceneManager.cpp" />
     <ClCompile Include="engine\color\Color.cpp" />
     <ClCompile Include="engine\bonjin\BonjinEngine.cpp" />
     <ClCompile Include="engine\camera\Camera.cpp" />
@@ -182,8 +184,12 @@
     <ClCompile Include="engine\math\vector.cpp" />
     <ClCompile Include="engine\sprite\sprite.cpp" />
     <ClCompile Include="engine\windows\WinApp.cpp" />
+    <ClCompile Include="engine\time\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="application\scene\base\SceneBase.h" />
+    <ClInclude Include="application\scene\game\GameScene.h" />
+    <ClInclude Include="application\scene\manager\SceneManager.h" />
     <ClInclude Include="engine\color\Color.h" />
     <ClInclude Include="engine\bonjin\BonjinEngine.h" />
     <ClInclude Include="engine\camera\Camera.h" />
@@ -216,6 +222,7 @@
     <ClInclude Include="engine\math\vector.h" />
     <ClInclude Include="engine\sprite\sprite.h" />
     <ClInclude Include="engine\windows\WinApp.h" />
+    <ClInclude Include="engine\time\Time.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

@@ -16,6 +16,7 @@
 #include"../color/Color.h"
 #include"../draw/Grid.h"
 #include"../windows/WinApp.h"
+#include"../time/Time.h"
 
 /// <summary>
 /// リソースリークチェッカーの構造体
