@@ -44,7 +44,7 @@ void SceneManager::AddScene(SceneType type, SceneBase* scene) {
 	// 最初のシーンであれば、カレントシーンとして設定
 	if (currentScene_ == nullptr) {
 		currentScene_ = scene;
-		currentScene_->Initialize();
+		currentScene_->Initialize(camera);
 	}
 }
 
@@ -57,7 +57,7 @@ void SceneManager::Update(float deltaTime) {
 	camera->Update(Camera::CameraType::kDebug);
 
 	// 現在のシーンの更新処理を呼び出し
-	currentScene_->Update(deltaTime, *camera);
+	currentScene_->Update(deltaTime);
 
 	// 遷移先のシーンタイプを取得
 	SceneType nextType = currentScene_->GetNextScene();
@@ -99,7 +99,7 @@ void SceneManager::ChangeScene(SceneType nextSceneType) {
 	SceneBase* nextScene = it->second;
 
 	// 1. 新しいシーンを初期化
-	nextScene->Initialize();
+	nextScene->Initialize(camera);
 
 	// 2. カレントシーンを更新
 	currentScene_ = nextScene;

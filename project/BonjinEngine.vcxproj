@@ -185,6 +185,7 @@
     <ClCompile Include="engine\sprite\sprite.cpp" />
     <ClCompile Include="engine\windows\WinApp.cpp" />
     <ClCompile Include="engine\time\Time.cpp" />
+    <ClCompile Include="application\scene\title\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\scene\base\SceneBase.h" />
@@ -223,6 +224,7 @@
     <ClInclude Include="engine\sprite\sprite.h" />
     <ClInclude Include="engine\windows\WinApp.h" />
     <ClInclude Include="engine\time\Time.h" />
+    <ClInclude Include="application\scene\title\TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

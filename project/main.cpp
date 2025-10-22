@@ -16,6 +16,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
 	SceneManager::GetInstance()->Initialize();
 	SceneManager::GetInstance()->AddScene(SceneType::kGame, new GameScene());
+	SceneManager::GetInstance()->AddScene(SceneType::kTitle, new TitleScene());
 
 	while (true) {
 		//Windowにメッセージが来てたら最優先で処理させる

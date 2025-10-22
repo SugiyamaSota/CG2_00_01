@@ -5,10 +5,10 @@
 
 namespace BonjinEngine {
 
-    class GameScene : public SceneBase {
+    class TitleScene : public SceneBase {
     public:
         // 💡 仮想デストラクタは必須
-        virtual ~GameScene() = default;
+        virtual ~TitleScene() = default;
 
         /// <summary>
         /// シーン初期化
