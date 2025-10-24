@@ -40,7 +40,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 		///
 		/// 描画処理ここから
 		///
-		// グリッドとデバッグ用天球
+		
 		SceneManager::GetInstance()->Draw();
 
 		///
