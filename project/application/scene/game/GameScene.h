@@ -1,11 +1,11 @@
 ﻿#pragma once
-#include "../base/SceneBase.h" // SceneBaseをインクルード
+#include "../interface/IScene.h" // ISceneをインクルード
 
 #include"../bonjin/BonjinEngine.h"
 
 namespace BonjinEngine {
 
-    class GameScene : public SceneBase {
+    class GameScene : public IScene {
     public:
         // 💡 仮想デストラクタは必須
         virtual ~GameScene() = default;
@@ -33,6 +33,6 @@ namespace BonjinEngine {
         SceneType GetNextScene() const override;
 
     private:
-        Model* model_ = nullptr;
+        Particle* particle_ = nullptr;
     };
 }

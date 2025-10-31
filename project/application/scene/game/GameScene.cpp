@@ -10,9 +10,9 @@ void GameScene::Initialize(Camera * camera) {
     this->camera_ = camera;
 
     WorldTransform wt = InitializeWorldTransform();
-    model_ = new Model;
-    model_->LoadModel("axis");
-    model_->Update(wt, camera);
+    particle_ = new Particle;
+    particle_->LoadModel("axis");
+    particle_->Update(wt, camera);
 }
 
 
@@ -20,7 +20,7 @@ void GameScene::Initialize(Camera * camera) {
 
 void GameScene::Update(float deltaTime) {
     WorldTransform wt = InitializeWorldTransform();
-    model_->Update(wt, camera_);
+    particle_->Update(wt, camera_);
 
     if (Input::GetInstance()->IsTrigger(DIK_SPACE)) {
         nextSceneType_ = SceneType::kTitle;
@@ -28,7 +28,7 @@ void GameScene::Update(float deltaTime) {
 }
 
 void GameScene::Draw() {
-    model_->Draw();
+    particle_->Draw();
 }
 
 SceneType GameScene::GetNextScene() const {

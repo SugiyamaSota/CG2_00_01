@@ -3,7 +3,6 @@
 using namespace BonjinEngine;
 
 void TitleScene::Initialize(Camera* camera) {
-    // 今のシーンと遷移後シーン(初期値は同じ)
     currentSceneType_ = SceneType::kTitle;
     nextSceneType_ = SceneType::kTitle;
 

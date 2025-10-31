@@ -1,5 +1,5 @@
 ﻿#include "SceneManager.h"
-#include "../time/Time.h" // デルタタイムを取得するため（Timeクラスのパスは適宜修正）
+#include "time/Time.h" // デルタタイムを取得するため（Timeクラスのパスは適宜修正）
 
 using namespace BonjinEngine;
 
@@ -32,7 +32,7 @@ void SceneManager::Initialize() {
 }
 
 // 💡 4. シーンの登録
-void SceneManager::AddScene(SceneType type, SceneBase* scene) {
+void SceneManager::AddScene(SceneType type, IScene* scene) {
 	// 既に登録されているかチェック（オプション）
 	if (scenes_.find(type) != scenes_.end()) {
 		// エラー処理または上書き処理
@@ -96,7 +96,7 @@ void SceneManager::ChangeScene(SceneType nextSceneType) {
 	}
 
 	// 💡 シーンの切り替え実行
-	SceneBase* nextScene = it->second;
+	IScene* nextScene = it->second;
 
 	// 1. 新しいシーンを初期化
 	nextScene->Initialize(camera);
