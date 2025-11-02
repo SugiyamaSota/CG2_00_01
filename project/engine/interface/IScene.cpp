@@ -12,6 +12,10 @@ void IScene::Unload() {
 }
 
 void IScene::DrawImGui() {
+	ImGui::Begin(GetScenename());
 
+	DrawSceneImGui();
+
+	ImGui::End();
 }
 

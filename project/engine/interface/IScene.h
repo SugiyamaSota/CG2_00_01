@@ -1,17 +1,20 @@
 ﻿#pragma once
 #include "../bonjin/BonjinEngine.h"
 
-namespace BonjinEngine {
+namespace BonjinEngine 
+{
 
 	// シーンの種類を識別するための列挙型
-	enum class SceneType {
+	enum class SceneType
+	{
 		kTitle,
 		kGame,
 		kResult,
 		kExit // ゲーム終了を意味する特別なシーン
 	};
 
-	class IScene {
+	class IScene 
+	{
 	protected:
 
 	public:
@@ -29,7 +32,7 @@ namespace BonjinEngine {
 		/// <summary>
 		/// 明示的にリソースの解放を行う
 		/// </summary>
-		virtual void Unload();
+		virtual void Unload() = 0;
 
 		/// <summary>
 		/// 更新
@@ -43,20 +46,30 @@ namespace BonjinEngine {
 		virtual void Draw() = 0;
 
 		/// <summary>
-	    /// ImGui処理
-	    /// </summary>
-		virtual void DrawImGui();
-
-		/// <summary>
-		/// 次に遷移するシーン
-		/// </summary>
-		virtual SceneType GetNextScene() const = 0; // = 0 で純粋仮想関数
-
-		/// <summary>
 		/// 現在のシーンを取得
 		/// </summary>
 		SceneType GetCurrentSceneType() const { return currentSceneType_; }
 
+		/// <summary>
+		/// 次に遷移するシーン
+		/// </summary>
+		virtual SceneType GetNextScene() const = 0;
+
+		/// <summary>
+		/// シーンごとのImGui処理
+		/// </summary>
+		virtual void DrawSceneImGui() = 0;
+
+		/// <summary>
+		/// ImGui処理
+		/// </summary>
+		virtual void DrawImGui();
+
+		/// <summary>
+		/// シーン名の登録兼取得
+		/// </summary>
+		/// <returns></returns>
+		virtual const char* GetScenename()const = 0;
 	protected:
 		// カメラ
 		Camera* camera_ = nullptr;
@@ -65,5 +78,4 @@ namespace BonjinEngine {
 		// 次に遷移したいシーンタイプ
 		SceneType nextSceneType_ = SceneType::kTitle;
 	};
-
 }

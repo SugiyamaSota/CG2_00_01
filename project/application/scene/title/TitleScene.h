@@ -20,9 +20,14 @@ namespace BonjinEngine
 
         void Draw() override;
 
-        void DrawImGui()override;
+        void DrawSceneImGui()override;
 
         SceneType GetNextScene() const override;
+
+        const char* GetScenename()const override
+        {
+            return "TitleScene";
+        }
 
     private:
         // --- ゲーム固有の変数 ---

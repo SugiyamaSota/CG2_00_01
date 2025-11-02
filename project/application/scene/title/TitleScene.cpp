@@ -34,7 +34,7 @@ void TitleScene::Draw() {
     model_->Draw();
 }
 
-void TitleScene::DrawImGui() {
+void TitleScene::DrawSceneImGui() {
 
 }
 

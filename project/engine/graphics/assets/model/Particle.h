@@ -17,8 +17,6 @@ struct ParticleData {
 	// 必要に応じて velocity や color などを追加
 };
 
-
-
 class Particle
 {
 public:

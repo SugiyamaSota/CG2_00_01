@@ -42,6 +42,7 @@ namespace BonjinEngine {
         void ChangeScene(SceneType nextSceneType);
 
         Camera* camera = nullptr;
+
     };
 
 }

@@ -16,8 +16,9 @@ void GameScene::Initialize(Camera * camera) {
     particle_->Emit({ 0.0f, 0.0f, 0.0f }, { 5.0f, 5.0f, 5.0f }, 5.0f, 1.0f, 3.0f);*/
 }
 
+void GameScene::Unload() {
 
-
+}
 
 void GameScene::Update(float deltaTime) {
    // particle_->Update(camera_);
@@ -31,12 +32,7 @@ void GameScene::Draw() {
    // particle_->Draw();
 }
 
-void GameScene::DrawImGui() {
-    int num = RandomEngine::GetInstance()->Rand(0, 5);
-
-    ImGui::Begin("Debug::Random");
-    ImGui::Text("randomnum : 0~5 -> %d", num);
-    ImGui::End();
+void GameScene::DrawSceneImGui() {
 }
 
 SceneType GameScene::GetNextScene() const {

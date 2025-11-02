@@ -18,8 +18,10 @@ SceneManager* SceneManager::GetInstance() {
 void SceneManager::DestroyInstance() {
 	// 登録されているシーンをすべて破棄（メモリリーク防止）
 	for (auto& pair : instance->scenes_) {
+		pair.second->Unload();
 		delete pair.second;
 	}
+
 	instance->scenes_.clear();
 	delete instance->camera;
 
@@ -77,9 +79,7 @@ void SceneManager::Draw() {
 
 	currentScene_->Draw();
 
-#ifdef DEBUG
 	currentScene_->DrawImGui();
-#endif // DEBUG
 }
 
 // 💡 7. シーン切り替えロジック（プライベート関数）

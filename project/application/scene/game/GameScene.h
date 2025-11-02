@@ -18,10 +18,13 @@ namespace BonjinEngine {
 
 		void Draw() override;
 
-		void DrawImGui()override;
-
 		SceneType GetNextScene() const override;
 
+		void DrawSceneImGui() override;
+
+		const char* GetScenename()const override {
+			return "GameScene";
+		}
 	private:
 		// --- ゲーム固有の変数 ---
 		//Particle* particle_ = nullptr;
