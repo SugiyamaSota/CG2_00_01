@@ -1,11 +1,11 @@
 ﻿#pragma once
-#include "../base/SceneBase.h" // SceneBaseをインクルード
+#include"../interface/IScene.h"
 
 #include"../bonjin/BonjinEngine.h"
 
 namespace BonjinEngine {
 
-    class TitleScene : public SceneBase {
+    class TitleScene : public IScene {
     public:
         // 💡 仮想デストラクタは必須
         virtual ~TitleScene() = default;

@@ -1,8 +1,7 @@
 ﻿#pragma once
-#include "../base/SceneBase.h"
 #include"../game/GameScene.h"
 #include"../title/TitleScene.h"
-#include"../../engine/bonjin/BonjinEngine.h"
+#include"BonjinEngine.h"
 #include <map>
 
 namespace BonjinEngine {
@@ -17,7 +16,7 @@ namespace BonjinEngine {
         //
         void Initialize();
         // 💡 全シーンを登録
-        void AddScene(SceneType type, SceneBase* scene);
+        void AddScene(SceneType type, IScene* scene);
 
         // 💡 エンジンのループから呼ばれる更新関数
         void Update(float deltaTime);
@@ -34,9 +33,9 @@ namespace BonjinEngine {
         // ... (コピー禁止など)
 
         // 💡 現在アクティブなシーン
-        SceneBase* currentScene_ = nullptr;
+        IScene* currentScene_ = nullptr;
         // 💡 登録されたすべてのシーンを保持するマップ
-        std::map<SceneType, SceneBase*> scenes_;
+        std::map<SceneType, IScene*> scenes_;
 
         // 💡 シーン切り替えロジック
         void ChangeScene(SceneType nextSceneType);

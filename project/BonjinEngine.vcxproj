@@ -84,7 +84,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)engine\bonjin</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)engine\bonjin;$(ProjectDir)engine\audio;$(ProjectDir)engine\graphics/assets;$(ProjectDir)engine\graphics/rendering;$(ProjectDir)engine\system/utility;$(ProjectDir)engine\system/platform</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -108,7 +108,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)engine\bonjin</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)engine\bonjin;$(ProjectDir)engine\audio;$(ProjectDir)engine\graphics/assets;$(ProjectDir)engine\graphics/rendering;$(ProjectDir)engine\system/utility;$(ProjectDir)engine\system/platform</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
@@ -136,7 +136,7 @@
       <TreatWarningAsError>false</TreatWarningAsError>
       <Optimization>Disabled</Optimization>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)engine\bonjin</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)engine\bonjin;$(ProjectDir)engine\audio;$(ProjectDir)engine\graphics/assets;$(ProjectDir)engine\graphics/rendering;$(ProjectDir)engine\system/utility;$(ProjectDir)engine\system/platform</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,21 +152,21 @@
   <ItemGroup>
     <ClCompile Include="application\scene\game\GameScene.cpp" />
     <ClCompile Include="application\scene\manager\SceneManager.cpp" />
-    <ClCompile Include="engine\color\Color.cpp" />
+    <ClCompile Include="engine\graphics\rendering\color\Color.cpp" />
     <ClCompile Include="engine\bonjin\BonjinEngine.cpp" />
-    <ClCompile Include="engine\camera\Camera.cpp" />
+    <ClCompile Include="engine\graphics\camera\Camera.cpp" />
     <ClCompile Include="engine\audio\AudioPlayer.cpp" />
-    <ClCompile Include="engine\common\DirectXCommon.cpp" />
-    <ClCompile Include="engine\draw\Grid.cpp" />
-    <ClCompile Include="engine\function\Utility.cpp" />
-    <ClCompile Include="engine\imgui\ImGuiManager.cpp" />
-    <ClCompile Include="engine\input\Input.cpp" />
-    <ClCompile Include="engine\model\Model.cpp" />
-    <ClCompile Include="engine\pso\graphicsPipelineStateBuilder\GraphicsPipelineStateBuilder.cpp" />
-    <ClCompile Include="engine\pso\PSOManager.cpp" />
-    <ClCompile Include="engine\pso\rootSignatureBuilder\RootSignatureBuilder.cpp" />
-    <ClCompile Include="engine\pso\shaderCompiler\ShaderCompiler.cpp" />
-    <ClCompile Include="engine\texture\TextureManager.cpp" />
+    <ClCompile Include="engine\graphics\assets\model\Model.cpp" />
+    <ClCompile Include="engine\system\utility\common\DirectXCommon.cpp" />
+    <ClCompile Include="engine\graphics\rendering\draw\Grid.cpp" />
+    <ClCompile Include="engine\system\utility\function\function.cpp" />
+    <ClCompile Include="engine\graphics\rendering\imgui\ImGuiManager.cpp" />
+    <ClCompile Include="engine\system\platform\input\Input.cpp" />
+    <ClCompile Include="engine\graphics\rendering\pso\graphicsPipelineStateBuilder\GraphicsPipelineStateBuilder.cpp" />
+    <ClCompile Include="engine\graphics\rendering\pso\PSOManager.cpp" />
+    <ClCompile Include="engine\graphics\rendering\pso\rootSignatureBuilder\RootSignatureBuilder.cpp" />
+    <ClCompile Include="engine\graphics\rendering\pso\shaderCompiler\ShaderCompiler.cpp" />
+    <ClCompile Include="engine\graphics\assets\texture\TextureManager.cpp" />
     <ClCompile Include="externals\Audio\xaudio_player_mf.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
     <ClCompile Include="externals\imgui\imgui_demo.cpp" />
@@ -179,33 +179,36 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
       <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</WholeProgramOptimization>
     </ClCompile>
-    <ClCompile Include="engine\math\Convert.cpp" />
-    <ClCompile Include="engine\math\Matrix.cpp" />
-    <ClCompile Include="engine\math\vector.cpp" />
-    <ClCompile Include="engine\sprite\sprite.cpp" />
-    <ClCompile Include="engine\windows\WinApp.cpp" />
-    <ClCompile Include="engine\time\Time.cpp" />
+    <ClCompile Include="engine\system\utility\math\Convert.cpp" />
+    <ClCompile Include="engine\system\utility\math\Matrix.cpp" />
+    <ClCompile Include="engine\system\utility\math\vector.cpp" />
+    <ClCompile Include="engine\graphics\rendering\sprite\sprite.cpp" />
+    <ClCompile Include="engine\system\platform\windows\WinApp.cpp" />
+    <ClCompile Include="engine\system\utility\time\Time.cpp" />
     <ClCompile Include="application\scene\title\TitleScene.cpp" />
+    <ClCompile Include="engine\graphics\assets\model\ModelBuilder.cpp" />
+    <ClCompile Include="engine\graphics\assets\model\Particle.cpp" />
+    <ClCompile Include="engine\system\utility\random\RandomEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="application\scene\base\SceneBase.h" />
+    <ClInclude Include="engine\interface\IScene.h" />
     <ClInclude Include="application\scene\game\GameScene.h" />
     <ClInclude Include="application\scene\manager\SceneManager.h" />
-    <ClInclude Include="engine\color\Color.h" />
+    <ClInclude Include="engine\graphics\rendering\color\Color.h" />
     <ClInclude Include="engine\bonjin\BonjinEngine.h" />
-    <ClInclude Include="engine\camera\Camera.h" />
+    <ClInclude Include="engine\graphics\camera\Camera.h" />
     <ClInclude Include="engine\audio\AudioPlayer.h" />
-    <ClInclude Include="engine\common\DirectXCommon.h" />
-    <ClInclude Include="engine\draw\Grid.h" />
-    <ClInclude Include="engine\function\Utility.h" />
-    <ClInclude Include="engine\imgui\ImGuiManager.h" />
-    <ClInclude Include="engine\input\Input.h" />
-    <ClInclude Include="engine\model\Model.h" />
-    <ClInclude Include="engine\pso\graphicsPipelineStateBuilder\GraphicsPipelineStateBuilder.h" />
-    <ClInclude Include="engine\pso\PSOManager.h" />
-    <ClInclude Include="engine\pso\rootSignatureBuilder\RootSignatureBuilder.h" />
-    <ClInclude Include="engine\pso\shaderCompiler\ShaderCompiler.h" />
-    <ClInclude Include="engine\texture\TextureManager.h" />
+    <ClInclude Include="engine\graphics\assets\model\Model.h" />
+    <ClInclude Include="engine\system\utility\common\DirectXCommon.h" />
+    <ClInclude Include="engine\graphics\rendering\draw\Grid.h" />
+    <ClInclude Include="engine\system\utility\function\function.h" />
+    <ClInclude Include="engine\graphics\rendering\imgui\ImGuiManager.h" />
+    <ClInclude Include="engine\system\platform\input\Input.h" />
+    <ClInclude Include="engine\graphics\rendering\pso\graphicsPipelineStateBuilder\GraphicsPipelineStateBuilder.h" />
+    <ClInclude Include="engine\graphics\rendering\pso\PSOManager.h" />
+    <ClInclude Include="engine\graphics\rendering\pso\rootSignatureBuilder\RootSignatureBuilder.h" />
+    <ClInclude Include="engine\graphics\rendering\pso\shaderCompiler\ShaderCompiler.h" />
+    <ClInclude Include="engine\graphics\assets\texture\TextureManager.h" />
     <ClInclude Include="externals\Audio\common.h" />
     <ClInclude Include="externals\Audio\xaudio_player_core.h" />
     <ClInclude Include="externals\Audio\xaudio_player_mf.h" />
@@ -217,14 +220,17 @@
     <ClInclude Include="externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="externals\imgui\imstb_textedit.h" />
     <ClInclude Include="externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="engine\math\Convert.h" />
-    <ClInclude Include="engine\math\Matrix.h" />
-    <ClInclude Include="engine\math\Struct.h" />
-    <ClInclude Include="engine\math\vector.h" />
-    <ClInclude Include="engine\sprite\sprite.h" />
-    <ClInclude Include="engine\windows\WinApp.h" />
-    <ClInclude Include="engine\time\Time.h" />
+    <ClInclude Include="engine\system\utility\math\Convert.h" />
+    <ClInclude Include="engine\system\utility\math\Matrix.h" />
+    <ClInclude Include="engine\system\utility\math\Struct.h" />
+    <ClInclude Include="engine\system\utility\math\vector.h" />
+    <ClInclude Include="engine\graphics\rendering\sprite\sprite.h" />
+    <ClInclude Include="engine\system\platform\windows\WinApp.h" />
+    <ClInclude Include="engine\system\utility\time\Time.h" />
     <ClInclude Include="application\scene\title\TitleScene.h" />
+    <ClInclude Include="engine\graphics\assets\model\ModelBuilder.h" />
+    <ClInclude Include="engine\graphics\assets\model\Particle.h" />
+    <ClInclude Include="engine\system\utility\random\RandomEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
@@ -242,16 +248,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="engine\shader\Grid.PS.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="engine\shader\Grid.VS.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
-    </FxCompile>
     <FxCompile Include="resources\shader\Object3d.PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

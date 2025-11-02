@@ -9,18 +9,22 @@ void GameScene::Initialize(Camera * camera) {
 
     this->camera_ = camera;
 
-    WorldTransform wt = InitializeWorldTransform();
-    model_ = new Model;
-    model_->LoadModel("axis");
-    model_->Update(wt, camera);
+  /*  particle_ = new Particle;
+    particle_->LoadModel("plane");
+    particle_->Emit({ 0.0f, 0.0f, 0.0f }, { 5.0f, 5.0f, 5.0f }, 5.0f, 1.0f, 3.0f);*/
 }
 
 
 
 
 void GameScene::Update(float deltaTime) {
-    WorldTransform wt = InitializeWorldTransform();
-    model_->Update(wt, camera_);
+   // particle_->Update(camera_);
+
+    int num = RandomEngine::GetInstance()->Rand(0, 5);
+
+    ImGui::Begin("Debug::Random");
+    ImGui::Text("randomnum : 0~5 -> %d", num);
+    ImGui::End();
 
     if (Input::GetInstance()->IsTrigger(DIK_SPACE)) {
         nextSceneType_ = SceneType::kTitle;
@@ -28,7 +32,7 @@ void GameScene::Update(float deltaTime) {
 }
 
 void GameScene::Draw() {
-    model_->Draw();
+   // particle_->Draw();
 }
 
 SceneType GameScene::GetNextScene() const {
