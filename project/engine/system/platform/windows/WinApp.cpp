@@ -1,4 +1,7 @@
 ﻿#include"WinApp.h"
+
+#pragma comment(lib,"winmm.lib")
+
 #include"../rendering/imgui/ImGuiManager.h"
 
 WinApp* WinApp::instance_ = nullptr;
@@ -56,6 +59,9 @@ void WinApp::Initialize() {
 		wc.hInstance,
 		nullptr);
 	ShowWindow(hwnd_, SW_SHOW);
+
+	//
+	timeBeginPeriod(1);
 }
 
 WinApp::~WinApp() {

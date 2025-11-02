@@ -14,6 +14,8 @@ void IScene::Unload() {
 void IScene::DrawImGui() {
 	ImGui::Begin(GetScenename());
 
+	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+
 	DrawSceneImGui();
 
 	ImGui::End();

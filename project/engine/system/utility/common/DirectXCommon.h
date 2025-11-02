@@ -4,6 +4,7 @@
 #include <dxgi1_6.h>
 #include <wrl/client.h>
 #include<vector>
+#include<chrono>
 
 #include"pso/PSOManager.h"
 #include"math/Struct.h"
@@ -140,6 +141,9 @@ private:
 	// バリア
 	D3D12_RESOURCE_BARRIER barrier_{};
 
+	// 記録時間
+	std::chrono::steady_clock::time_point reference_;
+
 	/// --- 関数 ---
 	void CreateDevice();    // デバイス
 	void CreateCommand();   // コマンド関連
@@ -147,7 +151,8 @@ private:
 	void CreateFence();     // フェンス
 	void CreateDepth();     // 深度
 	void CreateLight();     // 光
+	void InitializeFixFPS();// FPS固定初期化
+	void UpdateFixFPS();    // FPS固定更新
 
-	// 深度生成
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(ID3D12Device* device, int32_t width, int32_t height);
 };

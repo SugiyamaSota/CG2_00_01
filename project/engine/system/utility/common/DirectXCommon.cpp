@@ -1,11 +1,11 @@
 #include "DirectXCommon.h"
 #include<cassert>
 #include<filesystem>
+#include<thread>
 
 #include"function/function.h"
 #include"windows/WinApp.h"
 #include"imgui/ImGuiManager.h"
-
 
 DirectXCommon* DirectXCommon::instance_ = nullptr;
 
@@ -18,8 +18,8 @@ DirectXCommon* DirectXCommon::GetInstance() {
 	return instance_;
 }
 void DirectXCommon::DestroyInstance() {
-    delete instance_;
-    instance_ = nullptr;
+	delete instance_;
+	instance_ = nullptr;
 }
 
 Microsoft::WRL::ComPtr<ID3D12Resource>  DirectXCommon::CreateDepthStencilTextureResource(ID3D12Device* device, int32_t width, int32_t height) {
@@ -78,6 +78,7 @@ void DirectXCommon::Initialize() {
 	CreateFence();
 	CreateDepth();
 	CreateLight();
+	InitializeFixFPS();
 
 	pso = new PSOManager();
 
@@ -149,7 +150,8 @@ void DirectXCommon::NewFeame() {
 	//commandList_->SetGraphicsRootConstantBufferView(3, directionalLightResource_.Get()->GetGPUVirtualAddress());
 }
 
-void DirectXCommon::EndFrame() {
+void DirectXCommon::EndFrame() 
+{	
 
 	//画面に描く処理はすべて終わり、画面に映すので、状態を遷移
 	//今回はRenderTargetからPresentにする
@@ -178,7 +180,10 @@ void DirectXCommon::EndFrame() {
 		fence_.Get()->SetEventOnCompletion(fenceValue_, fenceEvent_);
 		//イベントを待つ
 		WaitForSingleObject(fenceEvent_, INFINITE);
+
 	}
+
+	UpdateFixFPS();
 
 	//次のフレーム用のコマンドリストを準備
 	hr = commandAllocator_->Reset();
@@ -397,3 +402,31 @@ void DirectXCommon::CreateLight() {
 	directionalLightData_->direction = { 0.5f,-1.0f,0.0f };
 	directionalLightData_->intentity = 1.0f;
 }
+
+void DirectXCommon::InitializeFixFPS()
+{
+	reference_ = std::chrono::steady_clock::now();
+}
+
+void DirectXCommon::UpdateFixFPS()
+{
+	const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.f));
+
+	const std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 65.f));
+
+	// 現在時間を取得する
+	std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+
+	// 前回記録からの経過時間を取得する
+	std::chrono::microseconds elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
+
+	if (elapsed < kMinCheckTime) {
+		while (std::chrono::steady_clock::now() - reference_ < kMinTime) {
+			//
+			std::this_thread::sleep_for(std::chrono::microseconds(1));
+		}
+	}
+
+	reference_ = std::chrono::steady_clock::now();
+}
+
