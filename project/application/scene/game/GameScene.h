@@ -3,6 +3,8 @@
 
 #include"../bonjin/BonjinEngine.h"
 
+#include"../system/utility/random/RandomEngine.h"
+
 namespace BonjinEngine {
 
     class GameScene : public IScene {
@@ -33,6 +35,8 @@ namespace BonjinEngine {
         SceneType GetNextScene() const override;
 
     private:
-        Particle* particle_ = nullptr;
+        //Particle* particle_ = nullptr;
+
+
     };
 }

@@ -2,10 +2,21 @@
 
 Particle::Particle() {
 	common = DirectXCommon::GetInstance();
-	transform_ = InitializeWorldTransform();
+	
+	// 乱数エンジンの初期化
+	std::random_device seed_gen;
+	randomEngine_ = std::mt19937(seed_gen());
+
+	for (uint32_t index = 0; index < kNumInstance_; ++index)
+	{
+		particles_[index].transform = InitializeWorldTransform();
+		particles_[index].lifeTime = 0.0f;
+		particles_[index].currentTime = 0.0f;
+	}
 	viewMatrix_ = MakeIdentity4x4();
 	projectionMatrix_ = MakePerspectiveFovMatrix(0.45f, float(1280) / float(720), 0.1f, 100.0f);
 	viewProjectionMatrix_ = MakeIdentity4x4();
+	activeNum_ = 0;
 }
 
 void Particle::LoadModel(const std::string& fileName) {
@@ -56,15 +67,63 @@ void Particle::LoadModel(const std::string& fileName) {
 	common->GetDevice()->CreateShaderResourceView(wvpResource_.Get(), &srvDesc, srvhandleCPU_);
 }
 
-void Particle::Update(WorldTransform worldTransform, Camera* camera) {
-	transform_ = worldTransform;
-	// ワールドトランスフォーム
+void Particle::Update(Camera* camera) {
+	// フレームごとの経過時間 (deltaTime)
+	const float kDeltaTime = 1.0f / 60.0f; // 実際のフレームレートに合わせて変更してください
+
+	// 1. システム全体のタイマー更新
+	bool isSystemActive = durationTimer_ > 0.0f;
+	if (isSystemActive) {
+		durationTimer_ -= kDeltaTime;
+		if (durationTimer_ < 0.0f) {
+			durationTimer_ = 0.0f;
+			isSystemActive = false;
+		}
+	}
+
+	// 2. 個々のパーティクルの更新
 	for (uint32_t index = 0; index < kNumInstance_; ++index)
 	{
-		wvpData_[index].World = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-		Matrix4x4 worldViewProjectionMatrix = Multiply(wvpData_[index].World, camera->GetViewProjectionMatrix());
-		wvpData_[index].WVP = worldViewProjectionMatrix;
-		transform_.translate = { index * 0.1f,index * 0.1f,index * 0.1f };
+		// パーティクルが「有効」な場合のみ時間を進める (lifeTime > 0で有効とみなす)
+		if (particles_[index].lifeTime > 0.0f) {
+			particles_[index].currentTime += kDeltaTime;
+		}
+
+		// 生存時間を超えたかどうかのチェック
+		if (particles_[index].currentTime >= particles_[index].lifeTime) {
+
+			if (isSystemActive) {
+				// システム稼働中: パーティクルを再初期化（即座に再始動/ループ）
+				InitializeParticle(index);
+
+			} else {
+				// システム終了済み: パーティクルを「死亡」状態にし、描画されないようにする
+				particles_[index].lifeTime = 0.0f;
+			}
+		}
+
+		// **3. 描画データ (WVP) の更新**
+
+		// パーティクルが有効（lifeTime > 0）の場合
+		if (particles_[index].lifeTime > 0.0f) {
+
+			// 例: Y軸回転
+			particles_[index].transform.rotate.y += 0.01f;
+
+			// ワールド行列の計算
+			Matrix4x4 worldMatrix = MakeAffineMatrix(particles_[index].transform.scale, particles_[index].transform.rotate, particles_[index].transform.translate);
+
+			// WVP行列の計算と設定
+			Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, camera->GetViewProjectionMatrix());
+			wvpData_[index].WVP = worldViewProjectionMatrix;
+			wvpData_[index].World = worldMatrix;
+
+		} else {
+			// システム終了後、死亡したパーティクルは見えなくする
+			// WVP行列をスケール0の行列にすることで、描画パイプラインから隠す
+			wvpData_[index].WVP = MakeScaleMatrix({ 0.0f, 0.0f, 0.0f });
+			wvpData_[index].World = MakeIdentity4x4();
+		}
 	}
 }
 
@@ -91,3 +150,41 @@ void Particle::Draw() {
 	common->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), kNumInstance_, 0, 0);
 }
 
+void Particle::Emit(Vector3 position, Vector3 range, float duration, float minLifetime, float maxLifetime) {
+	// システムの全体設定を保存
+	durationTimer_ = duration;
+	minLifetime_ = minLifetime;
+	maxLifetime_ = maxLifetime;
+	emitPosition_ = position;
+	emitRange_ = range;
+
+	// 全てのインスタンスを初期化し、即座に画面に出現させる
+	for (uint32_t index = 0; index < kNumInstance_; ++index) {
+		InitializeParticle(index);
+	}
+}
+
+void Particle::InitializeParticle(uint32_t index) {
+	// 乱数分布の定義
+	std::uniform_real_distribution<float> distX(-emitRange_.x, emitRange_.x);
+	std::uniform_real_distribution<float> distY(-emitRange_.y, emitRange_.y);
+	std::uniform_real_distribution<float> distZ(-emitRange_.z, emitRange_.z);
+	std::uniform_real_distribution<float> distLifetime(minLifetime_, maxLifetime_);
+
+	// 既存のデータをリセット
+	particles_[index].transform = InitializeWorldTransform();
+
+	// 生存時間と経過時間を設定
+	particles_[index].lifeTime = distLifetime(randomEngine_); // ランダムな寿命を設定
+	particles_[index].currentTime = 0.0f; // 経過時間をリセット
+
+	// ランダムなオフセットを生成して中心座標に加算
+	Vector3 randomOffset = {
+		distX(randomEngine_),
+		distY(randomEngine_),
+		distZ(randomEngine_)
+	};
+
+	// 最終的な位置を設定
+	particles_[index].transform.translate = Add(emitPosition_, randomOffset);
+}
