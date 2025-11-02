@@ -1,5 +1,7 @@
 ﻿#include "Particle.h"
 
+#include<numbers>
+
 Particle::Particle() {
 	common = DirectXCommon::GetInstance();
 	
@@ -105,13 +107,18 @@ void Particle::Update(Camera* camera) {
 		// **3. 描画データ (WVP) の更新**
 
 		// パーティクルが有効（lifeTime > 0）の場合
-		if (particles_[index].lifeTime > 0.0f) {
+		if (particles_[index].lifeTime > 0.0f)
+		{
+			//
+			Matrix4x4 backTofrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);;
 
-			// 例: Y軸回転
-			particles_[index].transform.rotate.y += 0.01f;
+			Matrix4x4 billboardMatrix = Multiply(backTofrontMatrix, Inverse(camera->GetViewMatrix()));
+			billboardMatrix.m[3][0] = 0.f;
+			billboardMatrix.m[3][1] = 0.f;
+			billboardMatrix.m[3][2] = 0.f;
 
 			// ワールド行列の計算
-			Matrix4x4 worldMatrix = MakeAffineMatrix(particles_[index].transform.scale, particles_[index].transform.rotate, particles_[index].transform.translate);
+			Matrix4x4 worldMatrix = MakeAffineMatrix(particles_[index].transform.scale, billboardMatrix, particles_[index].transform.translate);
 
 			// WVP行列の計算と設定
 			Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, camera->GetViewProjectionMatrix());

@@ -40,7 +40,7 @@ namespace BonjinEngine
 		/// 更新
 		/// </summary>
 		/// <param name="deltaTime">デルタタイム</param>
-		virtual void Update(float deltaTime);
+		virtual void Update(float deltaTime)=0;
 
 		/// <summary>
 		/// 描画

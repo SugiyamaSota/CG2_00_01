@@ -13,7 +13,7 @@ void GameScene::Initialize(Camera* camera) {
 
 	particle_ = new Particle;
 	particle_->LoadModel("plane");
-	particle_->Emit({ 0.0f, 0.0f, 0.0f }, { 5.0f, 5.0f, 5.0f }, 5.0f, 1.0f, 3.0f);
+	particle_->Emit({ 0.0f, 0.0f, 0.0f }, { 5.0f, 5.0f, 5.0f }, 50.0f, 1.0f, 3.0f);
 }
 
 void GameScene::Unload() {
