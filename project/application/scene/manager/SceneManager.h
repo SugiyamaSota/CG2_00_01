@@ -3,6 +3,7 @@
 #include"../title/TitleScene.h"
 #include"BonjinEngine.h"
 #include <map>
+#include<memory>
 
 namespace BonjinEngine {
 

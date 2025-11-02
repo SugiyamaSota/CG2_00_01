@@ -18,6 +18,10 @@ mono_crash.*
 
 # Build results
 generated/
+logs/
+Visual Studio 2022/
+Visual Studio 2022Templates/
+
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

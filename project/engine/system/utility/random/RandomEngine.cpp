@@ -1,4 +1,4 @@
-#include "RandomEngine.h"
+ï»¿#include "RandomEngine.h"
 #include <limits>
 #include <algorithm>
 
@@ -8,14 +8,14 @@ RandomEngine* RandomEngine::GetInstance() {
 }
 
 RandomEngine::RandomEngine() {
-    // —”ƒGƒ“ƒWƒ“‚Ì‰Šú‰»iƒV[ƒh¶¬j
+    // ä¹±æ•°ã‚¨ãƒ³ã‚¸ãƒ³ã®åˆæœŸåŒ–ï¼ˆã‚·ãƒ¼ãƒ‰ç”Ÿæˆï¼‰
     std::random_device seed_gen;
     engine_ = std::mt19937(seed_gen());
 }
 
 
 Vector3 RandomEngine::RandVector3(const Vector3& range) {
-    // Še²‚É‘Î‚µ‚Ä RandFloat ‚ğŒÄ‚Ño‚·
+    // å„è»¸ã«å¯¾ã—ã¦ RandFloat ã‚’å‘¼ã³å‡ºã™
     Vector3 result = {
         Rand(-range.x, range.x),
         Rand(-range.y, range.y),

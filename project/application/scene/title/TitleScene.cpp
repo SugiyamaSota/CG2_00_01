@@ -14,8 +14,12 @@ void TitleScene::Initialize(Camera* camera) {
     model_->Update(wt, camera);
 }
 
-
-
+void TitleScene::Unload() {
+    if (model_ != nullptr) {
+        delete model_;
+        model_ = nullptr;
+    }
+}
 
 void TitleScene::Update(float deltaTime) {
     WorldTransform wt = InitializeWorldTransform();
@@ -28,6 +32,10 @@ void TitleScene::Update(float deltaTime) {
 
 void TitleScene::Draw() {
     model_->Draw();
+}
+
+void TitleScene::DrawImGui() {
+
 }
 
 SceneType TitleScene::GetNextScene() const {

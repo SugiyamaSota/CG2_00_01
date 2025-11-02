@@ -21,6 +21,7 @@ void SceneManager::DestroyInstance() {
 		delete pair.second;
 	}
 	instance->scenes_.clear();
+	delete instance->camera;
 
 	delete instance;
 	instance = nullptr;
@@ -76,7 +77,9 @@ void SceneManager::Draw() {
 
 	currentScene_->Draw();
 
-	// ここにフェード処理（FadeManagerのDraw()など）を呼び出す
+#ifdef DEBUG
+	currentScene_->DrawImGui();
+#endif // DEBUG
 }
 
 // 💡 7. シーン切り替えロジック（プライベート関数）
@@ -86,6 +89,10 @@ void SceneManager::ChangeScene(SceneType nextSceneType) {
 	if (nextSceneType == SceneType::kExit) {
 		// WinAppの終了フラグを立てるなどの処理
 		return;
+	}
+
+	if (currentScene_ != nullptr) {
+		currentScene_->Unload();
 	}
 
 	// 遷移先のシーンが登録されているか確認

@@ -1,17 +1,17 @@
-#pragma once
+ï»¿#pragma once
 #include"BonjinEngine.h"
 
 class ModelBuilder
 {
 public:
 	/// <summary>
-	/// objƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
+	/// objãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
 	/// </summary>
 	static ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
 
 private:
 	/// <summary>
-	/// mtlƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
+	/// mtlãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
 	/// </summary>
 	static MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 };

@@ -1,4 +1,4 @@
-#include "ModelBuilder.h"
+ï»¿#include "ModelBuilder.h"
 
 #include <fstream>
 
@@ -74,11 +74,11 @@ MaterialData ModelBuilder::LoadMaterialTemplateFile(const std::string& directory
 		std::istringstream s(line);
 		s >> identifier;
 
-		//identifier‚É‰‚¶‚½ˆ—
+		//identifierã«å¿œã˜ãŸå‡¦ç†
 		if (identifier == "map_Kd") {
 			std::string textureFilename;
 			s >> textureFilename;
-			//˜AŒ‹‚µ‚Äƒtƒ@ƒCƒ‹ƒpƒX‚É‚·‚é
+			//é€£çµã—ã¦ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã«ã™ã‚‹
 			materialData.textureFilepath = directoryPath + '/' + textureFilename;
 		}
 	}

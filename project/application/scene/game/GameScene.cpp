@@ -1,5 +1,7 @@
 ﻿#include "GameScene.h"
 
+#include"../system/utility/random/RandomEngine.h"
+
 using namespace BonjinEngine;
 
 void GameScene::Initialize(Camera * camera) {
@@ -20,12 +22,6 @@ void GameScene::Initialize(Camera * camera) {
 void GameScene::Update(float deltaTime) {
    // particle_->Update(camera_);
 
-    int num = RandomEngine::GetInstance()->Rand(0, 5);
-
-    ImGui::Begin("Debug::Random");
-    ImGui::Text("randomnum : 0~5 -> %d", num);
-    ImGui::End();
-
     if (Input::GetInstance()->IsTrigger(DIK_SPACE)) {
         nextSceneType_ = SceneType::kTitle;
     }
@@ -33,6 +29,14 @@ void GameScene::Update(float deltaTime) {
 
 void GameScene::Draw() {
    // particle_->Draw();
+}
+
+void GameScene::DrawImGui() {
+    int num = RandomEngine::GetInstance()->Rand(0, 5);
+
+    ImGui::Begin("Debug::Random");
+    ImGui::Text("randomnum : 0~5 -> %d", num);
+    ImGui::End();
 }
 
 SceneType GameScene::GetNextScene() const {

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <random>
 #include <limits>
@@ -11,16 +11,16 @@ class RandomEngine
 {
 public:
     /// <summary>
-    /// ƒVƒ“ƒOƒ‹ƒgƒ“ƒCƒ“ƒXƒ^ƒ“ƒX‚ğæ“¾‚µ‚Ü‚·B
+    /// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—ã—ã¾ã™ã€‚
     /// </summary>
     static RandomEngine* GetInstance();
 
      /// <summary>
-    /// ®”’l‚Ì—”
+    /// æ•´æ•°å€¤ã®ä¹±æ•°
     /// </summary>
-    /// <param name="min">Å¬’l</param>
-    /// <param name="max">Å‘å’l</param>
-    /// <returns>Å¬’l‚©‚çÅ‘å’l‚ÌŠÔ‚Ì—”</returns>
+    /// <param name="min">æœ€å°å€¤</param>
+    /// <param name="max">æœ€å¤§å€¤</param>
+    /// <returns>æœ€å°å€¤ã‹ã‚‰æœ€å¤§å€¤ã®é–“ã®ä¹±æ•°</returns>
     template <typename T>
     typename std::enable_if<std::is_integral<T>::value, T>::type
         Rand(T min, T max)
@@ -32,11 +32,11 @@ public:
     }
 
     /// <summary>
-    /// •‚“®¬”“_‚Ì—”
+    /// æµ®å‹•å°æ•°ç‚¹ã®ä¹±æ•°
     /// </summary>
-    /// <param name="min">Å¬’l</param>
-    /// <param name="max">Å‘å’l</param>
-    /// <returns>Å¬’l‚©‚çÅ‘å’l‚ÌŠÔ‚Ì—”</returns>
+    /// <param name="min">æœ€å°å€¤</param>
+    /// <param name="max">æœ€å¤§å€¤</param>
+    /// <returns>æœ€å°å€¤ã‹ã‚‰æœ€å¤§å€¤ã®é–“ã®ä¹±æ•°</returns>
     template <typename T>
     typename std::enable_if<std::is_floating_point<T>::value, T>::type
         Rand(T min, T max) 
@@ -48,13 +48,13 @@ public:
     }
 
     /// <summary>
-    /// 3ŸŒ³‚Ì”ÍˆÍ [-range, +range] ‚Ì Vector3 —”
+    /// 3æ¬¡å…ƒã®ç¯„å›² [-range, +range] ã® Vector3 ä¹±æ•°
     /// </summary>
     Vector3 RandVector3(const Vector3& range);
 
 private:
 
-    // ƒVƒ“ƒOƒ‹ƒgƒ“‰»‚Ì‚½‚ß‚Ìƒvƒ‰ƒCƒx[ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^/ƒfƒXƒgƒ‰ƒNƒ^
+    // ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³åŒ–ã®ãŸã‚ã®ãƒ—ãƒ©ã‚¤ãƒ™ãƒ¼ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿/ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     RandomEngine();
     ~RandomEngine() = default;
     RandomEngine(const RandomEngine&) = delete;
@@ -62,7 +62,7 @@ private:
 
 private:
 
-    // —”ƒGƒ“ƒWƒ“
+    // ä¹±æ•°ã‚¨ãƒ³ã‚¸ãƒ³
     std::mt19937 engine_;
 
 };
