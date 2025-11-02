@@ -25,9 +25,10 @@ namespace BonjinEngine {
 		const char* GetScenename()const override {
 			return "GameScene";
 		}
+
 	private:
 		// --- ゲーム固有の変数 ---
-		//Particle* particle_ = nullptr;
+		Particle* particle_ = nullptr;
 
 	private:
 		// --- ゲーム固有の関数 ---

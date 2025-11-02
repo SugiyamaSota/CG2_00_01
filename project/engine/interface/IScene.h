@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "../bonjin/BonjinEngine.h"
 
+#include"../graphics/assets/draw/Grid.h"
+
 namespace BonjinEngine 
 {
 
@@ -38,7 +40,7 @@ namespace BonjinEngine
 		/// 更新
 		/// </summary>
 		/// <param name="deltaTime">デルタタイム</param>
-		virtual void Update(float deltaTime) = 0;
+		virtual void Update(float deltaTime);
 
 		/// <summary>
 		/// 描画
@@ -70,12 +72,16 @@ namespace BonjinEngine
 		/// </summary>
 		/// <returns></returns>
 		virtual const char* GetScenename()const = 0;
+
 	protected:
 		// カメラ
 		Camera* camera_ = nullptr;
+
 		// 派生クラスでのみ書き換え可能な現在のシーンタイプ
 		SceneType currentSceneType_ = SceneType::kTitle;
+
 		// 次に遷移したいシーンタイプ
 		SceneType nextSceneType_ = SceneType::kTitle;
+
 	};
 }

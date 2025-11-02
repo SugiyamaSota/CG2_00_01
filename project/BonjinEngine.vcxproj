@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="application\scene\game\GameScene.cpp" />
     <ClCompile Include="application\scene\manager\SceneManager.cpp" />
+    <ClCompile Include="engine\graphics\assets\draw\Grid.cpp" />
     <ClCompile Include="engine\graphics\rendering\color\Color.cpp" />
     <ClCompile Include="engine\bonjin\BonjinEngine.cpp" />
     <ClCompile Include="engine\graphics\camera\Camera.cpp" />
@@ -192,6 +193,7 @@
     <ClCompile Include="engine\system\utility\random\RandomEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\graphics\assets\draw\Grid.h" />
     <ClInclude Include="engine\interface\IScene.h" />
     <ClInclude Include="application\scene\game\GameScene.h" />
     <ClInclude Include="application\scene\manager\SceneManager.h" />

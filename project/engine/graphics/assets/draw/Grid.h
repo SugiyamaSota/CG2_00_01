@@ -1,5 +1,5 @@
 #pragma once
-#include "../bonjin/BonjinEngine.h" // 既存のエンジンヘッダをインクルード
+#include "BonjinEngine.h" // 既存のエンジンヘッダをインクルード
 #include <vector>
 
 namespace BonjinEngine {
