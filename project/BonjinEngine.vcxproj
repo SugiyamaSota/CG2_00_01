@@ -151,12 +151,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="application\scene\game\GameScene.cpp" />
-    <ClCompile Include="application\scene\manager\SceneManager.cpp" />
+    <ClCompile Include="engine\system\manager\SceneManager.cpp" />
     <ClCompile Include="engine\graphics\rendering\color\Color.cpp" />
     <ClCompile Include="engine\bonjin\BonjinEngine.cpp" />
     <ClCompile Include="engine\graphics\camera\Camera.cpp" />
     <ClCompile Include="engine\audio\AudioPlayer.cpp" />
     <ClCompile Include="engine\graphics\assets\model\Model.cpp" />
+    <ClCompile Include="engine\interface\IScene.cpp" />
     <ClCompile Include="engine\system\utility\common\DirectXCommon.cpp" />
     <ClCompile Include="engine\graphics\rendering\draw\Grid.cpp" />
     <ClCompile Include="engine\system\utility\function\function.cpp" />
@@ -193,7 +194,7 @@
   <ItemGroup>
     <ClInclude Include="engine\interface\IScene.h" />
     <ClInclude Include="application\scene\game\GameScene.h" />
-    <ClInclude Include="application\scene\manager\SceneManager.h" />
+    <ClInclude Include="engine\system\manager\SceneManager.h" />
     <ClInclude Include="engine\graphics\rendering\color\Color.h" />
     <ClInclude Include="engine\bonjin\BonjinEngine.h" />
     <ClInclude Include="engine\graphics\camera\Camera.h" />

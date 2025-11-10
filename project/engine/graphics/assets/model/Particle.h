@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include"ModelBuilder.h"
 
 #include<string>
@@ -14,86 +14,84 @@ struct ParticleData {
 	WorldTransform transform;
 	float lifeTime;
 	float currentTime;
-	// •K—v‚É‰‚¶‚Ä velocity ‚â color ‚È‚Ç‚ğ’Ç‰Á
+	// å¿…è¦ã«å¿œã˜ã¦ velocity ã‚„ color ãªã©ã‚’è¿½åŠ 
 };
-
-
 
 class Particle
 {
 public:
-	/// --- ”Ä—pŠÖ” ---
+	/// --- æ±ç”¨é–¢æ•° ---
 	/// <summary>
-	/// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	/// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	//// </summary>
 	Particle();
 
 	/// <summary>
-	/// ƒ‚ƒfƒ‹‚ğƒ[ƒh
+	/// ãƒ¢ãƒ‡ãƒ«ã‚’ãƒ­ãƒ¼ãƒ‰
 	/// </summary>
-	/// <param name="fileName">ƒ‚ƒfƒ‹–¼</param>
+	/// <param name="fileName">ãƒ¢ãƒ‡ãƒ«å</param>
 	void LoadModel(const std::string& fileName);
 
 	/// <summary>
-	/// XVˆ—
+	/// æ›´æ–°å‡¦ç†
 	/// </summary>
-	/// <param name="worldTransform">ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€</param>
-	/// <param name="camera">ƒJƒƒ‰</param>
+	/// <param name="worldTransform">ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ </param>
+	/// <param name="camera">ã‚«ãƒ¡ãƒ©</param>
 	void Update(Camera* camera);
 
 	/// <summary>
-	/// •`‰æˆ—
+	/// æç”»å‡¦ç†
 	/// </summary>
 	void Draw();
 
 	/// <summary>
-	/// ƒp[ƒeƒBƒNƒ‹”ro(¶¬)ˆ—
+	/// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«æ’å‡º(ç”Ÿæˆ)å‡¦ç†
 	/// </summary>
-	/// <param name="position">ƒp[ƒeƒBƒNƒ‹”­¶‚Ì’†SÀ•W</param>
-	/// <param name="range">ƒ‰ƒ“ƒ_ƒ€‚ÈL‚ª‚è”ÍˆÍi—áF(X, Y, Z)‚ÌÅ‘å•ÏˆÊj</param>
-	/// <param name="numParticles">¶¬‚·‚éƒp[ƒeƒBƒNƒ‹” (kNumInstance_ ˆÈ‰º)</param>
-	/// <param name="minLifetime">Å¬¶‘¶ŠÔi•bj</param>
-	/// <param name="maxLifetime">Å‘å¶‘¶ŠÔi•bj</param>
+	/// <param name="position">ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç™ºç”Ÿã®ä¸­å¿ƒåº§æ¨™</param>
+	/// <param name="range">ãƒ©ãƒ³ãƒ€ãƒ ãªåºƒãŒã‚Šç¯„å›²ï¼ˆä¾‹ï¼š(X, Y, Z)ã®æœ€å¤§å¤‰ä½ï¼‰</param>
+	/// <param name="numParticles">ç”Ÿæˆã™ã‚‹ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«æ•° (kNumInstance_ ä»¥ä¸‹)</param>
+	/// <param name="minLifetime">æœ€å°ç”Ÿå­˜æ™‚é–“ï¼ˆç§’ï¼‰</param>
+	/// <param name="maxLifetime">æœ€å¤§ç”Ÿå­˜æ™‚é–“ï¼ˆç§’ï¼‰</param>
 	void Emit(Vector3 position, Vector3 range, float duration, float minLifetime, float maxLifetime);
 
-	/// --- İ’èŠÖ” ---
+	/// --- è¨­å®šé–¢æ•° ---
 	/// <summary>
-	/// ƒ‰ƒCƒeƒBƒ“ƒO‚Ì—L–³
+	/// ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°ã®æœ‰ç„¡
 	/// </summary>
-	/// <param name="enableLighting">ƒtƒ‰ƒO</param>
+	/// <param name="enableLighting">ãƒ•ãƒ©ã‚°</param>
 	void SetEnableLighting(bool enableLighting) { materialData_->enableLighting = enableLighting; }
 
 	/// <summary>
-	/// F‚Æ“§–¾“x
+	/// è‰²ã¨é€æ˜åº¦
 	/// </summary>
-	/// <param name="color">İ’è‚µ‚½‚¢F‚Æ“§–¾“x</param>
+	/// <param name="color">è¨­å®šã—ãŸã„è‰²ã¨é€æ˜åº¦</param>
 	void SetColor(Vector4 color) { materialData_->color = color; }
 
-	/// --- æ“¾ŠÖ” ---
+	/// --- å–å¾—é–¢æ•° ---
 	float GetAlpha() { return materialData_->color.w; }
 
 private:
-	/// --- •Ï” ---
-	// ƒ‚ƒfƒ‹ƒf[ƒ^
+	/// --- å¤‰æ•° ---
+	// ãƒ¢ãƒ‡ãƒ«ãƒ‡ãƒ¼ã‚¿
 	ModelData modelData_;
 
-	// ‘S•”‚Åo‚¹‚é”
+	// å…¨éƒ¨ã§å‡ºã›ã‚‹æ•°
 	static const uint32_t kNumInstance_ = 10;
-	// ÀÛ‚É•`‰æ‚·‚éƒCƒ“ƒXƒ^ƒ“ƒX”
+	// å®Ÿéš›ã«æç”»ã™ã‚‹ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹æ•°
 	uint32_t activeNum_ = 0;
 
-	// ‚»‚ê‚¼‚ê‚Ì¶‘¶ƒ^ƒCƒ}[
+	// ãã‚Œãã‚Œã®ç”Ÿå­˜ã‚¿ã‚¤ãƒãƒ¼
 
-	// —”¶¬Ší
+	// ä¹±æ•°ç”Ÿæˆå™¨
 	std::mt19937 randomEngine_;
 
-	float durationTimer_ = 0.0f; // ƒp[ƒeƒBƒNƒ‹‚ğo‚µ‘±‚¯‚é‘S‘Ì‚Ìƒ^ƒCƒ}[i•bj
-	float minLifetime_ = 0.0f;    // ŒÂX‚ÌÅ¬¶‘¶ŠÔ
-	float maxLifetime_ = 0.0f;    // ŒÂX‚ÌÅ‘å¶‘¶ŠÔ
-	Vector3 emitPosition_;        // ƒGƒ~ƒbƒg’†SÀ•W
-	Vector3 emitRange_;           // ƒGƒ~ƒbƒg”ÍˆÍ
+	float durationTimer_ = 0.0f; // ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚’å‡ºã—ç¶šã‘ã‚‹å…¨ä½“ã®ã‚¿ã‚¤ãƒãƒ¼ï¼ˆç§’ï¼‰
+	float minLifetime_ = 0.0f;    // å€‹ã€…ã®æœ€å°ç”Ÿå­˜æ™‚é–“
+	float maxLifetime_ = 0.0f;    // å€‹ã€…ã®æœ€å¤§ç”Ÿå­˜æ™‚é–“
+	Vector3 emitPosition_;        // ã‚¨ãƒŸãƒƒãƒˆä¸­å¿ƒåº§æ¨™
+	Vector3 emitRange_;           // ã‚¨ãƒŸãƒƒãƒˆç¯„å›²
 
-	// ŒÂX‚Ìƒp[ƒeƒBƒNƒ‹‚ğ‰Šú‰»/Ä¶¬‚·‚éƒwƒ‹ƒp[ŠÖ”
+	// å€‹ã€…ã®ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚’åˆæœŸåŒ–/å†ç”Ÿæˆã™ã‚‹ãƒ˜ãƒ«ãƒ‘ãƒ¼é–¢æ•°
 	void InitializeParticle(uint32_t index);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE srvhandleCPU_;
@@ -101,33 +99,33 @@ private:
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 
-	// ’¸“_ƒŠƒ\[ƒX
+	// é ‚ç‚¹ãƒªã‚½ãƒ¼ã‚¹
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 	VertexData* vertexData_ = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
-	// ƒ}ƒeƒŠƒAƒ‹ƒŠƒ\[ƒX
+	// ãƒãƒ†ãƒªã‚¢ãƒ«ãƒªã‚½ãƒ¼ã‚¹
 	Material* materialData_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;
 
-	// WVPƒŠƒ\[ƒX
+	// WVPãƒªã‚½ãƒ¼ã‚¹
 	Microsoft::WRL::ComPtr<ID3D12Resource> wvpResource_ = nullptr;
 	TransformationMatrix* wvpData_ =  nullptr ;
 
-	// ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+	// ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
 	ParticleData particles_[kNumInstance_];
 
-	// ƒrƒ…[s—ñ
+	// ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—
 	Matrix4x4 viewMatrix_;
-	// Ë‰es—ñ
+	// å°„å½±è¡Œåˆ—
 	Matrix4x4 projectionMatrix_;
-	// ƒrƒ…[ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ
+	// ãƒ“ãƒ¥ãƒ¼ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—
 	Matrix4x4 viewProjectionMatrix_;
 
-	// ƒeƒNƒXƒ`ƒƒƒnƒ“ƒhƒ‹
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒ³ãƒ‰ãƒ«
 	int textureHandle_ = 0;
 
-	// dxcommon‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	// dxcommonã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	DirectXCommon* common = nullptr;
 };
 

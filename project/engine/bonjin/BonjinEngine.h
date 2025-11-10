@@ -14,7 +14,6 @@
 #include"texture/TextureManager.h"
 #include"sprite/sprite.h"
 #include"color/Color.h"
-#include"draw/Grid.h"
 #include"windows/WinApp.h"
 #include"time/Time.h"
 #include"model/Particle.h"

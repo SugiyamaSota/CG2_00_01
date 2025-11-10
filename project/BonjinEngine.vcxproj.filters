@@ -174,7 +174,7 @@
     <ClCompile Include="engine\system\platform\windows\WinApp.cpp">
       <Filter>engine\windows</Filter>
     </ClCompile>
-    <ClCompile Include="application\scene\manager\SceneManager.cpp">
+    <ClCompile Include="engine\system\manager\SceneManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="application\scene\game\GameScene.cpp">
@@ -196,6 +196,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="engine\system\utility\random\RandomEngine.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\interface\IScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -293,7 +296,7 @@
     <ClInclude Include="engine\system\platform\windows\WinApp.h">
       <Filter>engine\windows</Filter>
     </ClInclude>
-    <ClInclude Include="application\scene\manager\SceneManager.h">
+    <ClInclude Include="engine\system\manager\SceneManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="application\scene\game\GameScene.h">

@@ -28,7 +28,7 @@ void BonjinEngine::Initialize() {
 	DirectXCommon::GetInstance();
 	WinApp::GetInstance();
 	Input::GetInstance()->Initialize(WinApp::GetInstance()->GetHInstance(), WinApp::GetInstance()->GetHWND());
-	Input::GetInstance()->SetMouseLock(true);
+	Input::GetInstance()->SetMouseLock(false);
 	TextureManager::GetInstance();
 	ImGuiManager::GetInstance()->Initialize();
 	Time::GetInstance();

@@ -1,46 +1,87 @@
 ﻿#pragma once
-#include "../bonjin/BonjinEngine.h" // エンジンの基本機能
+#include "../bonjin/BonjinEngine.h"
 
-// 💡 BonjinEngineの名前空間内に定義するのが自然
-namespace BonjinEngine {
+#include"../graphics/rendering/draw/Grid.h"
 
-    // シーンの種類を識別するための列挙型 (enum)
-    enum class SceneType {
-        kTitle,
-        kGame,
-        kResult,
-        kExit // ゲーム終了を意味する特別なシーン
-    };
+namespace BonjinEngine 
+{
 
-    // シーンの基底クラス (IScene)
-    class IScene {
-    protected:
-        Camera* camera_ = nullptr;
-    public:
-        // 💡 仮想デストラクタ: 派生クラスのインスタンスをIScene*でdeleteするために必須
-        virtual ~IScene() = default;
+	// シーンの種類を識別するための列挙型
+	enum class SceneType
+	{
+		kTitle,
+		kGame,
+		kResult,
+		kExit // ゲーム終了を意味する特別なシーン
+	};
 
-        // 💡 初期化: シーンがロードされたときに一度だけ呼ばれる
-        virtual void Initialize(Camera* camera) {
-            camera_ = camera; 
-        } 
+	class IScene 
+	{
+	protected:
 
-        // 💡 更新処理: 毎フレーム呼ばれる (deltaTimeを受け取るのが理想)
-        virtual void Update(float deltaTime) = 0; // = 0 で純粋仮想関数
+	public:
+		/// <summary>
+		/// 仮想デストラクタ
+		/// </summary>
+		virtual ~IScene() = default;
 
-        // 💡 描画処理: 毎フレーム呼ばれる
-        virtual void Draw() = 0; // = 0 で純粋仮想関数
+		/// <summary>
+		/// 初期化
+		/// </summary>
+		/// <param name="camera">カメラ</param>
+		virtual void Initialize(Camera* camera);
 
-        // 💡 次のシーンを取得: SceneManagerが遷移先を決定するために使う
-        virtual SceneType GetNextScene() const = 0; // = 0 で純粋仮想関数
+		/// <summary>
+		/// 明示的にリソースの解放を行う
+		/// </summary>
+		virtual void Unload() = 0;
 
-        SceneType GetCurrentSceneType() const { return currentSceneType_; }
+		/// <summary>
+		/// 更新
+		/// </summary>
+		/// <param name="deltaTime">デルタタイム</param>
+		virtual void Update(float deltaTime)=0;
 
-    protected:
-        // 派生クラスでのみ書き換え可能な現在のシーンタイプ
-        SceneType currentSceneType_ = SceneType::kTitle;
-        // 次に遷移したいシーンタイプ
-        SceneType nextSceneType_ = SceneType::kTitle;
-    };
+		/// <summary>
+		/// 描画
+		/// </summary>
+		virtual void Draw() = 0;
 
+		/// <summary>
+		/// 現在のシーンを取得
+		/// </summary>
+		SceneType GetCurrentSceneType() const { return currentSceneType_; }
+
+		/// <summary>
+		/// 次に遷移するシーン
+		/// </summary>
+		virtual SceneType GetNextScene() const = 0;
+
+		/// <summary>
+		/// シーンごとのImGui処理
+		/// </summary>
+		virtual void DrawSceneImGui() = 0;
+
+		/// <summary>
+		/// ImGui処理
+		/// </summary>
+		virtual void DrawImGui();
+
+		/// <summary>
+		/// シーン名の登録兼取得
+		/// </summary>
+		/// <returns></returns>
+		virtual const char* GetScenename()const = 0;
+
+	protected:
+		// カメラ
+		Camera* camera_ = nullptr;
+
+		// 派生クラスでのみ書き換え可能な現在のシーンタイプ
+		SceneType currentSceneType_ = SceneType::kTitle;
+
+		// 次に遷移したいシーンタイプ
+		SceneType nextSceneType_ = SceneType::kTitle;
+
+	};
 }

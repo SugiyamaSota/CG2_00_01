@@ -5,7 +5,6 @@
 #include <dinput.h>
 #include <wrl/client.h>
 
-// Inputクラス
 class Input {
 private:
     Input() = default;
@@ -57,6 +56,7 @@ public:
 
     // マウスのX軸方向の移動量を取得
     long GetMouseDeltaX();
+
     // マウスのY軸方向の移動量を取得
     long GetMouseDeltaY();
 

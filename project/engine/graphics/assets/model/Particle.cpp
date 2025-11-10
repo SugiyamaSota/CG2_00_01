@@ -1,9 +1,11 @@
-#include "Particle.h"
+ï»¿#include "Particle.h"
+
+#include<numbers>
 
 Particle::Particle() {
 	common = DirectXCommon::GetInstance();
 	
-	// —”ƒGƒ“ƒWƒ“‚Ì‰Šú‰»
+	// ä¹±æ•°ã‚¨ãƒ³ã‚¸ãƒ³ã®åˆæœŸåŒ–
 	std::random_device seed_gen;
 	randomEngine_ = std::mt19937(seed_gen());
 
@@ -20,10 +22,10 @@ Particle::Particle() {
 }
 
 void Particle::LoadModel(const std::string& fileName) {
-	// ƒ‚ƒfƒ‹ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+	// ãƒ¢ãƒ‡ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿
 	modelData_ = ModelBuilder::LoadObjFile("resources/models/" + fileName, fileName + ".obj");
 
-	// ’¸“_—p‚ÌƒŠƒ\[ƒX
+	// é ‚ç‚¹ç”¨ã®ãƒªã‚½ãƒ¼ã‚¹
 	vertexResource_ = CreateBufferResource(common->GetDevice(), sizeof(VertexData) * modelData_.vertices.size());
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.vertices.size());
@@ -31,7 +33,7 @@ void Particle::LoadModel(const std::string& fileName) {
 	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
 	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size());
 
-	// ƒ}ƒeƒŠƒAƒ‹—p‚ÌƒŠƒ\[ƒX
+	// ãƒãƒ†ãƒªã‚¢ãƒ«ç”¨ã®ãƒªã‚½ãƒ¼ã‚¹
 	materialResource_ = CreateBufferResource(common->GetDevice(), sizeof(Material));
 	materialData_ = nullptr;
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
@@ -39,7 +41,7 @@ void Particle::LoadModel(const std::string& fileName) {
 	materialData_->enableLighting = false;
 	materialData_->uvTransform = MakeIdentity4x4();
 
-	// WVP—p‚ÌƒŠƒ\[ƒX
+	// WVPç”¨ã®ãƒªã‚½ãƒ¼ã‚¹
 	wvpResource_ = CreateBufferResource(common->GetDevice(), sizeof(TransformationMatrix) * kNumInstance_);
 	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
 
@@ -49,7 +51,7 @@ void Particle::LoadModel(const std::string& fileName) {
 		wvpData_[index].World = MakeIdentity4x4();
 	}
 
-	// ƒeƒNƒXƒ`ƒƒ
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	textureHandle_ = TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilepath);
 	common->WaitAndResetCommandList();
 	TextureManager::GetInstance()->ReleaseIntermediateResources();
@@ -68,10 +70,10 @@ void Particle::LoadModel(const std::string& fileName) {
 }
 
 void Particle::Update(Camera* camera) {
-	// ƒtƒŒ[ƒ€‚²‚Æ‚ÌŒo‰ßŠÔ (deltaTime)
-	const float kDeltaTime = 1.0f / 60.0f; // ÀÛ‚ÌƒtƒŒ[ƒ€ƒŒ[ƒg‚É‡‚í‚¹‚Ä•ÏX‚µ‚Ä‚­‚¾‚³‚¢
+	// ãƒ•ãƒ¬ãƒ¼ãƒ ã”ã¨ã®çµŒéæ™‚é–“ (deltaTime)
+	const float kDeltaTime = 1.0f / 60.0f; // å®Ÿéš›ã®ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¬ãƒ¼ãƒˆã«åˆã‚ã›ã¦å¤‰æ›´ã—ã¦ãã ã•ã„
 
-	// 1. ƒVƒXƒeƒ€‘S‘Ì‚Ìƒ^ƒCƒ}[XV
+	// 1. ã‚·ã‚¹ãƒ†ãƒ å…¨ä½“ã®ã‚¿ã‚¤ãƒãƒ¼æ›´æ–°
 	bool isSystemActive = durationTimer_ > 0.0f;
 	if (isSystemActive) {
 		durationTimer_ -= kDeltaTime;
@@ -81,46 +83,51 @@ void Particle::Update(Camera* camera) {
 		}
 	}
 
-	// 2. ŒÂX‚Ìƒp[ƒeƒBƒNƒ‹‚ÌXV
+	// 2. å€‹ã€…ã®ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã®æ›´æ–°
 	for (uint32_t index = 0; index < kNumInstance_; ++index)
 	{
-		// ƒp[ƒeƒBƒNƒ‹‚ªu—LŒøv‚Èê‡‚Ì‚İŠÔ‚ği‚ß‚é (lifeTime > 0‚Å—LŒø‚Æ‚İ‚È‚·)
+		// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ãŒã€Œæœ‰åŠ¹ã€ãªå ´åˆã®ã¿æ™‚é–“ã‚’é€²ã‚ã‚‹ (lifeTime > 0ã§æœ‰åŠ¹ã¨ã¿ãªã™)
 		if (particles_[index].lifeTime > 0.0f) {
 			particles_[index].currentTime += kDeltaTime;
 		}
 
-		// ¶‘¶ŠÔ‚ğ’´‚¦‚½‚©‚Ç‚¤‚©‚Ìƒ`ƒFƒbƒN
+		// ç”Ÿå­˜æ™‚é–“ã‚’è¶…ãˆãŸã‹ã©ã†ã‹ã®ãƒã‚§ãƒƒã‚¯
 		if (particles_[index].currentTime >= particles_[index].lifeTime) {
 
 			if (isSystemActive) {
-				// ƒVƒXƒeƒ€‰Ò“­’†: ƒp[ƒeƒBƒNƒ‹‚ğÄ‰Šú‰»i‘¦À‚ÉÄn“®/ƒ‹[ƒvj
+				// ã‚·ã‚¹ãƒ†ãƒ ç¨¼åƒä¸­: ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚’å†åˆæœŸåŒ–ï¼ˆå³åº§ã«å†å§‹å‹•/ãƒ«ãƒ¼ãƒ—ï¼‰
 				InitializeParticle(index);
 
 			} else {
-				// ƒVƒXƒeƒ€I—¹Ï‚İ: ƒp[ƒeƒBƒNƒ‹‚ğu€–Svó‘Ô‚É‚µA•`‰æ‚³‚ê‚È‚¢‚æ‚¤‚É‚·‚é
+				// ã‚·ã‚¹ãƒ†ãƒ çµ‚äº†æ¸ˆã¿: ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚’ã€Œæ­»äº¡ã€çŠ¶æ…‹ã«ã—ã€æç”»ã•ã‚Œãªã„ã‚ˆã†ã«ã™ã‚‹
 				particles_[index].lifeTime = 0.0f;
 			}
 		}
 
-		// **3. •`‰æƒf[ƒ^ (WVP) ‚ÌXV**
+		// **3. æç”»ãƒ‡ãƒ¼ã‚¿ (WVP) ã®æ›´æ–°**
 
-		// ƒp[ƒeƒBƒNƒ‹‚ª—LŒøilifeTime > 0j‚Ìê‡
-		if (particles_[index].lifeTime > 0.0f) {
+		// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ãŒæœ‰åŠ¹ï¼ˆlifeTime > 0ï¼‰ã®å ´åˆ
+		if (particles_[index].lifeTime > 0.0f)
+		{
+			//
+			Matrix4x4 backTofrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);;
 
-			// —á: Y²‰ñ“]
-			particles_[index].transform.rotate.y += 0.01f;
+			Matrix4x4 billboardMatrix = Multiply(backTofrontMatrix, Inverse(camera->GetViewMatrix()));
+			billboardMatrix.m[3][0] = 0.f;
+			billboardMatrix.m[3][1] = 0.f;
+			billboardMatrix.m[3][2] = 0.f;
 
-			// ƒ[ƒ‹ƒhs—ñ‚ÌŒvZ
-			Matrix4x4 worldMatrix = MakeAffineMatrix(particles_[index].transform.scale, particles_[index].transform.rotate, particles_[index].transform.translate);
+			// ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®è¨ˆç®—
+			Matrix4x4 worldMatrix = MakeAffineMatrix(particles_[index].transform.scale, billboardMatrix, particles_[index].transform.translate);
 
-			// WVPs—ñ‚ÌŒvZ‚Æİ’è
+			// WVPè¡Œåˆ—ã®è¨ˆç®—ã¨è¨­å®š
 			Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, camera->GetViewProjectionMatrix());
 			wvpData_[index].WVP = worldViewProjectionMatrix;
 			wvpData_[index].World = worldMatrix;
 
 		} else {
-			// ƒVƒXƒeƒ€I—¹ŒãA€–S‚µ‚½ƒp[ƒeƒBƒNƒ‹‚ÍŒ©‚¦‚È‚­‚·‚é
-			// WVPs—ñ‚ğƒXƒP[ƒ‹0‚Ìs—ñ‚É‚·‚é‚±‚Æ‚ÅA•`‰æƒpƒCƒvƒ‰ƒCƒ“‚©‚ç‰B‚·
+			// ã‚·ã‚¹ãƒ†ãƒ çµ‚äº†å¾Œã€æ­»äº¡ã—ãŸãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã¯è¦‹ãˆãªãã™ã‚‹
+			// WVPè¡Œåˆ—ã‚’ã‚¹ã‚±ãƒ¼ãƒ«0ã®è¡Œåˆ—ã«ã™ã‚‹ã“ã¨ã§ã€æç”»ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‹ã‚‰éš ã™
 			wvpData_[index].WVP = MakeScaleMatrix({ 0.0f, 0.0f, 0.0f });
 			wvpData_[index].World = MakeIdentity4x4();
 		}
@@ -128,63 +135,63 @@ void Particle::Update(Camera* camera) {
 }
 
 void Particle::Draw() {
-	// PSO‚Ìİ’è
+	// PSOã®è¨­å®š
 	common->GetCommandList()->SetGraphicsRootSignature(common->GetPSO()->GetRootSignature(PrimitiveType::kParticle));
 	common->GetCommandList()->SetPipelineState(common->GetPSO()->GetPipelineState(PrimitiveType::kParticle, BlendMode::kNormal));
 
-	//@ƒ‚ƒfƒ‹‚Ì•`‰æ
+	//ã€€ãƒ¢ãƒ‡ãƒ«ã®æç”»
 	// VBV
 	common->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
-	// Œ`ó‚ğİ’è
+	// å½¢çŠ¶ã‚’è¨­å®š
 	common->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	// ƒ}ƒeƒŠƒAƒ‹CBuffer‚ÌêŠ‚ğİ’è
+	// ãƒãƒ†ãƒªã‚¢ãƒ«CBufferã®å ´æ‰€ã‚’è¨­å®š
 	common->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 
 	common->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvhandleGPU_);
 
-	// SRV—p‚ÌdescriptionTavle‚Ìæ“ª‚ğİ’è
+	// SRVç”¨ã®descriptionTavleã®å…ˆé ­ã‚’è¨­å®š
 	common->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetGPUHandle(textureHandle_));
-	// Œõ
+	// å…‰
 	common->GetCommandList()->SetGraphicsRootConstantBufferView(3, common->GetDirectionalLightResource()->GetGPUVirtualAddress());
-	// •`‰æ
+	// æç”»
 	common->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), kNumInstance_, 0, 0);
 }
 
 void Particle::Emit(Vector3 position, Vector3 range, float duration, float minLifetime, float maxLifetime) {
-	// ƒVƒXƒeƒ€‚Ì‘S‘Ìİ’è‚ğ•Û‘¶
+	// ã‚·ã‚¹ãƒ†ãƒ ã®å…¨ä½“è¨­å®šã‚’ä¿å­˜
 	durationTimer_ = duration;
 	minLifetime_ = minLifetime;
 	maxLifetime_ = maxLifetime;
 	emitPosition_ = position;
 	emitRange_ = range;
 
-	// ‘S‚Ä‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‰Šú‰»‚µA‘¦À‚É‰æ–Ê‚ÉoŒ»‚³‚¹‚é
+	// å…¨ã¦ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’åˆæœŸåŒ–ã—ã€å³åº§ã«ç”»é¢ã«å‡ºç¾ã•ã›ã‚‹
 	for (uint32_t index = 0; index < kNumInstance_; ++index) {
 		InitializeParticle(index);
 	}
 }
 
 void Particle::InitializeParticle(uint32_t index) {
-	// —”•ª•z‚Ì’è‹`
+	// ä¹±æ•°åˆ†å¸ƒã®å®šç¾©
 	std::uniform_real_distribution<float> distX(-emitRange_.x, emitRange_.x);
 	std::uniform_real_distribution<float> distY(-emitRange_.y, emitRange_.y);
 	std::uniform_real_distribution<float> distZ(-emitRange_.z, emitRange_.z);
 	std::uniform_real_distribution<float> distLifetime(minLifetime_, maxLifetime_);
 
-	// Šù‘¶‚Ìƒf[ƒ^‚ğƒŠƒZƒbƒg
+	// æ—¢å­˜ã®ãƒ‡ãƒ¼ã‚¿ã‚’ãƒªã‚»ãƒƒãƒˆ
 	particles_[index].transform = InitializeWorldTransform();
 
-	// ¶‘¶ŠÔ‚ÆŒo‰ßŠÔ‚ğİ’è
-	particles_[index].lifeTime = distLifetime(randomEngine_); // ƒ‰ƒ“ƒ_ƒ€‚Èõ–½‚ğİ’è
-	particles_[index].currentTime = 0.0f; // Œo‰ßŠÔ‚ğƒŠƒZƒbƒg
+	// ç”Ÿå­˜æ™‚é–“ã¨çµŒéæ™‚é–“ã‚’è¨­å®š
+	particles_[index].lifeTime = distLifetime(randomEngine_); // ãƒ©ãƒ³ãƒ€ãƒ ãªå¯¿å‘½ã‚’è¨­å®š
+	particles_[index].currentTime = 0.0f; // çµŒéæ™‚é–“ã‚’ãƒªã‚»ãƒƒãƒˆ
 
-	// ƒ‰ƒ“ƒ_ƒ€‚ÈƒIƒtƒZƒbƒg‚ğ¶¬‚µ‚Ä’†SÀ•W‚É‰ÁZ
+	// ãƒ©ãƒ³ãƒ€ãƒ ãªã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ç”Ÿæˆã—ã¦ä¸­å¿ƒåº§æ¨™ã«åŠ ç®—
 	Vector3 randomOffset = {
 		distX(randomEngine_),
 		distY(randomEngine_),
 		distZ(randomEngine_)
 	};
 
-	// ÅI“I‚ÈˆÊ’u‚ğİ’è
+	// æœ€çµ‚çš„ãªä½ç½®ã‚’è¨­å®š
 	particles_[index].transform.translate = Add(emitPosition_, randomOffset);
 }

@@ -1,6 +1,9 @@
 #include"BonjinEngine.h"
 
-#include"application/scene/manager/SceneManager.h"
+#include"../system/manager/SceneManager.h"
+
+#include"application/scene/title/TitleScene.h"
+#include"application/scene/game/GameScene.h"
 
 using namespace BonjinEngine;
 
