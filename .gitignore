@@ -21,7 +21,7 @@ generated/
 logs/
 Visual Studio 2022/
 Visual Studio 2022Templates/
-imgui.ini
+project/mgui.ini
 
 
 # Visual Studio 2015/2017 cache/options directory
