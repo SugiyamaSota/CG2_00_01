@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include"../game/GameScene.h"
-#include"../title/TitleScene.h"
 #include"BonjinEngine.h"
 #include <map>
 #include<memory>
+
+#include"../interface/IScene.h"
 
 namespace BonjinEngine {
 

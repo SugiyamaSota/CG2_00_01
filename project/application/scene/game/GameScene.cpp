@@ -17,7 +17,7 @@ void GameScene::Initialize(Camera* camera) {
 }
 
 void GameScene::Unload() {
-
+	delete particle_;
 }
 
 void GameScene::Update(float deltaTime) {

@@ -3,9 +3,10 @@
 
 #include"../bonjin/BonjinEngine.h"
 
-namespace BonjinEngine {
-
-	class GameScene : public IScene {
+namespace BonjinEngine 
+{
+	class GameScene : public IScene
+	{
 	public:
 		// --- オーバーライド関数 --- 
 		virtual ~GameScene() = default;

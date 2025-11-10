@@ -5,7 +5,6 @@
 
 namespace BonjinEngine
 {
-
     class TitleScene : public IScene
     {
     public:
