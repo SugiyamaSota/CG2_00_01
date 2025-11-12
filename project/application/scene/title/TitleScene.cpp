@@ -3,7 +3,7 @@
 using namespace BonjinEngine;
 
 void TitleScene::Initialize(Camera* camera) {
-    // ¡‚ÌƒV[ƒ“‚Æ‘JˆÚŒãƒV[ƒ“(‰Šú’l‚Í“¯‚¶)
+    // ä»Šã®ã‚·ãƒ¼ãƒ³ã¨é·ç§»å¾Œã‚·ãƒ¼ãƒ³(åˆæœŸå€¤ã¯åŒã˜)
     currentSceneType_ = SceneType::kTitle;
     nextSceneType_ = SceneType::kTitle;
 
@@ -12,7 +12,7 @@ void TitleScene::Initialize(Camera* camera) {
 	blackScreenSprite_ = new Sprite();
 	blackScreenSprite_->Initialize({ 640.0f,360.0f,0.0f }, Color::Black, { 0.5f,0.5f,0.0f }, { 1280,720 }, "uvChecker.png");
 
-	// ƒtƒF[ƒY‚Æƒ^ƒCƒ}[‚ğ‰Šú‰»
+	// ãƒ•ã‚§ãƒ¼ã‚ºã¨ã‚¿ã‚¤ãƒãƒ¼ã‚’åˆæœŸåŒ–
 	phase_ = TitlePhase::kFadeIn;
 	phaseTimer_ = 0.0f;
 
@@ -25,7 +25,7 @@ void TitleScene::Initialize(Camera* camera) {
 	titleUIModel_->LoadModel("titleUI");
 	titleUIModel_->Update(worldTransform_, camera_);
 
-	// “V‹…
+	// å¤©çƒ
 	skydomeModel_ = std::make_unique<Model>();
 	skydomeModel_->LoadModel("debugSkydome");
 	skydome_ = std::make_unique<Skydome>();
@@ -47,12 +47,12 @@ void TitleScene::Update(float deltaTime) {
 	switch (phase_) {
 	case TitlePhase::kFadeIn:
 	{
-		// ƒtƒF[ƒhƒCƒ“‚ÌƒAƒ‹ƒtƒ@’l‚ğŒvZ
-		float alpha = 1.0f - min(phaseTimer_ / 2.0f, 1.0f); // 2•b‚©‚¯‚ÄƒtƒF[ƒhƒCƒ“
+		// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ã®ã‚¢ãƒ«ãƒ•ã‚¡å€¤ã‚’è¨ˆç®—
+		float alpha = 1.0f - min(phaseTimer_ / 2.0f, 1.0f); // 2ç§’ã‹ã‘ã¦ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³
 		blackScreenSprite_->Update({ 640.0f,360.0f,0.0f }, Color::Black);
 		blackScreenSprite_->SetColor({ 0.0f, 0.0f, 0.0f, alpha });
 
-		// ƒtƒF[ƒhƒCƒ“‚ªŠ®—¹‚µ‚½‚çŸ‚ÌƒtƒF[ƒY‚Ö
+		// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ãŒå®Œäº†ã—ãŸã‚‰æ¬¡ã®ãƒ•ã‚§ãƒ¼ã‚ºã¸
 		if (alpha <= 0.0f) {
 			phase_ = TitlePhase::kActive;
 			phaseTimer_ = 0.0f;
@@ -60,7 +60,7 @@ void TitleScene::Update(float deltaTime) {
 	}
 	break;
 	case TitlePhase::kActive:
-		// ƒXƒy[ƒXƒL[‚ª‰Ÿ‚³‚ê‚½‚çƒtƒF[ƒhƒAƒEƒgŠJn
+		// ã‚¹ãƒšãƒ¼ã‚¹ã‚­ãƒ¼ãŒæŠ¼ã•ã‚ŒãŸã‚‰ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆé–‹å§‹
 		if (Input::GetInstance()->IsPadTrigger(0) || Input::GetInstance()->IsTrigger(DIK_SPACE)) {
 			phase_ = TitlePhase::kFadeOut;
 			phaseTimer_ = 0.0f;
@@ -68,12 +68,12 @@ void TitleScene::Update(float deltaTime) {
 		break;
 	case TitlePhase::kFadeOut:
 	{
-		// ƒtƒF[ƒhƒAƒEƒg‚ÌƒAƒ‹ƒtƒ@’l‚ğŒvZ
-		float alpha = min(phaseTimer_ / 2.0f, 1.0f); // 2•b‚©‚¯‚ÄƒtƒF[ƒhƒAƒEƒg
+		// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã®ã‚¢ãƒ«ãƒ•ã‚¡å€¤ã‚’è¨ˆç®—
+		float alpha = min(phaseTimer_ / 2.0f, 1.0f); // 2ç§’ã‹ã‘ã¦ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆ
 		blackScreenSprite_->Update({ 640.0f,360.0f,0.0f }, Color::Black);
 		blackScreenSprite_->SetColor({ 0.0f, 0.0f, 0.0f, alpha });
 
-		// ƒtƒF[ƒhƒAƒEƒg‚ªŠ®—¹‚µ‚½‚çƒV[ƒ“•ÏX
+		// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆãŒå®Œäº†ã—ãŸã‚‰ã‚·ãƒ¼ãƒ³å¤‰æ›´
 		if (alpha >= 1.0f) {
 			nextSceneType_ = SceneType::kGame;
 		}
@@ -83,11 +83,11 @@ void TitleScene::Update(float deltaTime) {
 }
 
 void TitleScene::Draw() {
-	// “V‹…‚Ì•`‰æ
+	// å¤©çƒã®æç”»
 	skydome_->Draw();
 	titleModel_->Draw();
 	titleUIModel_->Draw();
-	// •‚¢ƒXƒvƒ‰ƒCƒg‚ğ•`‰æ
+	// é»’ã„ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’æç”»
 	blackScreenSprite_->Draw();
 }
 
